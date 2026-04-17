@@ -1,0 +1,553 @@
+import shutil
+import io
+import aiosqlite
+import shortuuid
+import polars as pl
+import fastexcel
+import mutagen
+from fastapi import APIRouter, Request, UploadFile, File, Form, HTTPException, Response
+from fastapi.responses import FileResponse
+from pathlib import Path
+import pyarrow as pa
+import urllib.parse
+from datetime import datetime
+
+from utils import templates 
+
+# URLのプレフィックスを変数として定義
+CABINET_PREFIX = "/cc"
+
+# APIRouterとして定義し、プレフィックスとタグを設定
+router = APIRouter(prefix=CABINET_PREFIX, tags=["cabinet"])
+
+# 特別な名前
+SPECIAL_NAMES = {
+    "cxc": "1",
+    "wzz": "2",
+}
+
+# mainディレクトリを基準に絶対パスを生成
+BASE_DIR = Path(__file__).parent.resolve()
+CABINET_DIR = (BASE_DIR / "cabinet").resolve()
+CABINET_DIR.mkdir(exist_ok=True)
+DB_PATH = BASE_DIR / "filer.db"
+
+# 最大容量設定
+MAX_CAPACITY_BYTES = 8 * 1024 * 1024 * 1024
+
+def is_protected_item(name: str, is_dir: bool) -> bool:
+    if is_dir:
+        return name == 'いろいろ'
+    return (
+        name == 'data.xlsx'
+        or ('MFR' in name and name.endswith('.xlsx'))
+        or ('マスタデータ' in name and name.endswith('.xlsx'))
+    )
+
+def get_admin_level(request: Request) -> int:
+    try:
+        return int(request.cookies.get("cabinet_admin", 0))
+    except ValueError:
+        return 0
+
+async def init_cabinet_db():
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS file_links (
+                uuid TEXT PRIMARY KEY,
+                relative_path TEXT UNIQUE NOT NULL,
+                filename TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        await db.commit()
+
+def get_cabinet_size(directory: Path) -> int:
+    total_size = 0
+    for f in directory.rglob('*'):
+        if f.is_file():
+            total_size += f.stat().st_size
+    return total_size
+
+def get_secure_path(path: str) -> Path:
+    clean_path = path.lstrip("/\\")
+    target_path = (CABINET_DIR / clean_path).resolve()
+    if not str(target_path).startswith(str(CABINET_DIR)):
+        raise HTTPException(status_code=403, detail="Access denied")
+    return target_path
+
+async def _get_file_target(uuid: str) -> tuple[Path, str]:
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute("SELECT relative_path, filename FROM file_links WHERE uuid = ?", (uuid,)) as cursor:
+            row = await cursor.fetchone()
+            
+    if not row:
+        raise HTTPException(status_code=404, detail="File link not found")
+        
+    rel_path, filename = row
+    target = CABINET_DIR / rel_path
+    
+    if not target.exists() or not target.is_file():
+        raise HTTPException(status_code=404, detail="File not found on disk")
+        
+    return target, filename
+
+@router.get("/", name="cc")
+async def list_files(request: Request, path: str = "", query: str = ""):
+    target_dir = get_secure_path(path)
+    
+    if not target_dir.exists() or not target_dir.is_dir():
+        raise HTTPException(status_code=404, detail="Directory not found")
+
+    items = []
+    file_info = {}
+    
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute("SELECT uuid, relative_path, created_at FROM file_links") as cursor:
+            async for row in cursor:
+                file_info[row[1]] = {"uuid": row[0], "created_at": row[2]}
+
+    missing_db_entries = []
+    
+    if query:
+        query_lower = query.lower()
+        search_target = CABINET_DIR.rglob('*')
+        
+        for item in search_target:
+            if query_lower in item.name.lower():
+                rel_path = str(item.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+                is_dir = item.is_dir()
+                
+                item_data = {
+                    "name": item.name,
+                    "is_dir": is_dir,
+                    "size": item.stat().st_size if item.is_file() else 0,
+                    "path": rel_path,
+                    "is_protected": is_protected_item(item.name, is_dir),
+                }
+                
+                if not is_dir:
+                    if rel_path in file_info:
+                        item_data["uuid"] = file_info[rel_path]["uuid"]
+                        dt_str = file_info[rel_path]["created_at"]
+                        item_data["created_at"] = dt_str[:19] if dt_str else ""
+                    else:
+                        new_uuid = shortuuid.uuid()
+                        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        item_data["uuid"] = new_uuid
+                        item_data["created_at"] = now_str
+                        missing_db_entries.append((new_uuid, rel_path, item.name, now_str))
+                else:
+                    item_data["uuid"] = None
+                    item_data["created_at"] = ""
+                    try:
+                        item_data["item_count"] = len(list(item.iterdir()))
+                    except PermissionError:
+                        item_data["item_count"] = 0
+                    
+                items.append(item_data)
+    else:
+        for item in target_dir.iterdir():
+            rel_path = str(item.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+            is_dir = item.is_dir()
+            
+            item_data = {
+                "name": item.name,
+                "is_dir": is_dir,
+                "size": item.stat().st_size if item.is_file() else 0,
+                "path": rel_path,
+                "is_protected": is_protected_item(item.name, is_dir),
+            }
+            
+            if not is_dir:
+                if rel_path in file_info:
+                    item_data["uuid"] = file_info[rel_path]["uuid"]
+                    dt_str = file_info[rel_path]["created_at"]
+                    item_data["created_at"] = dt_str[:19] if dt_str else ""
+                else:
+                    new_uuid = shortuuid.uuid()
+                    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    item_data["uuid"] = new_uuid
+                    item_data["created_at"] = now_str
+                    missing_db_entries.append((new_uuid, rel_path, item.name, now_str))
+            else:
+                item_data["uuid"] = None
+                item_data["created_at"] = ""
+                try:
+                    item_data["item_count"] = len(list(item.iterdir()))
+                except PermissionError:
+                    item_data["item_count"] = 0
+                
+            items.append(item_data)
+        
+    if missing_db_entries:
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.executemany("""
+                INSERT OR IGNORE INTO file_links (uuid, relative_path, filename, created_at)
+                VALUES (?, ?, ?, ?)
+            """, missing_db_entries)
+            await db.commit()
+    
+    items.sort(key=lambda x: (not x["is_dir"], x["name"].lower()))
+    
+    parent_path = ""
+    if path:
+        parent_path = str(Path(path).parent).replace("\\", "/")
+        if parent_path == ".":
+            parent_path = ""
+
+    used_capacity = get_cabinet_size(CABINET_DIR)
+    admin = get_admin_level(request)
+
+    formatted_current_path = path if path.endswith("/") else path + "/"
+
+    return templates.TemplateResponse(
+        request=request,
+        name="cabinet.html",
+        context={
+            "items": items,
+            "current_path": formatted_current_path,
+            "parent_path": parent_path,
+            "used_capacity": used_capacity,
+            "max_capacity": MAX_CAPACITY_BYTES,
+            "prefix": CABINET_PREFIX,
+            "admin": admin,
+            "query": query,
+        }
+    )
+
+@router.post("/upload/")
+async def upload_file(request: Request, path: str = Form(""), file: UploadFile = File(...)):
+    target_dir = get_secure_path(path)
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target_file = target_dir / file.filename
+    
+    if target_file.exists() and is_protected_item(file.filename, False):
+        if get_admin_level(request) != 1:
+            raise HTTPException(status_code=403, detail="保護されたファイルの上書きは禁止されています")
+            
+    used_capacity = get_cabinet_size(CABINET_DIR)
+    old_file_size = target_file.stat().st_size if target_file.exists() else 0
+    
+    if file.size is not None and (used_capacity - old_file_size + file.size) > MAX_CAPACITY_BYTES:
+        raise HTTPException(status_code=400, detail="Capacity limit exceeded (Pre-check)")
+        
+    temp_file = target_dir / f"{file.filename}.{shortuuid.uuid()}.tmp"
+    written_size = 0
+    chunk_size = 1024 * 1024
+    
+    try:
+        with open(temp_file, "wb") as f:
+            while chunk := await file.read(chunk_size):
+                written_size += len(chunk)
+                if (used_capacity - old_file_size + written_size) > MAX_CAPACITY_BYTES:
+                    raise HTTPException(status_code=400, detail="Capacity limit exceeded during upload")
+                f.write(chunk)
+
+        temp_file.replace(target_file)
+        
+    except Exception as e:
+        temp_file.unlink(missing_ok=True)
+        raise e
+        
+    rel_path = str(target_file.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+    file_uuid = shortuuid.uuid()
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("""
+            INSERT INTO file_links (uuid, relative_path, filename, created_at)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(relative_path) DO UPDATE SET
+                uuid = excluded.uuid,
+                filename = excluded.filename,
+                created_at = excluded.created_at
+        """, (file_uuid, rel_path, file.filename, now_str))
+        await db.commit()
+        
+    return {"status": "success", "filename": file.filename}
+
+@router.post("/mkdir/")
+async def create_directory(request: Request, response: Response, path: str = Form(""), folder_name: str = Form(...)):
+    if folder_name in SPECIAL_NAMES:
+        target_level = SPECIAL_NAMES[folder_name]
+        if request.cookies.get("cabinet_admin") == target_level:
+            response.delete_cookie(key="cabinet_admin")
+        else:
+            response.set_cookie(key="cabinet_admin", value=target_level, httponly=True)
+        return {"status": "success"}
+
+    target_dir = get_secure_path(path)
+    new_dir = target_dir / folder_name
+    new_dir.mkdir(exist_ok=True)
+    return {"status": "success"}
+
+@router.post("/move/")
+async def move_file(
+    request: Request,
+    uuid: str = Form(...),
+    filename: str = Form(...),
+    current_path: str = Form(""),
+    target_path: str = Form("")
+):
+    source_path, db_filename = await _get_file_target(uuid)
+
+    if is_protected_item(db_filename, False):
+        if get_admin_level(request) != 1:
+            raise HTTPException(status_code=403, detail="このファイルは保護されているため移動できません")
+    
+    target_dir = get_secure_path(target_path)
+    if not target_dir.exists() or not target_dir.is_dir():
+        raise HTTPException(status_code=404, detail="Target directory not found")
+        
+    destination_path = target_dir / filename
+    
+    if destination_path.exists():
+        raise HTTPException(status_code=400, detail="同名のファイルが移動先に既に存在します")
+        
+    try:
+        shutil.move(str(source_path), str(destination_path))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to move file: {str(e)}")
+        
+    new_rel_path = str(destination_path.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+    
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("""
+            UPDATE file_links
+            SET relative_path = ?
+            WHERE uuid = ?
+        """, (new_rel_path, uuid))
+        await db.commit()
+        
+    return {"status": "success"}
+
+@router.post("/rename/")
+async def rename_item(request: Request, path: str = Form(...), new_name: str = Form(...)):
+    target = get_secure_path(path)
+    
+    if target == CABINET_DIR:
+        raise HTTPException(status_code=403, detail="Cannot rename root directory")
+    
+    if not target.exists():
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    admin_level = get_admin_level(request)
+    is_dir = target.is_dir()
+
+    if is_protected_item(target.name, is_dir) and admin_level != 1:
+        type_str = "フォルダ" if is_dir else "ファイル"
+        raise HTTPException(status_code=403, detail=f"この{type_str}は保護されています")
+
+    if admin_level != 1:
+        for f in target.rglob('*'):
+            if is_protected_item(f.name, f.is_dir()):
+                raise HTTPException(status_code=403, detail="保護されたアイテムが含まれているため名前を変更できません")
+
+    new_target = target.parent / new_name
+
+    if new_target.exists():
+        raise HTTPException(status_code=400, detail="同名のファイルまたはフォルダが既に存在します")
+
+    old_rel_path = str(target.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+    new_rel_path = str(new_target.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+
+    try:
+        target.rename(new_target)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to rename: {str(e)}")
+
+    async with aiosqlite.connect(DB_PATH) as db:
+        if is_dir:
+            async with db.execute("SELECT uuid, relative_path FROM file_links WHERE relative_path LIKE ?", (f"{old_rel_path}/%",)) as cursor:
+                rows = await cursor.fetchall()
+            
+            for uuid, rel_path in rows:
+                updated_rel_path = rel_path.replace(old_rel_path, new_rel_path, 1)
+                await db.execute("UPDATE file_links SET relative_path = ? WHERE uuid = ?", (updated_rel_path, uuid))
+        else:
+            await db.execute("UPDATE file_links SET relative_path = ?, filename = ? WHERE relative_path = ?", (new_rel_path, new_name, old_rel_path))
+        
+        await db.commit()
+
+    return {"status": "success"}
+
+@router.delete("/delete/")
+async def delete_item(request: Request, path: str):
+    target = get_secure_path(path)
+    
+    if target == CABINET_DIR:
+        raise HTTPException(status_code=403, detail="Cannot delete root directory")
+    
+    if not target.exists():
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    admin_level = get_admin_level(request)
+    is_dir = target.is_dir()
+
+    if is_protected_item(target.name, is_dir) and admin_level != 1:
+        type_str = "フォルダ" if is_dir else "ファイル"
+        raise HTTPException(status_code=403, detail=f"この{type_str}は保護されています")
+
+    if admin_level != 1:
+        for f in target.rglob('*'):
+            if is_protected_item(f.name, f.is_dir()):
+                raise HTTPException(status_code=403, detail="保護されたアイテムが含まれているため削除できません")
+        
+    rel_path = str(target.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+        
+    if is_dir:
+        shutil.rmtree(target)
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute("DELETE FROM file_links WHERE relative_path LIKE ?", (f"{rel_path}/%",))
+            await db.commit()
+    else:
+        target.unlink()
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute("DELETE FROM file_links WHERE relative_path = ?", (rel_path,))
+            await db.commit()
+            
+    return {"status": "success"}
+
+@router.get("/f/{uuid}")
+async def download_file_by_uuid(request: Request, uuid: str, inline: bool = False):
+    target, filename = await _get_file_target(uuid)
+
+    if not inline and is_protected_item(filename, False):
+        if get_admin_level(request) < 1:
+            raise HTTPException(status_code=403, detail="ダウンロード権限がありません")
+
+    media_type = None
+    if filename.lower().endswith('.svg'):
+        media_type = "image/svg+xml"
+
+    if inline:
+        headers = {
+            "Content-Disposition": f"inline; filename*=utf-8''{urllib.parse.quote(filename)}"
+        }
+        return FileResponse(target, headers=headers, media_type=media_type)
+
+    return FileResponse(target, filename=filename, media_type=media_type)
+
+@router.get("/excel/info/{uuid}")
+async def get_excel_info(uuid: str):
+    target, _ = await _get_file_target(uuid)
+    try:
+        excel = fastexcel.read_excel(str(target))
+        return {"sheets": excel.sheet_names}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read Excel info: {str(e)}")
+
+@router.get("/excel/arrow/{uuid}")
+async def get_excel_arrow(uuid: str, sheet: str):
+    target, _ = await _get_file_target(uuid)
+    try:
+        df = pl.read_excel(target, sheet_name=sheet, engine="calamine")
+        
+        arrow_table = df.to_arrow()
+        
+        new_fields = []
+        for field in arrow_table.schema:
+            if pa.types.is_large_string(field.type):
+                new_fields.append(pa.field(field.name, pa.string(), nullable=field.nullable))
+            else:
+                new_fields.append(field)
+                
+        arrow_table = arrow_table.cast(pa.schema(new_fields))
+        
+        sink = pa.BufferOutputStream()
+        with pa.ipc.new_stream(sink, arrow_table.schema) as writer:
+            writer.write_table(arrow_table)
+            
+        return Response(content=sink.getvalue().to_pybytes(), media_type="application/vnd.apache.arrow.file")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read Excel sheet: {str(e)}")
+
+@router.get("/audio/meta/{uuid}")
+async def get_audio_meta(uuid: str):
+    target, filename = await _get_file_target(uuid)
+    
+    default_meta = {
+        "title": filename,
+        "artist": "Unknown",
+        "album": "Unknown",
+        "duration": "00:00",
+        "bitrate": "Unknown",
+        "has_cover": False
+    }
+    
+    try:
+        audio = mutagen.File(target)
+        if audio is None:
+            return default_meta
+            
+        def get_tag(tags, keys):
+            if not tags: return None
+            for k in keys:
+                if k in tags:
+                    val = tags[k]
+                    if isinstance(val, list):
+                        return str(val[0])
+                    return str(val)
+            return None
+            
+        title = get_tag(audio.tags, ['TIT2', '\xa9nam', 'title', 'Title', 'TITLE']) or filename
+        artist = get_tag(audio.tags, ['TPE1', '\xa9ART', 'artist', 'Artist', 'ARTIST']) or "Unknown"
+        album = get_tag(audio.tags, ['TALB', '\xa9alb', 'album', 'Album', 'ALBUM']) or "Unknown"
+        
+        duration_str = "00:00"
+        bitrate_str = "Unknown"
+        if hasattr(audio, 'info'):
+            if hasattr(audio.info, 'length') and audio.info.length:
+                duration = int(audio.info.length)
+                minutes = duration // 60
+                seconds = duration % 60
+                duration_str = f"{minutes:02d}:{seconds:02d}"
+            
+            if hasattr(audio.info, 'bitrate') and audio.info.bitrate:
+                bitrate_str = f"{int(audio.info.bitrate) // 1000} kbps"
+
+        has_cover = False
+        if hasattr(audio, 'tags') and audio.tags:
+            if any(k.startswith('APIC') for k in audio.tags.keys()):
+                has_cover = True
+            elif 'covr' in audio.tags:
+                has_cover = True
+        if not has_cover and hasattr(audio, 'pictures') and audio.pictures:
+            has_cover = True
+            
+        return {
+            "title": title,
+            "artist": artist,
+            "album": album,
+            "duration": duration_str,
+            "bitrate": bitrate_str,
+            "has_cover": has_cover
+        }
+    except Exception:
+        return default_meta
+
+@router.get("/audio/cover/{uuid}")
+async def get_audio_cover(uuid: str):
+    target, _ = await _get_file_target(uuid)
+    try:
+        audio = mutagen.File(target)
+        if audio is None:
+            raise HTTPException(status_code=404, detail="No audio file")
+        
+        if hasattr(audio, 'tags') and audio.tags:
+            for key, tag in audio.tags.items():
+                if key.startswith('APIC'):
+                    return Response(content=tag.data, media_type=tag.mime)
+            if 'covr' in audio.tags:
+                covr = audio.tags['covr'][0]
+                mime = 'image/jpeg' if covr.startswith(b'\xff\xd8') else 'image/png'
+                return Response(content=bytes(covr), media_type=mime)
+                
+        if hasattr(audio, 'pictures') and audio.pictures:
+            pic = audio.pictures[0]
+            return Response(content=pic.data, media_type=pic.mime)
+            
+        raise HTTPException(status_code=404, detail="No cover art")
+    except Exception:
+        raise HTTPException(status_code=404, detail="Error extracting cover")

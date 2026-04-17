@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/png" sizes="400x400" href="/icon_ms.png">
+    <link rel="manifest" href="/ms/manifest.json">
+    <meta name="theme-color" content="rgb(0 0 0)">
+    <style type="text/css">@charset "UTF-8";
+        body, html {
+            padding: 0;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            user-select: none;
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            inset: 0px;
+            font-size: 10px;
+        }
+        #scrollframe {
+            display: flex;
+            position: relative;
+            width: 100vw;
+            height: 100%;
+        }
+        #content {
+            justify-content: center;
+            width: 100%;
+            text-align: center;
+            overflow-y: auto;
+        }
+        #dateData {
+            font-size: 1.3em;
+            line-height: .8;
+        }
+        #shiftData {
+            display: inline-block;
+            text-align: left;
+            font-size: 2em;
+            line-height: 1.2;
+        }
+        .group {
+            margin-top: 8px;
+        }
+        .blur {
+            font-size: .6em;
+        }
+        .pickup {
+            color: #FF7D81;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        #w_hakui {
+            color: #FFFFFF;
+        }
+        #b_hakui {
+            color: #64C0FA;
+        }
+        #button {
+            z-index: 5;
+            position: fixed;
+            position: -webkit-fixed;
+            top: 70vh;
+            left: 50%;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+        }
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #000;
+            font-weight: bold;
+            transform: translate(-50%, -50%);
+        }
+        .now {
+            z-index: 3;
+            position: relative;
+            top: 0;
+            left: 0;
+            width: min(50vh, 50vw);
+            height: min(50vh, 50vw);
+            transform: none;
+            background: #FFA733;
+            font-size: min(21vh, 21vw);
+        }
+        .r_b {
+            z-index: 2;
+            top: min(70vh, 70vw);
+            left: min(60vh, 60vw);
+            width: min(50vh, 50vw);
+            height: min(50vh, 50vw);
+            background: #F0F0F0;
+            font-size: min(17vh, 17vw);
+        }
+        .l_b {
+            z-index: 1;
+            top: min(70vh, 70vw);
+            left: calc(100% - min(60vh, 60vw));
+            width: min(50vh, 50vw);
+            height: min(50vh, 50vw);
+            background: #F0F0F0;
+            font-size: min(17vh, 17vw);
+        }
+        .r_b span, .l_b span {
+            display: inline-block;
+            position: relative;
+            top: -4vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="button">
+        <div class="circle now">現在</div>
+        <div class="circle r_b"><span>+7日</span></div>
+        <div class="circle l_b"><span>-7日</span></div>
+    </div>
+    <div id="scrollframe">
+        <div id="content"><div id="dateData"></div><div id="shiftData"></div></div>
+    </div>
+
+    <script>
+    const cache = new Map();
+    const maxCacheSize = 30;
+
+    let lastViewTime = Date.now();
+    const CACHE_EXPIRE_MS = 60 * 60 * 1000;
+
+    function fetchShift(address) {
+        if (cache.has(address)) {
+            return Promise.resolve(cache.get(address));
+        }
+        return fetch('../shift/' + address)
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.shift) {
+                    cache.set(address, data.shift);
+                    maintainCacheSize();
+                    return data.shift;
+                } else {
+                    return 'shift not found';
+                }
+            })
+            .catch(function(error) {
+                throw error;
+            });
+    }
+
+    function maintainCacheSize() {
+        const keys = Array.from(cache.keys()).sort();
+        if (cache.size > maxCacheSize) {
+            cache.delete(keys[0]);
+        }
+    }
+
+    function removeOldestOrNewest(isPast) {
+        const keys = Array.from(cache.keys()).sort();
+        if (cache.size >= maxCacheSize) {
+            if (isPast) {
+                cache.delete(keys[keys.length - 1]);
+            } else {
+                cache.delete(keys[0]);
+            }
+        }
+    }
+
+    function getPresent(dayPlus, t = 0) {
+        let today = new Date();
+        today.setDate(today.getDate() + dayPlus);
+        const hour = today.getHours();
+        const minute = ('0' + today.getMinutes()).slice(-2);
+        today.setHours(today.getHours() - 8);
+        const year = today.getFullYear();
+        const month = ('0' + (today.getMonth() + 1)).slice(-2);
+        const day = ('0' + today.getDate()).slice(-2);
+        if (t == 0) {
+            return year + month + day;
+        } else {
+            return hour + minute;
+        }
+    }
+
+    function shiftWork(currentTime, pageTodayStr, pageYesterdayStr) {
+        let activeShifts = {};
+        
+        if (900 <= currentTime && currentTime < 2100) {
+            activeShifts['A'] = pageTodayStr;
+        }
+        if (2100 <= currentTime && currentTime < 2400) {
+            activeShifts['C'] = pageTodayStr;
+        }
+        if (0 <= currentTime && currentTime < 800) {
+            activeShifts['C'] = pageTodayStr;
+        }
+        if (800 <= currentTime && currentTime < 900) {
+            activeShifts['C'] = pageYesterdayStr;
+        }
+        if (1450 <= currentTime && currentTime < 2400) {
+            activeShifts['2'] = pageTodayStr;
+        }
+        if (2350 <= currentTime && currentTime < 2400) {
+            activeShifts['3'] = pageTodayStr;
+        }
+        if (0 <= currentTime && currentTime < 800) {
+            activeShifts['3'] = pageTodayStr;
+        }
+        if (800 <= currentTime && currentTime < 900) {
+            activeShifts['3'] = pageYesterdayStr;
+        }
+        if (800 <= currentTime && currentTime < 1710) {
+            activeShifts['1'] = pageTodayStr;
+        }
+        if (1150 <= currentTime && currentTime < 2100) {
+            activeShifts['A2'] = pageTodayStr;
+        }
+        
+        return activeShifts;
+    }
+
+    async function mainWrite(current = 0) {
+        const now = Date.now();
+        if (now - lastViewTime >= CACHE_EXPIRE_MS) {
+            cache.clear();
+        }
+        lastViewTime = now;
+
+        let shiftArray;
+        const date_area = document.getElementById('dateData');
+        const content_area = document.getElementById('shiftData');
+        const content_scroll_area = document.getElementById('content');
+        
+        const savedScrollTop = content_scroll_area.scrollTop;
+        const savedWindowScrollY = window.scrollY || window.pageYOffset;
+        
+        try {
+            shiftArray = await fetchShift(getPresent(current));
+            if (shiftArray == 'shift not found') {
+                date_area.textContent = '';
+                content_area.textContent = 'データがありません';
+                G_current = OK_current + 1;
+                return;
+            } else {
+                OK_current = G_current;
+            }
+
+            date_area.innerHTML = '';
+            const parser = new DOMParser();
+
+            if (getPresent(0) == shiftArray.index_day) {
+                const span = document.createElement('span');
+                span.className = 'pickup';
+                if (shiftArray.days) {
+                    const daysDoc = parser.parseFromString(shiftArray.days, 'text/html');
+                    Array.from(daysDoc.body.childNodes).forEach(node => {
+                        span.appendChild(node.cloneNode(true));
+                    });
+                }
+                date_area.appendChild(span);
+            } else {
+                if (shiftArray.days) {
+                    const daysDoc = parser.parseFromString(shiftArray.days, 'text/html');
+                    Array.from(daysDoc.body.childNodes).forEach(node => {
+                        date_area.appendChild(node.cloneNode(true));
+                    });
+                }
+            }
+
+            if (shiftArray.color) {
+                const colorDoc = parser.parseFromString(shiftArray.color, 'text/html');
+                Array.from(colorDoc.body.childNodes).forEach(node => {
+                    date_area.appendChild(node.cloneNode(true));
+                });
+            }
+
+            content_area.innerHTML = '';
+            const data = JSON.parse(shiftArray.member);
+            const order = ["有", "A", "B", "C", "2", "3", "1"];
+            const keyNames = {
+                "A": "A勤務",
+                "A2": "A2",
+                "B": "B勤務",
+                "C": "C勤務",
+                "1": "早番",
+                "2": "中番",
+                "3": "夜勤"
+            };
+
+            const currentTimeNum = parseInt(getPresent(0, 1), 10);
+            const pageTodayStr = getPresent(0);
+            const pageYesterdayStr = getPresent(-1);
+            
+            const activeShifts = shiftWork(currentTimeNum, pageTodayStr, pageYesterdayStr);
+            const dataDateStr = String(shiftArray.index_day);
+
+            const unassignedKeys = Object.keys(data).filter(key => !order.includes(key));
+            const assignedKeys = order.filter(key => data[key]);
+            const displayKeys = [...unassignedKeys, ...assignedKeys];
+
+            for (const key of displayKeys) {
+                const isNamed = key in keyNames;
+                const displayKey = isNamed ? keyNames[key] : key;
+                const mark = isNamed ? "■■■" : "□□□";
+                
+                const isPickup = (activeShifts[key] === dataDateStr);
+                const groupClass = isPickup ? "group pickup" : "group";
+                
+                const groupDiv = document.createElement('div');
+                groupDiv.className = groupClass;
+                
+                groupDiv.innerHTML = `${mark}[ ${displayKey} ]${mark}<br>`;
+                
+                if (Array.isArray(data[key])) {
+                    data[key].forEach(member => {
+                        const prefix = document.createTextNode("　");
+                        const memberText = document.createTextNode(member);
+                        const br = document.createElement('br');
+                        groupDiv.appendChild(prefix);
+                        groupDiv.appendChild(memberText);
+                        groupDiv.appendChild(br);
+                    });
+                }
+                
+                content_area.appendChild(groupDiv);
+            }
+            
+            window.scrollTo(0, savedWindowScrollY);
+            content_scroll_area.scrollTo(0, savedScrollTop);
+            
+        } catch (error) {
+            content_area.textContent = 'Error loading shift data';
+        }
+
+        const stock = 9;
+        for (let i = current + (stock * -1); i <= current + stock; i++) {
+            if (i !== current) {
+                const date = getPresent(i);
+                if (!cache.has(date)) {
+                    try {
+                        shiftArray = await fetchShift(date);
+                        if (shiftArray !== 'shift not found') {
+                            cache.set(date, shiftArray);
+                            maintainCacheSize();
+                        }
+                    } catch (error) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    function button() {
+        const btn = document.getElementById('button');
+
+        const touchstartHandler = function(event) {
+            this.touchMoved = false;
+        };
+
+        const touchmoveHandler = function(event) {
+            this.touchMoved = true;
+        };
+
+        const touchendClickHandler = function(event) {
+            if (event.type === 'touchend' && this.touchMoved) return;
+            event.preventDefault();
+
+            const target = event.target.closest('.circle');
+            if (!target) return;
+
+            document.body.scrollIntoView(true);
+            switch (true) {
+                case target.classList.contains('now'):
+                    G_current = 0;
+                    mainWrite();
+                    break;
+
+                case target.classList.contains('r_b'):
+                    G_current = G_current + 7;
+                    mainWrite(G_current);
+                    break;
+
+                case target.classList.contains('l_b'):
+                    G_current = G_current - 7;
+                    mainWrite(G_current);
+                    break;
+            }
+        };
+
+        btn.removeEventListener('click', touchendClickHandler);
+        btn.removeEventListener('touchstart', touchstartHandler);
+        btn.removeEventListener('touchmove', touchmoveHandler);
+        btn.removeEventListener('touchend', touchendClickHandler);
+
+        btn.addEventListener('touchstart', touchstartHandler);
+        btn.addEventListener('touchmove', touchmoveHandler);
+        btn.addEventListener('touchend', touchendClickHandler);
+        btn.addEventListener('click', touchendClickHandler);
+    }
+
+    let err_F = false;
+    let G_current = 0;
+    let OK_current = 0;
+
+    (function() {
+        let isSwiping = false;
+        let startX, currentX;
+        let longPressTimer = null;
+        let isLongPress = false;
+        let hasMoved = false;
+        let startTime = 0;
+        let tappedElement = null;
+        const threshold = 50;
+        const LONG_PRESS_DURATION = 1000;
+        const MOVE_THRESHOLD = 10;
+        const TAP_TIME_THRESHOLD = 400;
+        
+        mainWrite();
+        document.getElementById('button').style.display = 'none';
+        button();
+
+        function smoothScrollTo(targetPosition, duration, element) {
+            const start = parseFloat(element.style.transform.replace(/[^\d.-]/g, '')) || 0;
+            const change = targetPosition - start;
+            const increment = 20;
+            let currentTime = 0;
+
+            const animateScroll = function () {
+                currentTime += increment;
+                const val = easeInOutQuad(currentTime, start, change, duration);
+                element.style.transform = `translateX(${val}px)`;
+
+                if (currentTime < duration) {
+                    requestAnimationFrame(animateScroll);
+                } else {
+                    element.dispatchEvent(new Event('transitionEnd'));
+                }
+            };
+
+            animateScroll();
+        }
+
+        function easeInOutQuad(t, b, c, d) {
+            t /= d / 2;
+            if (t < 1) return c / 2 * t * t + b;
+            t--;
+            return -c / 2 * (t * (t - 2) - 1) + b;
+        }
+
+        function handleTap(element) {
+            if ((!element.classList.contains('circle')) && (!element.parentElement.classList.contains('circle'))) {
+                document.getElementById('scrollframe').style.height = '100%';
+                document.getElementById('button').style.display = 'none';
+            }
+        }
+
+        function handleLongPress(element) {
+            document.getElementById('scrollframe').style.height = '100vh';
+            document.getElementById('button').style.display = 'block';
+        }
+
+        function handleSwipe() {
+            const distance = currentX - startX;
+            const inPresent = document.getElementById('content');
+            document.getElementById('scrollframe').style.height = '100%';
+            document.getElementById('button').style.display = 'none';
+            if (distance > threshold) {
+                G_current--;
+                removeOldestOrNewest(true);
+                smoothScrollTo(window.innerWidth, 100, inPresent);
+                setTimeout(() => {
+                    mainWrite(G_current);
+                    inPresent.style.transition = 'none';
+                    inPresent.style.transform = `translateX(${-window.innerWidth}px)`;
+                    setTimeout(() => {
+                        inPresent.style.transition = 'transform 0.1s cubic-bezier(0,1.17,.86,.99)';
+                        smoothScrollTo(0, 100, inPresent);
+                    }, 50);
+                }, 100);
+            } else if (distance < -threshold) {
+                G_current++;
+                removeOldestOrNewest(false);
+                smoothScrollTo(-window.innerWidth, 100, inPresent);
+                setTimeout(() => {
+                    mainWrite(G_current);
+                    inPresent.style.transition = 'none';
+                    inPresent.style.transform = `translateX(${window.innerWidth}px)`;
+                    setTimeout(() => {
+                        inPresent.style.transition = 'transform 0.1s cubic-bezier(0,1.17,.86,.99)';
+                        smoothScrollTo(0, 100, inPresent);
+                    }, 50);
+                }, 100);
+            } else {
+                smoothScrollTo(0, 100, inPresent);
+            }
+        }
+
+        document.addEventListener('touchstart', function(e) {
+            startX = e.changedTouches[0].screenX;
+            currentX = startX;
+            startTime = Date.now();
+            isSwiping = true;
+            isLongPress = false;
+            hasMoved = false;
+            tappedElement = e.target;
+            document.getElementById('content').style.transition = 'none';
+            
+            longPressTimer = setTimeout(function() {
+                if (!hasMoved) {
+                    isLongPress = true;
+                    handleLongPress(tappedElement);
+                }
+            }, LONG_PRESS_DURATION);
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', function(e) {
+            if (isSwiping) {
+                currentX = e.changedTouches[0].screenX;
+                const distance = Math.abs(currentX - startX);
+                
+                if (distance > MOVE_THRESHOLD && !hasMoved) {
+                    hasMoved = true;
+                    if (longPressTimer) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+                }
+                
+                document.getElementById('content').style.transform = `translateX(${currentX - startX}px)`;
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchend', function(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            
+            if (isSwiping) {
+                isSwiping = false;
+                currentX = e.changedTouches[0].screenX;
+                const distance = Math.abs(currentX - startX);
+                const duration = Date.now() - startTime;
+                document.getElementById('content').style.transition = 'transform 0.1s cubic-bezier(0,1.17,.86,.99)';
+                
+                if (distance < MOVE_THRESHOLD && duration < TAP_TIME_THRESHOLD && !isLongPress) {
+                    smoothScrollTo(0, 100, document.getElementById('content'));
+                    handleTap(tappedElement);
+                }
+                else if (isLongPress) {
+                    smoothScrollTo(0, 100, document.getElementById('content'));
+                }
+                else {
+                    handleSwipe();
+                }
+            }
+        }, { passive: true });
+        
+        document.addEventListener('mousedown', function(e) {
+            startX = e.screenX;
+            currentX = startX;
+            startTime = Date.now();
+            isSwiping = true;
+            isLongPress = false;
+            hasMoved = false;
+            tappedElement = e.target;
+            document.getElementById('content').style.transition = 'none';
+            
+            longPressTimer = setTimeout(function() {
+                if (!hasMoved) {
+                    isLongPress = true;
+                    handleLongPress(tappedElement);
+                }
+            }, LONG_PRESS_DURATION);
+        }, { passive: true });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (isSwiping) {
+                currentX = e.screenX;
+                const distance = Math.abs(currentX - startX);
+                
+                if (distance > MOVE_THRESHOLD && !hasMoved) {
+                    hasMoved = true;
+                    if (longPressTimer) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+                }
+                
+                document.getElementById('content').style.transform = `translateX(${currentX - startX}px)`;
+            }
+        }, { passive: true });
+        
+        document.addEventListener('mouseup', function(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            
+            if (isSwiping) {
+                isSwiping = false;
+                currentX = e.screenX;
+                const distance = Math.abs(currentX - startX);
+                const duration = Date.now() - startTime;
+                document.getElementById('content').style.transition = 'transform 0.1s cubic-bezier(0,1.17,.86,.99)';
+                
+                if (distance < MOVE_THRESHOLD && duration < TAP_TIME_THRESHOLD && !isLongPress) {
+                    smoothScrollTo(0, 100, document.getElementById('content'));
+                    handleTap(tappedElement);
+                }
+                else if (isLongPress) {
+                    smoothScrollTo(0, 100, document.getElementById('content'));
+                }
+                else {
+                    handleSwipe();
+                }
+            }
+        }, { passive: true });
+
+    }());
+    </script>
+</body>
+</html>

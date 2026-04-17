@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>CYBER CABINET</title>
+    <script src="{{ url_for('static', path='js/Arrow.es2015.min.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/mammoth.browser.min.js') }}" defer></script>
+    <style>
+        @charset "UTF-8";
+        ::selection { background-color: rgba(93, 239, 222, 0.5); }
+        body, html {
+            width: 100%;
+            background-color: #162141;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        }
+        p, ul { padding: 0; margin: 0; list-style-type: none; }
+        
+        .none_selection {
+            user-select: none;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+        }
+        
+        #frame {
+            display: flex;
+            flex-direction: column;
+            height: 100svh;
+            width: min(960px, 100%);
+            margin: 0 auto;
+            background-color: #a9c0e0;
+            overflow-y: auto; 
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        #header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #162141;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 6px;
+        }
+        
+        #crown {
+            z-index: 6;
+            display: flex;
+            position: relative;
+            background-color: #162141;
+            color: #80e5d8;
+            text-shadow: 0 0 10px #80e5d8;
+            box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.6), 0px -3px 3px rgba(127, 227, 215, 0.3) inset;
+            padding: 8px 0;
+            overflow: hidden;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #title {
+            position: relative;
+            display: inline-block;
+            padding: 0 50px;
+            font-size: 23px;
+            font-weight: bold;
+            color: #e3e3e3;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        #title:before, #title:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45px;
+            height: 1px;
+            box-shadow: 0 0 10px 3px rgba(127, 227, 215, 0.5);
+        }
+        #title:before {
+            left: 0;
+            background: linear-gradient(90deg, rgba(127, 227, 215, 0.1) 0%, rgba(127, 227, 215, 0.8) 70%, #fff 100%);
+        }
+        #title:after {
+            right: 0;
+            background: linear-gradient(90deg, #fff 0%, rgba(127, 227, 215, 0.8) 30%, rgba(127, 227, 215, 0.1) 100%);
+        }
+
+        .capacity-container {
+            width: 85%;
+            margin: 5px auto 0px;
+        }
+        .capacity-text {
+            font-size: 11px;
+            color: #80e5d8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-shadow: 0 0 3px rgba(128, 229, 216, 0.5);
+            margin-bottom: 2px;
+        }
+        .capacity-bar-bg {
+            flex-grow: 1;
+            margin: 0 15px;
+            height: 4px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 0 2px rgba(128, 229, 216, 0.2) inset;
+        }
+        .capacity-bar-fill {
+            height: 100%;
+            background: #80e5d8;
+            box-shadow: 0 0 8px #80e5d8;
+            transition: width 0.4s ease, background-color 0.4s ease, box-shadow 0.4s ease;
+            width: 0%;
+        }
+        #navi {
+            z-index: 5;
+            display: flex;
+            padding: 10px 0 5px;
+            background-color: #162141;
+            box-shadow: 0px -8px 10px rgba(0, 0, 0, 0.6) inset;
+        }
+        .navi_space {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .icons {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 80px;
+            height: 80px;
+            border: 3px solid #80e5d8;
+            border-radius: 10px;
+            box-shadow: 0 0 3px 3px rgba(127, 227, 215, 0.5);
+            background-color: #131d39;
+            cursor: pointer;
+            transition: 0.1s;
+            box-sizing: border-box;
+            padding: 5px 0;
+        }
+        .icons:hover:not(.disabled) {
+            background-color: #80e5d8;
+            border-color: #fff;
+        }
+        .icons:hover:not(.disabled) .t, .icons:hover:not(.disabled) .e {
+            color: #666;
+            text-shadow: none;
+            filter: none;
+        }
+        .icons.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .e {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 3px;
+            flex-grow: 1;
+            color: #fff;
+            font-size: 33px;
+            text-shadow: 0 0 10px #80e5d8;
+            filter: drop-shadow(0 0 5px #7fe3fa);
+        }
+        .t {
+            display: flex;
+            justify-content: center;
+            font-size: 11px;
+            color: #fff;
+            text-shadow: 0 0 5px #95efff, 0 0 10px #95efff;
+            font-weight: bold;
+        }
+
+        #search_area {
+            z-index: 6;
+            display: flex;
+            background-color: #fff;
+            box-shadow: 0px 5px 3px rgba(0, 0, 0, 0.4), 0px -3px 3px rgba(0, 0, 0, 0.3) inset;
+            padding-right: 17px;
+        }
+        .sep {
+            z-index: 8;
+            display: flex;
+            transform: skew(-22deg);
+            align-items: center;
+            justify-content: center;
+            color: #474747;
+            padding: 0 3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .gblue {
+            background-color: #d1f1f9;
+            box-shadow: 0 0 3px 3px rgba(127, 227, 250, 0.5) inset, 0 0 3px 3px #7fe3d7;
+            margin: 0 0 0 15px;
+        }
+        .gyellow {
+            background-color: #fff9c4;
+            box-shadow: 0 0 3px 3px rgba(251, 192, 45, 0.3) inset, 0 0 3px 3px #fbc02d;
+            margin: 0 0 0 15px;
+        }
+        .gred {
+            background-color: #fdaaa4;
+            box-shadow: 0 0 3px 3px rgba(255, 150, 143, .3)inset, 0 0 3px 3px rgba(255, 130, 130, 1);
+            margin: 0 0 0 15px;
+        }
+        .search_red {
+            background-color: #fdaaa4;
+            box-shadow: 0 0 3px 3px rgba(255, 150, 143, .3)inset, 0 0 3px 3px rgba(255, 130, 130, 1);
+        }
+        #search_button {
+            width: 50px;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            outline: none;
+        }
+        #search_button:hover {
+            background-color: #fff;
+            box-shadow: 0 0 10px 12px rgba(255, 150, 143, .7)inset, 0 0 5px 5px rgba(255, 130, 130, .8);
+        }
+        .up-btn {
+            width: 88px;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            font-size: 14px;
+            padding: 0 3px;
+            text-decoration: none;
+        }
+        .up-btn.gblue:hover {
+            background-color: #fff;
+            box-shadow: 0 0 5px 5px rgba(190, 235, 250, 0.7) inset, 0 0 3px 3px rgba(190, 235, 250, 0.8);
+        }
+        .up-btn.gyellow:hover {
+            background-color: #fff;
+            box-shadow: 0 0 5px 5px rgba(251, 192, 45, 0.4) inset, 0 0 3px 3px rgba(251, 192, 45, 0.6);
+        }
+        
+        .up-btn.drag-over {
+            background-color: rgba(255, 153, 0, 0.6);
+            box-shadow: 0 0 5px 5px rgba(255, 153, 0, 0.7) inset, 0 0 3px 3px rgba(255, 153, 0, 0.8);
+        }
+
+        #path_form {
+            display: flex;
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        #search_input:focus {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 10px 5px rgba(255, 150, 143, .8)inset, 0 0 10px 10px rgba(255, 130, 130, .8);
+        }
+
+        #on_path {
+            width: 100%;
+            height: 35px;
+            font-size: 16px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        
+        #on_path::-webkit-scrollbar {
+            display: none;
+        }
+
+        .message-scroll-wrap {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+        .message-scroll-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: messageScrollLeft 3.5s linear forwards;
+        }
+        @keyframes messageScrollLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        #detail {
+            flex-grow: 1;
+            padding: 15px 0 30px;
+            transition: background-color 0.2s, border 0.2s;
+        }
+        #detail.drag-over {
+            background-color: rgba(128, 229, 216, 0.6);
+            border-radius: 10px;
+        }
+        
+        .bulletin_board2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ecfafc;
+            border-radius: 10px;
+            width: 95%;
+            margin: 0 auto 8px;
+            padding: 3px;
+            line-height: 1.4;
+            border: 3px solid #80e5d8;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5), 0 0 10px 3px rgba(127, 227, 250, 0.5) inset;
+            color: #333;
+            box-sizing: border-box;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+        .bulletin_board2:hover { background-color: #fff; }
+        .bulletin_board2.folder {
+            border-color: #fbc02d;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5), 0 0 10px 3px rgba(251, 192, 45, 0.5) inset;
+            cursor: pointer;
+        }
+        .bulletin_board2.folder.drag-over {
+            background-color: rgba(128, 229, 216, 0.6);
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5), 0 0 15px 5px rgba(128, 229, 216, 0.8) inset;
+        }
+
+        .item-icon {
+            font-size: 26px;
+            padding: 0 5px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-width: 0;
+            margin-right: 10px;
+        }
+        .item-title {
+            font-weight: 900;
+            font-size: 16px;
+            word-wrap: break-word;
+            word-break: break-all;
+            line-height: 1.3;
+        }
+        .item-meta {
+            font-size: 12px;
+            color: #555;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .action-top {
+            display: flex;
+            gap: 8px;
+        }
+        @media screen and (max-width: 600px) {
+            .item-actions {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 5px;
+            }
+        }
+        .cli {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            touch-action: manipulation;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 0, 0, 0.1) inset;
+            cursor: pointer;
+            background-color: #7fffd4;
+            color: #333;
+            border: none;
+            font-size: 15px;
+            height: 36px;
+            box-sizing: border-box;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+        .cli:hover { background-color: #5defde; }
+        .cli.dl-btn { width: 55px; }
+        .cli.danger {
+            background-color: #fdaaa4;
+        }
+        .cli.danger:hover {
+            background-color: #ff8282;
+            box-shadow: 0 0 10px rgba(255, 130, 130, 0.8);
+        }
+        .cli.preview-btn {
+            background-color: #82c8ff;
+        }
+        .cli.preview-btn:hover {
+            background-color: #5eb6ff;
+            box-shadow: 0 0 10px rgba(94, 182, 255, 0.8);
+        }
+
+        .delete-confirm-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 130, 130, 0.7);
+            border-radius: 6px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 3px;
+            z-index: 10;
+            box-shadow: 0 0 15px #ff8282 inset;
+            animation: fadeIn 0.2s ease;
+        }
+        .delete-confirm-text {
+            font-size: 14px;
+            color: #333;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        .delete-confirm-actions { display: flex; gap: 10px; }
+        .confirm-btn, .cancel-btn {
+            padding: 6px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .confirm-btn {
+            background-color: #fff;
+            color: #ff3b30;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .confirm-btn:hover { background-color: #ffebeb; }
+        .cancel-btn {
+            background-color: transparent;
+            color: #333;
+            border: 2px solid #333;
+        }
+        .cancel-btn:hover { background-color: rgba(0,0,0,0.1); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .upload-item { overflow: hidden; border-color: #aaa; box-shadow: none; }
+        .upload-progress-bg {
+            position: absolute;
+            top: 0; left: 0; height: 100%;
+            background: rgba(128, 229, 216, 0.4);
+            width: 0%;
+            z-index: 0;
+            transition: width 0.1s linear;
+        }
+        .upload-item .item-icon, .upload-item .item-info {
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-message {
+            text-align: center;
+            color: #162141;
+            font-weight: bold;
+            padding: 30px 0;
+        }
+
+        #preview-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(22, 33, 65, 0.85); z-index: 2000;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        #preview-modal.active { display: flex; }
+        
+        .modal-content-box {
+            background-color: #fff; width: 95%; height: 95%; border-radius: 10px;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 3px #80e5d8;
+        }
+        
+        .modal-header {
+            background-color: #162141; color: #80e5d8; padding: 10px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: bold; font-size: 16px; flex-shrink: 0;
+        }
+        .modal-footer {
+            background-color: #162141; color: #80e5d8; padding: 5px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: bold; font-size: 14px; flex-shrink: 0;
+        }
+        .modal-close {
+            color: #fdaaa4; cursor: pointer; font-size: 40px; font-weight: bold;
+            line-height: 0; transition: 0.2s;
+        }
+        .modal-close:hover { color: #ff8282; transform: scale(1.1); }
+        .modal-body {
+            flex-grow: 1; overflow-y: auto; display: flex;
+            align-items: center; justify-content: center;
+            background-color: #000;
+        }
+
+        .preview-image { 
+            max-width: 100%; max-height: 100%; object-fit: contain; 
+            border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
+        }
+        .preview-video {
+            width: 100%; height: 100%; max-height: 100%; object-fit: contain;
+            background-color: #000;
+            transition: transform 0.3s ease;
+        }
+        .preview-video.landscape-mode {
+            transform: rotate(90deg);
+            width: 95vh !important;
+            height: 95vw !important;
+            max-width: none;
+            max-height: none;
+        }
+        
+        /* オーディオプレビュー用ダークモードスタイル */
+        .preview-audio-wrapper {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 100%; height: 100%; background: #000; padding: 20px; box-sizing: border-box;
+        }
+        .audio-cover-container {
+            width: 220px; height: 220px; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5); margin-bottom: 24px;
+            display: flex; align-items: center; justify-content: center; background: #1a1a1a;
+            flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .audio-cover-img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .preview-audio-icon {
+            font-size: 100px; color: #333; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .audio-details {
+            text-align: center; margin-bottom: 30px; width: 100%; max-width: 500px; padding: 0 15px; box-sizing: border-box;
+        }
+        .audio-title {
+            font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .audio-artist {
+            font-size: 16px; color: #ccc; margin-bottom: 4px; font-weight: 600;
+        }
+        .audio-album {
+            font-size: 14px; color: #999; margin-bottom: 12px;
+        }
+        .audio-tech {
+            font-size: 12px; color: #777; display: flex; justify-content: center; align-items: center; gap: 8px;
+            font-family: monospace; letter-spacing: 0.5px;
+        }
+        .audio-dot { font-size: 10px; color: #555; }
+        .modern-audio-player {
+            width: 100%; max-width: 450px; border-radius: 30px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3); outline: none;
+            color-scheme: dark;
+        }
+        .modern-audio-player::-webkit-media-controls-enclosure {
+            background-color: #1a1a1a;
+            border-radius: 30px;
+        }
+        
+        .preview-text { 
+            width: 100%; height: 100%; background: #fff; padding: 15px; box-sizing: border-box;
+            border: 1px solid #ccc; border-radius: 4px; font-family: monospace; white-space: pre-wrap;
+            overflow-y: auto; font-size: 14px; color: #333; margin: 0; text-align: left;
+        }
+        
+        .preview-csv-container {
+            width: 100%; height: 100%; background: #fff; box-sizing: border-box;
+            border: 1px solid #ccc; border-radius: 4px; overflow: auto;
+        }
+        .preview-csv {
+            width: 100%; border-collapse: collapse; font-size: 14px; color: #333;
+        }
+        .preview-csv th, .preview-csv td {
+            border: 1px solid #ccc; padding: 8px 12px; text-align: left; white-space: nowrap;
+        }
+        .preview-csv th {
+            background-color: #e0f0fa; font-weight: bold; position: sticky; top: 0; z-index: 1;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .excel-preview-wrapper {
+            display: flex; flex-direction: column; width: 100%; height: 100%;
+            background: #fff; border: 1px solid #ccc; border-radius: 4px; overflow: hidden;
+        }
+        .excel-tabs {
+            display: flex; overflow-x: auto; background-color: #f0f0f0; border-bottom: 1px solid #ccc;
+            scrollbar-width: none;
+        }
+        .excel-tabs::-webkit-scrollbar { display: none; }
+        .excel-tab {
+            padding: 10px 20px; cursor: pointer; border-right: 1px solid #ccc; background-color: #e8e8e8;
+            font-size: 13px; font-weight: bold; color: #666; white-space: nowrap; user-select: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .excel-tab:hover { background-color: #dcdcdc; }
+        .excel-tab.active {
+            background-color: #fff; color: #162141; border-bottom: 3px solid #80e5d8; padding-bottom: 7px;
+        }
+        .excel-tab.disabled-tab {
+            cursor: default; color: #999; background-color: transparent; border-right: none;
+        }
+        .excel-tab.disabled-tab:hover {
+            background-color: transparent;
+        }
+        .excel-sheet-container {
+            flex-grow: 1; overflow: auto; position: relative;
+        }
+        .excel-sheet {
+            display: none; width: 100%;
+        }
+        .excel-sheet.active {
+            display: table;
+        }
+        ::-webkit-scrollbar { display: none; }
+        {% if admin == 1 %}
+        #crown { color: #fff; text-shadow: 0 0 10px #ff8282; box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.6), 0px -3px 3px rgba(255, 130, 130, 0.3) inset; }
+        #title { color: #fff; text-shadow: 0 0 15px #ff8282; }
+        #title:before, #title:after { box-shadow: 0 0 10px 3px rgba(255, 130, 130, 0.5); }
+        #title:before { background: linear-gradient(90deg, rgba(255, 130, 130, 0.1) 0%, rgba(255, 130, 130, 0.8) 70%, #fff 100%); }
+        #title:after { background: linear-gradient(90deg, #fff 0%, rgba(255, 130, 130, 0.8) 30%, rgba(255, 130, 130, 0.1) 100%); }
+        .capacity-text { color: #fff; text-shadow: 0 0 3px rgba(255, 130, 130, 0.5); }
+        .capacity-bar-fill { background: #ff8282; box-shadow: 0 0 8px #ff8282; }
+        {% elif admin >= 2 %}
+        #crown { color: #fff; text-shadow: 0 0 10px #fbc02d; box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.6), 0px -3px 3px rgba(251, 192, 45, 0.3) inset; }
+        #title { color: #fff; text-shadow: 0 0 15px #fbc02d; }
+        #title:before, #title:after { box-shadow: 0 0 10px 3px rgba(251, 192, 45, 0.5); }
+        #title:before { background: linear-gradient(90deg, rgba(251, 192, 45, 0.1) 0%, rgba(251, 192, 45, 0.8) 70%, #fff 100%); }
+        #title:after { background: linear-gradient(90deg, #fff 0%, rgba(251, 192, 45, 0.8) 30%, rgba(251, 192, 45, 0.1) 100%); }
+        .capacity-text { color: #fff; text-shadow: 0 0 3px rgba(251, 192, 45, 0.5); }
+        .capacity-bar-fill { background: #fbc02d; box-shadow: 0 0 8px #fbc02d; }
+        {% endif %}
+    </style>
+</head>
+<body>
+    <div id="frame">
+        <header id="header">
+            <div id="crown" class="none_selection">
+                <a id="title" href="{{ url_for('cc') }}">CYBER CABINET</a>
+                <div class="capacity-container">
+                    <div class="capacity-text">
+                        <span>STORAGE CAPACITY</span>
+                        <div class="capacity-bar-bg">
+                            <div id="capacity-bar-fill" class="capacity-bar-fill"></div>
+                        </div>
+                        <span id="capacity-label">Calculating...</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav id="navi">
+                <div class="navi_space">
+                    <div class="icons none_selection" onclick="createFolder()">
+                        <span class="e">📁</span><span class="t">フォルダ作成</span>
+                    </div>
+                    <input type="file" id="fileInput" multiple style="display:none" onchange="uploadFile()">
+                    <div class="icons none_selection" onclick="document.getElementById('fileInput').click()">
+                        <span class="e">📤</span><span class="t">アップロード</span>
+                    </div>
+                    {% if admin == 1 %}<div class="icons none_selection" onclick="btn1()">
+                        <span class="e">🔬</span><span class="t">Data解析</span>
+                    </div>
+                    <div class="icons none_selection" onclick="btn2()">
+                        <span class="e">🔗</span><span class="t">DB更新</span>
+                    </div>
+                    <div class="icons none_selection" onclick="btn3()">
+                        <span class="e">📅</span><span class="t">SHIFT更新</span>
+                    </div>
+                    {% elif admin >= 2 %}<div class="icons none_selection" onclick="btn1()" style="opacity: 0.33;">
+                        <span class="e">🔬</span><span class="t">Data解析</span>
+                    </div>
+                    <div class="icons none_selection" onclick="btn2()" style="opacity: 0.33;">
+                        <span class="e">🔗</span><span class="t">DB更新</span>
+                    </div>
+                    <div class="icons none_selection" onclick="btn3()" style="opacity: 0.33;">
+                        <span class="e">📅</span><span class="t">SHIFT更新</span>
+                    </div>
+                    {% else %}<div class="icons none_selection" onclick="btn1()" style="opacity: 0.33;">
+                        <span class="e">🔬</span><span class="t">Data解析</span>
+                    </div>
+                    <div class="icons none_selection" onclick="btn2()" style="opacity: 0.33;">
+                        <span class="e">🔗</span><span class="t">DB更新</span>
+                    </div>
+                    <div class="icons none_selection" onclick="btn3()" style="opacity: 0.33;">
+                        <span class="e">📅</span><span class="t">SHIFT更新</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </nav>
+
+            <div id="search_area">
+                {% if query %}
+                <div class="sep gred"></div>
+                <div class="sep gred up-btn none_selection" onclick="navigate('')">◀ 戻る</div>
+                {% elif current_path and current_path != '/' %}
+                <div class="sep gyellow"></div>
+                <div class="sep gyellow up-btn none_selection" data-path="{{ parent_path }}" onclick="navigate('{{ parent_path }}')">▲ 上の階層へ</div>
+                {% else %}
+                <div class="sep gblue"></div>
+                <a class="sep gblue up-btn none_selection" href="{{ url_for('index') }}">◀ 製品検索へ</a>
+                {% endif %}
+                <div id="path_form">
+                    <div id="on_path" tabindex="0">{% if query %}SEARCH：{{ query }}{% else %}PATH：{{ current_path }}{% endif %}</div>
+                    <input type="text" id="search_input" placeholder="全ファイル検索..." style="display: none; width: 100%; height: 35px; box-sizing: border-box; border: none; padding-left: 10px; font-size: 16px; font-family: monospace; font-weight: bold; outline: none; background: #fff;">
+                </div>
+                <div id="search_button" class="sep gred up-btn none_selection search_red">検索</div>
+                <div class="sep gred"></div>
+            </div>
+        </header>
+
+        <main id="detail">
+            <ul id="file-list">
+                {%- for item in items %}
+                    {%- if item.is_dir %}
+                    {%- set can_del = not item.is_protected or admin == 1 %}
+                    <li class="bulletin_board2 folder none_selection" data-path="{{ item.path }}"{% if not can_del %} data-protected="true"{% endif %}>
+                        <div class="item-icon">📁</div>
+                        <div class="item-info">
+                            <div class="item-title">{{ item.name }}</div>
+                            <div class="item-meta">
+                                <span>Folder{% if item.item_count > 0 %} ({{ item.item_count }} items){% endif %}</span>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            {%- if can_del %}
+                            <button class="cli danger" onclick="showDeleteConfirm(this, '{{ item.path }}', '{{ item.name|escape }}', true, {{ item.item_count }})">DEL</button>
+                            {%- endif %}
+                        </div>
+                    </li>
+                    {%- else %}
+                    {%- set can_dl = not item.is_protected or admin >= 1 %}
+                    {%- set can_del = not item.is_protected or admin == 1 %}
+                    <li class="bulletin_board2 none_selection" data-uuid="{{ item.uuid }}" data-path="{{ item.path }}" data-can-dl="{{ 'true' if can_dl else 'false' }}"{% if not can_del %} data-protected="true"{% else %} draggable="true"{% endif %}>
+                        <div class="item-icon file-icon" data-filename="{{ item.name }}">📄</div>
+                        <div class="item-info">
+                            <div class="item-title">{{ item.name }}</div>
+                            <div class="item-meta">
+                                <span style="margin-right: 10px;">{{ item.created_at[:10] }}</span>
+                                <span class="file-size" data-size="{{ item.size }}">Size: {{ item.size }} B</span>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <div class="action-top">
+                                {%- set ext = item.name.split('.')|last|lower if '.' in item.name else '' %}
+                                {%- set preview_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'mp4', 'webm', 'mov', 'mp3', 'wav', 'm4a', 'aac', 'pdf', 'csv', 'xlsx', 'xls', 'xlsm', 'txt', 'py', 'html', 'css', 'js', 'json', 'log', 'md', 'docx'] %}
+                                {%- if ext in preview_exts %}
+                                <button class="cli preview-btn" onclick="openPreview('{{ item.name|escape }}', '{{ item.uuid }}', {{ item.size }}, '{{ item.created_at }}'); event.stopPropagation();">VIEW</button>
+                                {%- endif %}
+                                
+                                {%- if can_dl %}
+                                <button class="cli dl-btn" onclick="downloadFile('{{ item.uuid }}', '{{ item.name|escape }}'); event.stopPropagation();">DL</button>
+                                {%- endif %}
+                            </div>
+                            
+                            {%- if can_del %}
+                            <button class="cli danger" onclick="showDeleteConfirm(this, '{{ item.path }}', '{{ item.name|escape }}', false, 0)">DEL</button>
+                            {%- endif %}
+                        </div>
+                    </li>
+                    {%- endif %}
+                {%- endfor %}
+
+                {%- if not items %}
+                <li class="status-message">NO ITEMS FOUND</li>
+                {%- endif %}
+            </ul>
+        </main>
+        
+        <div id="preview-modal">
+            <div class="modal-content-box">
+                <div class="modal-header">
+                    <span id="modal-title">プレビュー</span>
+                    <span class="modal-close none_selection" onclick="closeModal()">×</span>
+                </div>
+                <div class="modal-body" id="modal-content"></div>
+                <div class="modal-footer">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="cli none_selection" style="height: 30px; font-size: 12px; padding: 0 13px;" onclick="closeModal()">閉じる</button>
+                        <button id="landscape-btn" class="cli preview-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="toggleLandscape()">横画面</button>
+                    </div>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <span id="modal-date" style="font-weight: normal; font-size: 10px; color: #a9c0e0;"></span>
+                        <span id="modal-size" style="font-size: 12px;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. アプリケーションの状態と定数を一つのオブジェクトに集約
+        const APP = {
+            currentPath: "{{ current_path }}",
+            basePath: "{{ prefix }}",
+            maxCapacity: Number("{{ max_capacity }}") || 0,
+            usedCapacity: Number("{{ used_capacity }}") || 0,
+            get remainingCapacity() { return this.maxCapacity - this.usedCapacity; },
+            currentRemainingCapacity: 0,
+            activeUploads: 0,
+            isProcessing: false,
+            messageTimer: null,
+            originalContent: null,
+            isAdmin: {{ 'true' if admin == 1 else 'false' }},
+            endpoints: {
+                {% if admin == 1 %}
+                dataFormatting: "{{ url_for('data_formatting') }}",
+                apply: "{{ url_for('apply') }}",
+                docs: "{{ url_for('docs') }}"
+                {% else %}
+                dataFormatting: null,
+                apply: null,
+                docs: null
+                {% endif %}
+            }
+        };
+        APP.currentRemainingCapacity = APP.remainingCapacity;
+
+        // ユーティリティ関数
+        const Utils = {
+            formatBytes: (bytes, decimals = 2) => {
+                if (!+bytes) return '0 Bytes';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+            },
+            getFileIcon: (filename) => {
+                const ext = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
+                const icons = {
+                    'png': '🖼️', 'jpg': '🖼️', 'jpeg': '🖼️', 'gif': '🖼️', 'bmp': '🖼️', 'webp': '🖼️', 'svg': '🖼️', 'ico': '🖼️',
+                    'mp4': '🎬', 'avi': '🎬', 'mov': '🎬', 'wmv': '🎬', 'flv': '🎬', 'mkv': '🎬', 'webm': '🎬',
+                    'mp3': '🎵', 'wav': '🎵', 'aac': '🎵', 'flac': '🎵', 'ogg': '🎵', 'm4a': '🎵',
+                    'zip': '📦', 'rar': '📦', '7z': '📦', 'tar': '📦', 'gz': '📦',
+                    'pdf': '📕',
+                    'csv': '📃', 'xls': '📊', 'xlsx': '📊', 'xlsm': '📊',
+                    'doc': '📝', 'docx': '📝', 'rtf': '📝',
+                    'ppt': '📑', 'pptx': '📑',
+                    'py': '💻', 'js': '💻', 'html': '💻', 'css': '💻', 'java': '💻', 'cpp': '💻', 'c': '💻', 'ts': '💻',
+                    'json': '💻', 'xml': '💻', 'yaml': '💻', 'yml': '💻', 'sh': '💻',
+                    'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️'
+                };
+                return icons[ext] || '📄';
+            },
+            escapeHtml: (unsafe) => {
+                return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+        };
+
+        // メッセージ表示機能
+        function addMessage(htmlContent) {
+            const path_div = document.getElementById('on_path');
+            if (!path_div) return;
+        
+            if (APP.messageTimer) {
+                clearTimeout(APP.messageTimer);
+            } else {
+                APP.originalContent = path_div.innerHTML;
+            }
+        
+            if (window.innerWidth < 700) {
+                path_div.innerHTML = `<div class="message-scroll-wrap"><div class="message-scroll-text">${htmlContent}</div></div>`;
+            } else {
+                path_div.innerHTML = htmlContent;
+            }
+        
+            APP.messageTimer = setTimeout(() => {
+                path_div.innerHTML = APP.originalContent;
+                APP.messageTimer = null;
+            }, 3500);
+        }
+
+        // ドラッグ＆ドロップ関連の処理を共通化
+        function setupDropZone(element, targetPathResolver) {
+            if (!element) return;
+            const preventDefaults = e => { e.preventDefault(); e.stopPropagation(); };
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => element.addEventListener(evt, preventDefaults, false));
+
+            element.addEventListener('dragover', (e) => {
+                const folder = e.target.closest('.folder');
+                if (folder) {
+                    element.classList.remove('drag-over');
+                    folder.classList.add('drag-over');
+                    document.querySelectorAll('.folder.drag-over').forEach(el => { if (el !== folder) el.classList.remove('drag-over'); });
+                } else {
+                    element.classList.add('drag-over');
+                    document.querySelectorAll('.folder.drag-over').forEach(el => el.classList.remove('drag-over'));
+                }
+            });
+
+            element.addEventListener('dragleave', (e) => {
+                if (!e.relatedTarget || !element.contains(e.relatedTarget)) {
+                    element.classList.remove('drag-over');
+                    document.querySelectorAll('.folder.drag-over').forEach(el => el.classList.remove('drag-over'));
+                }
+            });
+
+            element.addEventListener('drop', (e) => {
+                element.classList.remove('drag-over');
+                document.querySelectorAll('.folder.drag-over').forEach(el => el.classList.remove('drag-over'));
+
+                const targetPath = targetPathResolver(e);
+
+                try {
+                    const dragDataStr = e.dataTransfer.getData('application/json');
+                    if (dragDataStr) {
+                        const dragData = JSON.parse(dragDataStr);
+                        if (dragData.type === 'internal_file') {
+                            if (targetPath !== APP.currentPath) executeMove(dragData.uuid, dragData.name, targetPath);
+                            return; 
+                        }
+                    }
+                } catch(err) {}
+
+                if (e.dataTransfer.items) {
+                    for (let item of e.dataTransfer.items) {
+                        if (item.kind === 'file') {
+                            const entry = item.webkitGetAsEntry();
+                            if (entry) traverseFileTree(entry, targetPath);
+                        }
+                    }
+                } else if (e.dataTransfer.files.length > 0) {
+                    Array.from(e.dataTransfer.files).forEach(file => executeUpload(file, targetPath));
+                }
+            });
+        }
+
+        // 初期化処理
+        document.addEventListener('DOMContentLoaded', () => {
+            const capacityLabel = document.getElementById('capacity-label');
+            const fillBar = document.getElementById('capacity-bar-fill');
+            if (capacityLabel && fillBar) {
+                capacityLabel.textContent = `${Utils.formatBytes(APP.usedCapacity)} / ${Utils.formatBytes(APP.maxCapacity)}`;
+                const capacityPercent = Math.min((APP.usedCapacity / APP.maxCapacity) * 100, 100);
+                fillBar.style.width = `${capacityPercent}%`;
+                if (capacityPercent > 90) {
+                    fillBar.style.backgroundColor = '#ff8282';
+                    fillBar.style.boxShadow = '0 0 10px #ff8282';
+                }
+            }
+
+            document.querySelectorAll('.file-size').forEach(el => el.textContent = `Size: ${Utils.formatBytes(parseInt(el.dataset.size, 10))}`);
+            document.querySelectorAll('.file-icon').forEach(el => { if (el.dataset.filename) el.textContent = Utils.getFileIcon(el.dataset.filename); });
+
+            setupDropZone(document.getElementById('detail'), e => {
+                const folder = e.target.closest('.folder');
+                return folder ? folder.getAttribute('data-path') : APP.currentPath;
+            });
+            setupDropZone(document.querySelector('.up-btn[data-path]'), e => e.currentTarget.getAttribute('data-path'));
+
+            const fileList = document.getElementById('file-list');
+            if (fileList) {
+                fileList.addEventListener('dragstart', (e) => {
+                    const li = e.target.closest('li.bulletin_board2:not(.folder)');
+                    if (li) {
+                        e.dataTransfer.effectAllowed = 'move';
+                        e.dataTransfer.setData('application/json', JSON.stringify({
+                            type: 'internal_file',
+                            uuid: li.dataset.uuid,
+                            name: li.querySelector('.item-title')?.textContent || 'ファイル'
+                        }));
+                    } else {
+                        e.preventDefault(); 
+                    }
+                });
+
+                let clickCount = 0;
+                let clickTimer = null;
+                let lastTarget = null;
+                
+                fileList.addEventListener('click', (e) => {
+                    if (['BUTTON', 'A'].includes(e.target.tagName) || e.target.closest('.item-actions')) return;
+                    const li = e.target.closest('li.bulletin_board2:not(.upload-item)');
+                    if (!li || window.getSelection().toString().length > 0) return;
+
+                    if (lastTarget !== li) {
+                        clickCount = 0;
+                        lastTarget = li;
+                    }
+
+                    clickCount++;
+                    if (clickCount === 3) {
+                        clearTimeout(clickTimer);
+                        executeRenamePrompt(li);
+                        clickCount = 0;
+                        lastTarget = null;
+                        return;
+                    }
+
+                    if (clickTimer) clearTimeout(clickTimer);
+                    clickTimer = setTimeout(() => {
+                        const count = clickCount;
+                        clickCount = 0;
+                        lastTarget = null;
+
+                        if (count === 1 && li.classList.contains('folder')) {
+                            const path = li.getAttribute('data-path');
+                            if (path) navigate(path);
+                        } else if (count === 2 && !li.classList.contains('folder')) {
+                            if (li.dataset.protected === 'true' && !APP.isAdmin) {
+                                addMessage('<span style="color: #ff0055;">このファイルは保護されているため、リンクをコピーできません。</span>');
+                                return;
+                            }
+                            const uuid = li.dataset.uuid;
+                            if (uuid) copyLinkToClipboard(uuid, li.querySelector('.item-title')?.textContent || 'ファイル');
+                        }
+                    }, 200);
+                });
+            }
+
+            const previewModal = document.getElementById('preview-modal');
+            if (previewModal) {
+                previewModal.addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+                previewModal.addEventListener('touchend', function(e) { if (e.target === this) { e.preventDefault(); closeModal(); } });
+            }
+
+            const onPathDiv = document.getElementById('on_path');
+            const searchInput = document.getElementById('search_input');
+            const searchButton = document.getElementById('search_button');
+
+            if (onPathDiv && searchInput) {
+                const activateSearch = () => {
+                    if (APP.messageTimer) return;
+                    onPathDiv.style.display = 'none';
+                    searchInput.style.display = 'block';
+                    searchInput.focus();
+                };
+
+                onPathDiv.addEventListener('focus', activateSearch);
+                onPathDiv.addEventListener('click', activateSearch);
+
+                searchInput.addEventListener('blur', () => {
+                    if (searchInput.value.trim() === '') {
+                        searchInput.style.display = 'none';
+                        onPathDiv.style.display = 'flex';
+                    }
+                });
+
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.isComposing) {
+                        e.preventDefault();
+                        executeSearch();
+                    }
+                });
+            }
+
+            if (searchButton) {
+                searchButton.addEventListener('click', () => {
+                    if (searchInput && searchInput.style.display === 'block' && searchInput.value.trim() !== '') {
+                        executeSearch();
+                    } else if (onPathDiv && searchInput) {
+                        onPathDiv.style.display = 'none';
+                        searchInput.style.display = 'block';
+                        searchInput.focus();
+                    }
+                });
+            }
+
+            function executeSearch() {
+                const query = searchInput.value.trim();
+                if (query === '') return;
+                window.location.href = `${APP.basePath}/?query=${encodeURIComponent(query)}`;
+            }
+        });
+
+        // ボタン処理
+        async function executeAdminTask(url, taskName) {
+            if (!url || !APP.isAdmin) return addMessage('<span style="color: #ff0055;">管理者のみ実行可能</span>');
+            if (APP.isProcessing) return;
+            APP.isProcessing = true;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                addMessage(`<span style="color: #70c65b;">${taskName}: ${data.status}</span>`);
+            } catch (error) {
+                addMessage(`<span style="color: #ff0055;">エラーが発生しました。${error}</span>`);
+            } finally {
+                APP.isProcessing = false;
+            }
+        }
+        
+        const btn1 = () => executeAdminTask(APP.endpoints.dataFormatting, "Data解析");
+        const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+        const btn3 = () => APP.endpoints.docs ? window.open(APP.endpoints.docs, '_blank') : addMessage('<span style="color: #ff0055;">管理者のみ実行可能</span>');
+
+        function navigate(path) { window.location.href = `${APP.basePath}/?path=${encodeURIComponent(path)}`; }
+
+        async function createFolder() {
+            const folderName = prompt("新規フォルダ名を入力してください:");
+            if (!folderName) return;
+            const formData = new FormData();
+            formData.append("path", APP.currentPath);
+            formData.append("folder_name", folderName);
+            try {
+                const res = await fetch(`${APP.basePath}/mkdir/`, { method: "POST", body: formData });
+                res.ok ? location.reload() : addMessage(`<span style="color: #ff0055;">フォルダの作成に失敗しました。</span>`);
+            } catch (error) {
+                addMessage(`<span style="color: #ff0055;">エラーが発生しました。${error}</span>`);
+            }
+        }
+
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files.length) return;
+            Array.from(fileInput.files).forEach(file => executeUpload(file));
+            fileInput.value = "";
+        }
+
+        function traverseFileTree(item, path = "") {
+            if (item.isFile) {
+                item.file(file => executeUpload(file, path));
+            } else if (item.isDirectory) {
+                const nextPath = path ? path + "/" + item.name : item.name;
+                const dirReader = item.createReader();
+                const readEntries = () => {
+                    dirReader.readEntries(entries => {
+                        if (entries.length > 0) {
+                            entries.forEach(entry => traverseFileTree(entry, nextPath));
+                            readEntries();
+                        }
+                    });
+                };
+                readEntries();
+            }
+        }
+
+        function executeUpload(file, targetPath = APP.currentPath) {
+            if (file.size > APP.currentRemainingCapacity) {
+                alert(`【容量超過】\nストレージの空き容量が不足しています。\n\nファイル名: ${file.name}\nサイズ: ${Utils.formatBytes(file.size)}`);
+                return;
+            }
+
+            APP.currentRemainingCapacity -= file.size;
+            APP.activeUploads++;
+
+            const formData = new FormData();
+            formData.append("path", targetPath);
+            formData.append("file", file);
+
+            const fileList = document.getElementById('file-list');
+            const uploadLi = document.createElement('li');
+            uploadLi.className = 'bulletin_board2 upload-item none_selection';
+            
+            const displayPath = targetPath !== APP.currentPath ? targetPath.replace(APP.currentPath, "").replace(/^\//, "") + "/" : "";
+            
+            uploadLi.innerHTML = `
+                <div class="upload-progress-bg"></div>
+                <div class="item-icon">${Utils.getFileIcon(file.name)}</div>
+                <div class="item-info">
+                    <div class="item-title">${Utils.escapeHtml(displayPath + file.name)}</div>
+                    <div class="item-meta"><span>Uploading...</span><span class="upload-percent" style="margin-left: 5px;">0%</span></div>
+                </div>`;
+
+            const statusMsg = fileList.querySelector('.status-message');
+            if (statusMsg) statusMsg.style.display = 'none';
+            fileList.insertBefore(uploadLi, fileList.firstChild);
+            
+            const progressBg = uploadLi.querySelector('.upload-progress-bg');
+            const progressText = uploadLi.querySelector('.upload-percent');
+            const xhr = new XMLHttpRequest();
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percent = (event.loaded / event.total) * 100;
+                    progressBg.style.width = `${percent}%`;
+                    progressText.textContent = `${Math.floor(percent)}%`;
+                }
+            };
+
+            xhr.onload = () => {
+                APP.activeUploads--;
+                if (xhr.status === 200) {
+                    if (APP.activeUploads === 0) location.reload();
+                } else {
+                    APP.currentRemainingCapacity += file.size;
+                    uploadLi.remove();
+                    let errorMsg = "アップロードに失敗しました。";
+                    try { if (JSON.parse(xhr.responseText).detail) errorMsg = JSON.parse(xhr.responseText).detail; } catch(e) {}
+                    addMessage(`<span style="color: #ff0055;">${errorMsg}</span>`);
+                    if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
+                }
+            };
+
+            xhr.onerror = () => {
+                APP.activeUploads--;
+                APP.currentRemainingCapacity += file.size;
+                uploadLi.remove();
+                addMessage(`<span style="color: #ff0055;">通信エラーが発生しました。</span>`);
+            };
+
+            xhr.open('POST', `${APP.basePath}/upload/`, true);
+            xhr.send(formData);
+        }
+
+        async function executeMove(uuid, filename, targetPath) {
+            const formData = new FormData();
+            formData.append("uuid", uuid);
+            formData.append("filename", filename);
+            formData.append("current_path", APP.currentPath);
+            formData.append("target_path", targetPath);
+
+            try {
+                const res = await fetch(`${APP.basePath}/move/`, { method: "POST", body: formData });
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    let errorMsg = '同名のファイルがあります。';
+                    try {
+                        const errRes = await res.json();
+                        if (errRes.detail) errorMsg = errRes.detail;
+                    } catch(e) {}
+                    addMessage(`<span style="color: #ff0055;">移動に失敗しました。理由: ${errorMsg}</span>`);
+                }
+            } catch (error) {
+                addMessage(`<span style="color: #ff0055;">通信エラーが発生しました。</span>`);
+            }
+        }
+
+        function showDeleteConfirm(buttonElement, path, name, isDir = false, itemCount = 0) {
+            if (event) event.stopPropagation();
+
+            const liElement = buttonElement.closest('li');
+            if (liElement.querySelector('.delete-confirm-overlay')) return;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'delete-confirm-overlay none_selection';
+            
+            let message = "削除しますか？";
+            if (isDir && itemCount > 0) {
+                message = `中身(${itemCount})あり。削除しますか？`;
+                overlay.style.backgroundColor = "rgba(255, 60, 60, 0.85)";
+            }
+
+            overlay.innerHTML = `
+                <span class="delete-confirm-text">${message}</span>
+                <div class="delete-confirm-actions">
+                    <button class="confirm-btn">削除</button>
+                    <button class="cancel-btn">キャンセル</button>
+                </div>`;
+            
+            overlay.querySelector('.cancel-btn').onclick = (e) => { e.stopPropagation(); overlay.remove(); };
+            overlay.querySelector('.confirm-btn').onclick = (e) => {
+                e.stopPropagation();
+                if (isDir && itemCount > 0 && !confirm(`フォルダ「${name}」には ${itemCount} 個のアイテムが含まれています。\n完全に削除してよろしいですか？`)) {
+                    overlay.remove();
+                    return;
+                }
+                executeDelete(path);
+            };
+            
+            overlay.onclick = (e) => e.stopPropagation();
+            liElement.appendChild(overlay);
+        }
+
+        async function executeDelete(path) {
+            try {
+                const res = await fetch(`${APP.basePath}/delete/?path=${encodeURIComponent(path)}`, { method: "DELETE" });
+                res.ok ? location.reload() : alert("削除に失敗しました。");
+            } catch (error) {
+                alert("通信エラーが発生しました。");
+            }
+        }
+        
+        async function downloadFile(uuid, filename) {
+            const url = `${APP.basePath}/f/${uuid}`;
+            if (window.showSaveFilePicker) {
+                try {
+                    const handle = await window.showSaveFilePicker({ suggestedName: filename });
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const writable = await handle.createWritable();
+                    await response.body.pipeTo(writable);
+                    return;
+                } catch (err) {
+                    if (err.name === 'AbortError') return;
+                    console.error('File save error:', err);
+                }
+            }
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename; 
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        function copyLinkToClipboard(uuid, filename) {
+            const link = window.location.origin + APP.basePath + '/f/' + uuid;
+            navigator.clipboard.writeText(link)
+                .then(() => addMessage(`<span style="color: #0000cd;">${filename}のリンクをコピーしました</span>`))
+                .catch(() => addMessage(`<span style="color: #ff0055;">${filename}のコピーに失敗しました</span>`));
+        }
+
+        async function executeRenamePrompt(li) {
+            if (li.dataset.protected === 'true' && !APP.isAdmin) {
+                const typeStr = li.classList.contains('folder') ? 'フォルダ' : 'ファイル';
+                return addMessage(`<span style="color: #ff0055;">この${typeStr}は保護されているため、名前を変更できません。</span>`);
+            }
+
+            const isFolder = li.classList.contains('folder');
+            const currentFullName = li.querySelector('.item-title').textContent;
+            
+            let currentName = currentFullName;
+            let extension = "";
+
+            if (!isFolder) {
+                const lastDotIndex = currentFullName.lastIndexOf('.');
+                if (lastDotIndex > 0) {
+                    currentName = currentFullName.substring(0, lastDotIndex);
+                    extension = currentFullName.substring(lastDotIndex);
+                }
+            }
+
+            const newNameInput = prompt(`新しい名前を入力してください\n(現在の名前: ${currentFullName})`, currentName);
+            if (!newNameInput || newNameInput === currentName) return;
+
+            const formData = new FormData();
+            formData.append("path", li.dataset.path);
+            formData.append("new_name", isFolder ? newNameInput : newNameInput + extension);
+
+            try {
+                const res = await fetch(`${APP.basePath}/rename/`, { method: "POST", body: formData });
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    let errorMsg = "変更に失敗しました。";
+                    try {
+                        const data = await res.json();
+                        if (data.detail) errorMsg = data.detail;
+                    } catch(e) {}
+                    addMessage(`<span style="color: #ff0055;">${errorMsg}</span>`);
+                }
+            } catch (error) {
+                addMessage('<span style="color: #ff0055;">通信エラーが発生しました。</span>');
+            }
+        }
+
+        function openPreview(filename, uuid, size, dateStr) {
+            const ext = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
+            const typeMap = {
+                'png': 'image', 'jpg': 'image', 'jpeg': 'image', 'gif': 'image', 'bmp': 'image', 'webp': 'image',
+                'svg': 'svg', 'mp4': 'video', 'webm': 'video', 'mov': 'video',
+                'mp3': 'audio', 'wav': 'audio', 'm4a': 'audio', 'aac': 'audio', 'flac': 'audio', 'ogg': 'audio',
+                'pdf': 'pdf', 'csv': 'csv', 'xlsx': 'excel', 'xls': 'excel', 'xlsm': 'excel', 'docx': 'word',
+                'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text', 'json': 'text', 'log': 'text', 'md': 'text'
+            };
+
+            const type = typeMap[ext] || 'unsupported';
+            if (type === 'unsupported') return addMessage(`<span style="color: #ff0055;">${Utils.escapeHtml(filename)} はプレビュー非対応です。[DL]から確認してください。</span>`);
+
+            const modal = document.getElementById('preview-modal');
+            const content = document.getElementById('modal-content');
+            const landscapeBtn = document.getElementById('landscape-btn');
+            const url = `${APP.basePath}/f/${uuid}?inline=true`;
+
+            document.getElementById('modal-title').textContent = filename;
+            document.getElementById('modal-size').textContent = `Size: ${Utils.formatBytes(size)}`;
+            if (document.getElementById('modal-date')) document.getElementById('modal-date').textContent = dateStr || '';
+            if (landscapeBtn) landscapeBtn.style.display = 'none';
+            
+            content.innerHTML = '<div style="padding: 20px;">Loading...</div>';
+            modal.classList.add('active');
+
+            const handlers = {
+                'image': () => `<img src="${url}" class="preview-image" alt="preview">`,
+                'video': () => {
+                    if (landscapeBtn) landscapeBtn.style.display = 'block';
+                    return `<video id="preview-video-el" class="preview-video" playsinline autoplay loop onclick="this.setAttribute('controls', 'controls'); this.onclick=null;"><source src="${url}"></video>`;
+                },
+                'audio': async () => {
+                    let metaHtml = '';
+                    let displayTitle = Utils.escapeHtml(filename);
+                    let coverHtml = `<div class="preview-audio-icon">🎵</div>`;
+                    
+                    try {
+                        const res = await fetch(`${APP.basePath}/audio/meta/${uuid}`);
+                        if (res.ok) {
+                            const meta = await res.json();
+                            if (meta.title && meta.title !== 'Unknown' && meta.title !== filename) {
+                                displayTitle = Utils.escapeHtml(meta.title);
+                            }
+                            
+                            if (meta.has_cover) {
+                                coverHtml = `<img src="${APP.basePath}/audio/cover/${uuid}" class="audio-cover-img" alt="cover">`;
+                            }
+                            
+                            metaHtml = `
+                                <div class="audio-artist">${Utils.escapeHtml(meta.artist)}</div>
+                                <div class="audio-album">${Utils.escapeHtml(meta.album)}</div>
+                                <div class="audio-tech">
+                                    <span>${Utils.escapeHtml(meta.duration)}</span>
+                                    ${meta.bitrate !== 'Unknown' ? `<span class="audio-dot">•</span><span>${Utils.escapeHtml(meta.bitrate)}</span>` : ''}
+                                </div>
+                            `;
+                        }
+                    } catch(e) {
+                        console.error('Failed to fetch audio metadata', e);
+                    }
+
+                    content.innerHTML = `
+                        <div class="preview-audio-wrapper">
+                            <div class="audio-cover-container">
+                                ${coverHtml}
+                            </div>
+                            <div class="audio-details">
+                                <div class="audio-title">${displayTitle}</div>
+                                ${metaHtml}
+                            </div>
+                            <audio class="modern-audio-player" controls autoplay muted loop><source src="${url}">お使いのブラウザはaudio要素をサポートしていません。</audio>
+                        </div>`;
+                },
+                'pdf': () => `<iframe src="${url}" style="width:100%; height:100%; border:none; background-color: #fff;"></iframe>`,
+                'svg': async () => {
+                    content.innerHTML = '<div style="padding: 20px;">SVGを最適化しています...</div>';
+                    try {
+                        const response = await fetch(url);
+                        const svgText = await response.text();
+                        const svgEl = new DOMParser().parseFromString(svgText, "image/svg+xml").documentElement;
+                        if (svgEl && svgEl.tagName.toLowerCase() === 'svg') {
+                            if (!svgEl.getAttribute('viewBox')) {
+                                const w = svgEl.getAttribute('width'), h = svgEl.getAttribute('height');
+                                if (w && h && !w.includes('%') && !h.includes('%')) svgEl.setAttribute('viewBox', `0 0 ${parseFloat(w)} ${parseFloat(h)}`);
+                            }
+                            svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                            Object.assign(svgEl.style, { width: '100%', height: '100%', maxHeight: '100%', display: 'block', margin: 'auto' });
+                            
+                            const containerId = 'svg-container-' + Date.now();
+                            content.innerHTML = `<div id="${containerId}" style="width: 100%; height: 100%; background-color: #fff; overflow: auto; display: grid; place-items: center; box-sizing: border-box; border-radius: 4px; padding: 15px; opacity: 0; transition: opacity 0.2s ease;">${svgEl.outerHTML}</div>`;
+                            
+                            setTimeout(() => {
+                                const container = document.getElementById(containerId);
+                                if (container) container.style.opacity = '1';
+                            }, 50);
+                        } else throw new Error("SVG parse failed");
+                    } catch (err) {
+                        content.innerHTML = `<div style="width: 100%; height: 100%; background-color: #fff; display: grid; place-items: center; overflow: auto; border-radius: 4px;"><img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;"></div>`;
+                    }
+                },
+                'word': async () => {
+                    try {
+                        const response = await fetch(url);
+                        const arrayBuffer = await response.arrayBuffer();
+                        const result = await mammoth.convertToHtml({arrayBuffer});
+                        content.innerHTML = `<div style="padding: 20px; background: #fff; width: 100%; height: 100%; overflow-y: auto; box-sizing: border-box; text-align: left; color: #333; line-height: 1.6;">${result.value}</div>`;
+                    } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
+                },
+                'text': async () => {
+                    try {
+                        const response = await fetch(url);
+                        content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(await response.text())}</pre>`;
+                    } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
+                },
+                'csv': async () => {
+                    try {
+                        const response = await fetch(url);
+                        const rows = (await response.text()).split('\n');
+                        let html = '<div class="preview-csv-container"><table class="preview-csv">';
+                        rows.forEach((row, index) => {
+                            if (!row.trim() && index === rows.length - 1) return;
+                            html += '<tr>' + row.split(',').map(col => `<${index === 0 ? 'th' : 'td'}>${Utils.escapeHtml(col.trim())}</${index === 0 ? 'th' : 'td'}>`).join('') + '</tr>';
+                        });
+                        content.innerHTML = html + '</table></div>';
+                    } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
+                },
+                'excel': () => renderExcelPreview(uuid, content)
+            };
+
+            const handler = handlers[type];
+            if (handler) {
+                const result = handler();
+                if (typeof result === 'string') content.innerHTML = result;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('preview-modal').classList.remove('active');
+            document.getElementById('modal-content').innerHTML = ''; 
+            const landscapeBtn = document.getElementById('landscape-btn');
+            if (landscapeBtn) landscapeBtn.style.display = 'none';
+        }
+
+        function toggleLandscape() {
+            const videoEl = document.getElementById('preview-video-el');
+            if (videoEl) videoEl.classList.toggle('landscape-mode');
+        }
+
+        async function renderExcelPreview(uuid, content) {
+            try {
+                const infoRes = await fetch(`${APP.basePath}/excel/info/${uuid}`);
+                if (!infoRes.ok) throw new Error('シート情報の取得に失敗しました');
+                const sheets = (await infoRes.json()).sheets || [];
+
+                if (sheets.length === 0) return content.innerHTML = '<div style="padding: 20px;">表示できるシートがありません。</div>';
+
+                const displaySheets = sheets.slice(0, 3);
+                const remainingCount = sheets.length - displaySheets.length;
+
+                content.innerHTML = `
+                <div class="excel-preview-wrapper">
+                    <div class="excel-tabs">
+                        ${displaySheets.map((s, i) => `<div class="excel-tab ${i === 0 ? 'active' : ''}" onclick="switchExcelSheet(this, '${uuid}', '${Utils.escapeHtml(s)}')">${Utils.escapeHtml(s)}</div>`).join('')}
+                        ${remainingCount > 0 ? `<div class="excel-tab disabled-tab" title="すべてのシートを確認するにはダウンロードしてください">...他${remainingCount}シート</div>` : ''}
+                    </div>
+                    <div class="excel-sheet-container preview-csv-container" style="border: none; border-radius: 0;" id="excel-sheet-container">
+                        <div style="padding: 20px;">シートを読み込み中...</div>
+                    </div>
+                </div>`;
+                await loadExcelSheet(uuid, displaySheets[0]);
+            } catch (e) {
+                content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${e.message}</div>`;
+            }
+        }
+
+        async function switchExcelSheet(tabElement, uuid, sheetName) {
+            if (tabElement.classList.contains('active') || tabElement.classList.contains('disabled-tab')) return;
+            tabElement.closest('.excel-preview-wrapper').querySelectorAll('.excel-tab').forEach(t => t.classList.remove('active'));
+            tabElement.classList.add('active');
+            await loadExcelSheet(uuid, sheetName);
+        }
+
+        async function loadExcelSheet(uuid, sheetName) {
+            const container = document.getElementById('excel-sheet-container');
+            container.innerHTML = '<div style="padding: 20px;">シートを読み込み中...</div>';
+            try {
+                const res = await fetch(`${APP.basePath}/excel/arrow/${uuid}?sheet=${encodeURIComponent(sheetName)}`);
+                if (!res.ok) throw new Error('シートデータの取得に失敗しました');
+                
+                const table = Arrow.tableFromIPC(await res.arrayBuffer());
+                const fields = table.schema.fields.map(f => f.name);
+                
+                let html = '<table class="preview-csv"><thead><tr>' + fields.map(name => `<th>${Utils.escapeHtml(name)}</th>`).join('') + '</tr></thead><tbody>';
+                for (let i = 0; i < table.numRows; i++) {
+                    const row = table.get(i);
+                    html += '<tr>' + fields.map(name => {
+                        const val = row[name];
+                        return `<td>${val !== null && val !== undefined ? Utils.escapeHtml(String(val)) : ''}</td>`;
+                    }).join('') + '</tr>';
+                }
+                container.innerHTML = html + '</tbody></table>';
+            } catch (e) {
+                container.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${e.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

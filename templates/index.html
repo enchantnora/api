@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>(●ω●){ {{title}} )</title>
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#162141" />
+    <script src="{{ url_for('static', path='js/jquery-3.6.4.min.js') }}"></script>
+    <script src="{{ url_for('static', path='js/main.js') }}?ver={{js_timestamp}}" defer></script>
+    <script src="{{ url_for('static', path='js/calc.js') }}?ver={{js_timestamp}}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}?ver={{css_timestamp}}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/web-app-manifest-512x512.png">
+    <link rel="preload" href="{{ url_for('static', path='image/heart_off.png') }}" as="image">
+    <link rel="preload" href="{{ url_for('static', path='image/heart_on.png') }}" as="image">
+    <link rel="manifest" href="/data/manifest.json">
+</head>
+<body>
+    <div id="frame" class="none_selection">
+        <header id="header">
+            <input type="checkbox" id="burger_btn">
+            <div id="crown">
+                <div id="h_l"><label for="burger_btn" class="menu-icon"><span class="burger"></span></label></div>
+                <a id="title" href="{{ url_for('index') }}">製品検索</a>
+                <div id="h_r"><label for="burger_btn" class="menu-icon"><span class="burger"></span></label></div>
+            </div>
+            <label for="burger_btn" id="overlay"><span class="x">X</span></label>
+            <div id="menu">
+                <div class="gline"></div>
+                <div class="glink" id="nengetsu">年月マーク</div>
+                <div class="gline"></div>
+                <div class="glink" id="stop">停台コード</div>
+                <div class="gline"></div>
+                <div class="glink" id="article">不良現象項目</div>
+                <div class="gline"></div>
+                <div class="glink" id="no_register">人工 未登録製品</div>
+                <div class="gline"></div>
+                <a class="glink" href="{{ url_for('cc') }}">CYBER CABINET</a>
+                <div class="gline"></div>
+            </div>
+            <nav id="navi">
+                <div class="navi_space"></div>
+                <input type="radio" name="navi" value="search" class="radio_menu" id="search" checked><label class="icons" for="search">
+                <span class="e"><img src="{{ url_for('static', path='image/icon_glass.png') }}" width=40px height=40px alt="検索"></span><span class="t">検索</span></label>
+                <input type="radio" name="navi" value="info" class="radio_menu" id="info"><label class="icons" for="info">
+                <span class="e"><img src="{{ url_for('static', path='image/icon_js.png') }}" width=40px height=40px alt="情報"></span><span class="t">情報</span></label>
+                <input type="radio" name="navi" value="favorite" class="radio_menu" id="favorite"><label class="icons" for="favorite">
+                <span class="e"><img src="{{ url_for('static', path='image/icon_heart.png') }}" width=40px height=40px alt="お気に入り"></span><span class="t">お気に入り</span></label>
+                <input type="radio" name="navi" value="calc" class="radio_menu" id="calc"><label class="icons" for="calc">
+                <span class="e"><img src="{{ url_for('static', path='image/icon_calc.png') }}" width=40px height=40px alt="電卓"></span><span class="t">電卓</span></label>
+                <input type="radio" name="navi" value="shift" class="radio_menu" id="shift"><label class="icons" for="shift">
+                <span class="e"><img src="{{ url_for('static', path='image/icon_shift.png') }}" width=40px height=40px alt="シフト"></span><span class="t">シフト</span></label>
+                <div class="navi_space"></div>
+            </nav>
+            <div id="search_area">
+                <div class="sep gblue"></div><div id="clean" class="sep gblue">クリア</div>
+                <form action="{{ url_for('search', keyword=' ') }}" method="get" id="search_form">
+                    <input name="q" id="on_search" value="" type="search" placeholder="キーワード" spellcheck="false" autocomplete="off">
+                    <button type="submit" id="search_button" class="sep search_red">検索</button>
+                </form>
+                <div class="sep gred"></div>
+            </div>
+        </header>
+        <main id="detail">
+            <div id="items">
+                <div class="section_item">
+                    <div id="search_content" class="content-box">
+                        <div class="sub_content">
+                            <noscript><div class="bl_balloon kr l_b">このサイトではJavaScriptを有効にしてほしい。</div></noscript>
+                        </div>
+                        <div class="sub_content flex">
+                            <div class="sub_content_LL">
+                                <div id="suggest_ray">
+                                    <ul id="suggest"></ul>
+                                </div>
+                                    <div class="wh_balloon js b_b">ひらがな・ローマ字でもOKだ。<br>スペースで区切れば絞り込み検索ができるぞ！</div>
+                            </div>
+                            <div class="sub_content_R">
+                                <div id="phrase"></div>
+                            </div>
+                        </div>
+                        <div class="sub_content">
+                            <div class="gr_balloon r_b">
+                            <form id="form_memo" method="POST">
+                            <div><label for="memo_HOME">メモ (共有)</label>
+                            <textarea name="memo_HOME" id="memo_HOME" spellcheck="false">未接続</textarea></div>
+                            </form></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="info_content" class="content-box">
+                        <div class="sub_content">
+                            <div class="wh_balloon js l_b temp_elem">俺はただの情報屋だ。<br>完璧な情報が完璧な仕事を生む</div>
+                            <div id="product"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="favorite_content" class="content-box">
+                        <div class="sub_content">
+                            <div class="bl_balloon kr l_b">履歴が刻まれる</div>
+                            <div class="id_area"><span id="id_msg"></span><div id="id_load"></div><div id="id_change"></div>
+                                <label for="uuid" class="id_area_label">ID</label>
+                                <div class="id_area_content">
+                                    <input type="text" id="uuid" name="uuid" size="22" maxlength="22" value="{{user_uuid}}" spellcheck="false" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sub_content flex">
+                            <div class="sub_content_L">
+                                <h3>- お気に入り -</h3>
+                                <ul id="favorite_list"></ul>
+                            </div>
+                            <div class="sub_content_R">
+                                <h3>- 履歴 -</h3>
+                                <ul id="history_list"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="calc_content" class="content-box">
+                        <div class="sub_content">
+                            <div id="calc_ray"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="shift_content" class="content-box">
+                        <div class="sub_content">
+                            <div id="shiftFrame"><iframe id="ms" src="./ms" title="shift"></iframe></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="nengetsu_content" class="content-box">
+                        <div class="sub_content">
+                            <div class="bulletin_board">
+                                年月マーク
+                                <div id="num_slider"></div>
+                                <div id="slider">
+                                    <div class="track"></div>
+                                    <div class="thumb"></div>
+                                    <div class="marker" style="left: 0%;">３年前</div>
+                                    <div class="marker" style="left: 18%;">２年前</div>
+                                    <div class="marker" style="left: 34%;">１年前</div>
+                                    <div class="marker" style="left: 50%;">現在</div>
+                                    <div class="marker" style="left: 66%;">１年後</div>
+                                    <div class="marker" style="left: 82%;">２年後</div>
+                                    <div class="marker" style="left: 100%;">３年後</div>
+                                </div>
+                                <div id="datemark">
+                                    <div id="year_circle"><div id="year_needle"></div></div>
+                                    <div id="month_circle"><div id="month_needle"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="stop_content" class="content-box">
+                        <div class="sub_content">
+                            <div class="wh_balloon js l_b temp_elem">停台・・・世界が静止する日といえば君の出番だろう</div>
+                            <div id="stop_code"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="article_content" class="content-box">
+                        <div class="sub_content">
+                            <h4 class="emphasis">- 不良現象項目 -</h4>
+                        </div>
+                        <div class="sub_content flex">
+                            <div class="sub_content_L">
+                                <ul id="defect_article"></ul>
+                            </div>
+                            <div class="sub_content_R">
+                                <ul id="defect_article2"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="no_register_content" class="content-box">
+                        <div class="sub_content">
+                            <div class="bl_balloon kr l_b" id="no_register_count"></div>
+                        </div>
+                        <div class="sub_content">
+                            <div class="bulletin_board2">
+                                <ul id="no_register_list"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section_item">
+                    <div id="record_content" class="content-box">
+                        <div class="sub_content">
+                            <div class="bulletin_board">
+                                <h4>隠しページ</h4>
+                                <p>Record</p>
+                                <p>現在のデータベースをExcelファイル化して<a class="cli" href="{{ url_for('save_table', table_name='product') }}">ダウンロード</a></p>
+                                <p>不良重量用csv<a class="cli" href="{{ url_for('wgtcsv') }}">ダウンロード</a></p>
+                                <p></p>
+                                <div class="annotation">今日の名言</div><div class="annotation2 inline">{{dialogue.voice|safe}}</div>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer id="footer">
+            <span>(●ω●) <span id="now">{{now}}</span></span>
+        </footer>
+    </div>
+<script>
+
+</script>
+</body>
+</html>

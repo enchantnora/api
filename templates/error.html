@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error {{ status_code }}</title>
+    <meta name="robots" content="none">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/web-app-manifest-512x512.png">
+    <style type="text/css">
+        @charset "UTF-8";
+        html {
+            background-color: #fff;
+            color: #333;
+        }
+        #status {
+            text-align: center;
+        }
+        a.btn {
+            display: block;
+            text-align: center;
+            vertical-align: middle;
+            text-decoration: none;
+            width: 100px;
+            margin: auto;
+            padding: 0.8rem 2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            border-bottom: 5px solid #0686b2;
+            background: #27acd9;
+            color: #fff;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px #0686b2;
+        }
+        a.btn:hover {
+            box-shadow: 0 3px #0686b2;
+            transform: translateY(2px);
+            color: #fff;
+        }
+        a.btn:active {
+            box-shadow: 0 1px #0686b2;
+            transform: translateY(4px);
+            color: #fff;
+        }
+
+        .bl_balloon {
+            z-index: 5;
+            display:inline-block;
+            position:relative;
+            width:40%;
+            word-break: break-all;
+            text-align:left;
+            padding:11px;
+            margin-bottom: 8px;
+            color:#333333;
+            font-weight: 900;
+            border-radius:15px;
+            user-select: text;
+            touch-action: manipulation;
+            -webkit-touch-callout: default;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+        .bl_balloon, .bl_balloon.l_b:after {
+    /*         background-color: #7fe3d7; */
+            background-color: rgba(93, 239, 222, .6);
+        }
+        .l_b {
+            position:relative;
+            z-index: 4;
+        }
+        .l_b:before {
+            content:'';
+            position:absolute;
+            top:calc(30% - 15px);
+            right:calc(100% + 20px);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid #fff;
+            background-color:#d1f1f9;
+            opacity: 0.7;
+            background-size: contain;
+            box-shadow: 0 0 3px 3px rgba(127, 227, 250, .5)inset;
+        }
+        .kr.l_b:before {
+            background-image: url("{{ url_for('static', path='image/keanu_kao.png') }}");
+        }
+        .l_b:after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            right: 100%;
+            width: 18px;
+            height: 18px;
+            clip-path: polygon(0% 70%, 18px 0%, 18px 18px);
+        }
+
+    </style>
+</head>
+<body>
+    <div id="status">
+        <h1>Error {{ status_code }}</h1>
+        <div class="bl_balloon kr l_b">{{detail}}<br>登録されていないようだ</div>
+        <a class="btn" href="{{ url_for('index') }}">Home</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "SHIFT",
+  "start_url": "/data/ms",
+  "icons": [
+    {
+      "src": "../image/icon_ms.png",
+      "sizes": "400x400",
+      "type": "image/png"
+    }
+  ],
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "rgb(0 0 0)"
+}

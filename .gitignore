@@ -1,0 +1,10 @@
+﻿cabinet/
+__pycache__/
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.aac
+*.mp4
+*.avi
+*.mov
