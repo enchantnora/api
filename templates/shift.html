@@ -214,15 +214,19 @@
         }
         if (1450 <= currentTime && currentTime < 2400) {
             activeShifts['2'] = pageTodayStr;
+            activeShifts['-2'] = pageTodayStr;
         }
         if (2350 <= currentTime && currentTime < 2400) {
             activeShifts['3'] = pageTodayStr;
+            activeShifts['-3'] = pageTodayStr;
         }
         if (0 <= currentTime && currentTime < 800) {
             activeShifts['3'] = pageTodayStr;
+            activeShifts['-3'] = pageTodayStr;
         }
         if (800 <= currentTime && currentTime < 900) {
             activeShifts['3'] = pageYesterdayStr;
+            activeShifts['-3'] = pageYesterdayStr;
         }
         if (800 <= currentTime && currentTime < 1710) {
             activeShifts['1'] = pageTodayStr;
@@ -299,7 +303,9 @@
                 "C": "C勤務",
                 "1": "早番",
                 "2": "中番",
-                "3": "夜勤"
+                "-2": "中番応援",
+                "3": "夜勤",
+                "-3": "夜勤応援",
             };
 
             const currentTimeNum = parseInt(getPresent(0, 1), 10);
@@ -312,6 +318,21 @@
             const unassignedKeys = Object.keys(data).filter(key => !order.includes(key));
             const assignedKeys = order.filter(key => data[key]);
             const displayKeys = [...unassignedKeys, ...assignedKeys];
+
+            let hasNamedShift = false;
+            for (const key of Object.keys(data)) {
+                if (key in keyNames && Array.isArray(data[key]) && data[key].length > 0) {
+                    hasNamedShift = true;
+                    break;
+                }
+            }
+
+            if (!hasNamedShift) {
+                const yasumiDiv = document.createElement('div');
+                yasumiDiv.className = "group";
+                yasumiDiv.innerHTML = "★★★休み★★★<br>";
+                content_area.appendChild(yasumiDiv);
+            }
 
             for (const key of displayKeys) {
                 const isNamed = key in keyNames;
