@@ -1263,6 +1263,18 @@
                 if (query === '') return;
                 window.location.href = `${APP.basePath}/?query=${encodeURIComponent(query)}`;
             }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const previewUuid = urlParams.get('preview');
+            if (previewUuid) {
+                const targetBtn = document.querySelector(`li[data-uuid="${previewUuid}"] .preview-btn`);
+                if (targetBtn) {
+                    // DOMの構築後に実行させるため少しだけ遅延
+                    setTimeout(() => targetBtn.click(), 50);
+                } else {
+                    addMessage('<span style="color: #ff0055;">指定されたプレビューファイルが見つかりません。</span>');
+                }
+            }
         });
 
         // ボタン処理
@@ -1871,6 +1883,12 @@
             if (handler) {
                 const result = handler();
                 if (typeof result === 'string') content.innerHTML = result;
+
+                const currentUrl = new URL(window.location.href);
+                if (currentUrl.searchParams.get('preview') !== uuid) {
+                    currentUrl.searchParams.set('preview', uuid);
+                    window.history.replaceState(null, '', currentUrl);
+                }
             }
         }
 
@@ -1879,6 +1897,12 @@
             document.getElementById('modal-content').innerHTML = ''; 
             const landscapeBtn = document.getElementById('landscape-btn');
             if (landscapeBtn) landscapeBtn.style.display = 'none';
+
+            const currentUrl = new URL(window.location.href);
+            if (currentUrl.searchParams.has('preview')) {
+                currentUrl.searchParams.delete('preview');
+                window.history.replaceState(null, '', currentUrl);
+            }
         }
 
         function toggleLandscape() {
