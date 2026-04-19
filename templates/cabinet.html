@@ -154,13 +154,12 @@
                             <div class="item-meta">
                             <span style="margin-right: 10px;">{{ item.created_at[:10] }}</span>
                             <span class="file-size" data-size="{{ item.size }}">Size: {{ item.size }} B</span>
-                            {%- if item.tags %}
-                            <span class="item-tags">
-                                {%- for tag in item.tags %}
-                                <span class="tag-badge">#{{ tag }}</span>
-                                {%- endfor %}
-                            </span>
-                            {%- endif %}
+                            {%- if item.tags or item.is_protected %}<span class="item-tags">
+                                {%- if item.is_protected %}<span class="tag-badge admin-protected-tag">#管理者用</span>{%- endif %}
+                                {%- if item.tags %}
+                                    {%- for tag in item.tags %}<span class="tag-badge">#{{ tag }}</span>{%- endfor %}
+                                {%- endif %}
+                            </span>{%- endif %}
                         </div>
                         </div>
                         <div class="item-actions">

@@ -6469,3 +6469,13 @@ Could not determine dtype for column 46, falling back to string
 [2026-04-20 01:31:00 +0900] [34723] [INFO] Started server process [34723]
 [2026-04-20 01:31:00 +0900] [34723] [INFO] Waiting for application startup.
 [2026-04-20 01:31:00 +0900] [34723] [INFO] Application startup complete.
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
