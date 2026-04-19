@@ -285,6 +285,25 @@
             display: none;
         }
 
+        /* パンくずリスト用のスタイル */
+        .breadcrumb-item {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            color: #333;
+        }
+        .breadcrumb-item:hover {
+            background-color: rgba(128, 229, 216, 0.3);
+            color: #000;
+            text-shadow: 0 0 8px #80e5d8;
+        }
+        .breadcrumb-sep {
+            color: #888;
+            margin: 0 2px;
+            user-select: none;
+        }
+
         .message-scroll-wrap {
             width: 100%;
             overflow: hidden;
@@ -722,7 +741,20 @@
                 <a class="sep gblue up-btn none_selection" href="{{ url_for('index') }}">◀ 製品検索へ</a>
                 {% endif %}
                 <div id="path_form">
-                    <div id="on_path" tabindex="0">{% if query %}SEARCH：{{ query }}{% else %}PATH：{{ current_path }}{% endif %}</div>
+                    <div id="on_path" tabindex="0">
+                        {% if query %}
+                            SEARCH：{{ query }}
+                        {% else %}
+                            PATH：<span class="breadcrumb-item" onmousedown="event.preventDefault(); event.stopPropagation();" onclick="navigate(''); event.stopPropagation();">ROOT</span>
+                            {% set path_parts = current_path.strip('/').split('/') %}
+                            {% set accumulated = [] %}
+                            {% for part in path_parts if part %}
+                                <span class="breadcrumb-sep">/</span>
+                                {% set _ = accumulated.append(part) %}
+                                <span class="breadcrumb-item" onmousedown="event.preventDefault(); event.stopPropagation();" onclick="navigate('{{ accumulated|join('/') }}'); event.stopPropagation();">{{ part }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                     <input type="text" id="search_input" placeholder="全ファイル検索..." style="display: none; width: 100%; height: 35px; box-sizing: border-box; border: none; padding-left: 10px; font-size: 16px; font-family: monospace; font-weight: bold; outline: none; background: #fff;">
                 </div>
                 <div id="search_button" class="sep gred up-btn none_selection search_red">検索</div>
@@ -1049,7 +1081,12 @@
                 };
 
                 onPathDiv.addEventListener('focus', activateSearch);
-                onPathDiv.addEventListener('click', activateSearch);
+                
+                // パンくずのクリックでは発火させないよう調整
+                onPathDiv.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('breadcrumb-item')) return;
+                    activateSearch();
+                });
 
                 searchInput.addEventListener('blur', () => {
                     if (searchInput.value.trim() === '') {

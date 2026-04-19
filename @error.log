@@ -6036,3 +6036,17 @@ Could not determine dtype for column 10, falling back to string
 [2026-04-19 18:25:11 +0900] [31008] [INFO] Started server process [31008]
 [2026-04-19 18:25:11 +0900] [31008] [INFO] Waiting for application startup.
 [2026-04-19 18:25:11 +0900] [31008] [INFO] Application startup complete.
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
