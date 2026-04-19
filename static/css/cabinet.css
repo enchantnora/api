@@ -646,7 +646,7 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
     width: 100%; border-collapse: collapse; font-size: 14px; color: #333;
 }
 .preview-csv th, .preview-csv td {
-    border: 1px solid #ccc; padding: 8px 12px; text-align: left; white-space: nowrap;
+    border: 1px solid #ccc; padding: 4px 10px; text-align: left; white-space: nowrap;
 }
 .preview-csv th {
     background-color: #e0f0fa; font-weight: bold; position: sticky; top: 0; z-index: 1;

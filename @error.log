@@ -6479,3 +6479,63 @@ Could not determine dtype for column 36, falling back to string
 Could not determine dtype for column 55, falling back to string
 Could not determine dtype for column 57, falling back to string
 Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+[2026-04-20 02:25:12 +0900] [34675] [INFO] Handling signal: term
+[2026-04-20 02:25:12 +0900] [34721] [INFO] Shutting down
+[2026-04-20 02:25:12 +0900] [34721] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 02:25:12 +0900] [34723] [INFO] Shutting down
+[2026-04-20 02:25:12 +0900] [34723] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 02:25:12 +0900] [34721] [INFO] Waiting for application shutdown.
+[2026-04-20 02:25:12 +0900] [34721] [INFO] Application shutdown complete.
+[2026-04-20 02:25:12 +0900] [34721] [INFO] Finished server process [34721]
+[2026-04-20 02:25:12 +0900] [34723] [INFO] Waiting for application shutdown.
+[2026-04-20 02:25:12 +0900] [34723] [INFO] Application shutdown complete.
+[2026-04-20 02:25:12 +0900] [34723] [INFO] Finished server process [34723]
+[2026-04-20 02:25:12 +0900] [34675] [ERROR] Worker (pid:34721) was sent SIGTERM!
+[2026-04-20 02:25:12 +0900] [34675] [ERROR] Worker (pid:34723) was sent SIGTERM!
+[2026-04-20 02:25:12 +0900] [34675] [INFO] Shutting down: Master
+[2026-04-20 02:25:13 +0900] [35151] [INFO] Starting gunicorn 23.0.0
+[2026-04-20 02:25:13 +0900] [35151] [INFO] Listening at: http://0.0.0.0:9900 (35151)
+[2026-04-20 02:25:13 +0900] [35151] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-20 02:25:13 +0900] [35200] [INFO] Booting worker with pid: 35200
+[2026-04-20 02:25:13 +0900] [35202] [INFO] Booting worker with pid: 35202
+[2026-04-20 02:25:14 +0900] [35200] [INFO] Started server process [35200]
+[2026-04-20 02:25:14 +0900] [35200] [INFO] Waiting for application startup.
+[2026-04-20 02:25:14 +0900] [35200] [INFO] Application startup complete.
+[2026-04-20 02:25:14 +0900] [35202] [INFO] Started server process [35202]
+[2026-04-20 02:25:14 +0900] [35202] [INFO] Waiting for application startup.
+[2026-04-20 02:25:14 +0900] [35202] [INFO] Application startup complete.

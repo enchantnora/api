@@ -10,6 +10,7 @@
     <script src="{{ url_for('static', path='js/mammoth.browser.min.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/three.min.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/OrbitControls.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/GLTFLoader.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/STLLoader.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/OBJLoader.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/MTLLoader.js') }}" defer></script>
@@ -165,7 +166,7 @@
                         <div class="item-actions">
                             <div class="action-top">
                                 {%- set ext = item.name.split('.')|last|lower if '.' in item.name else '' %}
-                                {%- set preview_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'mp4', 'webm', 'mov', 'mp3', 'wav', 'm4a', 'aac', 'pdf', 'csv', 'xlsx', 'xls', 'xlsm', 'txt', 'py', 'html', 'css', 'js', 'json', 'log', 'md', 'docx', 'stl', 'obj'] %}
+                                {%- set preview_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'mp4', 'webm', 'mov', 'mp3', 'wav', 'm4a', 'aac', 'pdf', 'csv', 'xlsx', 'xls', 'xlsm', 'txt', 'py', 'html', 'css', 'js', 'json', 'log', 'md', 'docx', 'stl', 'obj', 'glb', 'gltf'] %}
                                 {%- if ext in preview_exts %}
                                 <button class="cli preview-btn" onclick="openPreview('{{ item.name|escape }}', '{{ item.uuid }}', {{ item.size }}, '{{ item.created_at }}'); event.stopPropagation();">VIEW</button>
                                 {%- endif %}

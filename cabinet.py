@@ -506,6 +506,10 @@ async def download_file_by_uuid(request: Request, uuid: str, inline: bool = Fals
         media_type = "model/obj"
     elif filename.lower().endswith('.mtl'):
         media_type = "model/mtl"
+    elif filename.lower().endswith('.glb'):
+        media_type = "model/gltf-binary"
+    elif filename.lower().endswith('.gltf'):
+        media_type = "model/gltf+json"
 
     if inline:
         headers = {

@@ -20,7 +20,7 @@ const Utils = {
             'csv': '📃', 'xls': '📊', 'xlsx': '📊', 'xlsm': '📊',
             'doc': '📝', 'docx': '📝', 'rtf': '📝',
             'ppt': '📑', 'pptx': '📑',
-            'obj': '💎', 'mtl': '💎', 'stl': '💎',
+            'obj': '💎', 'mtl': '💎', 'stl': '💎', 'glb': '💎', 'gltf': '💎',
             'py': '💻', 'js': '💻', 'html': '💻', 'css': '💻', 'java': '💻', 'cpp': '💻', 'c': '💻', 'ts': '💻',
             'json': '💻', 'xml': '💻', 'yaml': '💻', 'yml': '💻', 'sh': '💻',
             'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️'
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetBtn) {
             setTimeout(() => targetBtn.click(), 35);
         } else {
-            addMessage('<span style="color: #ff0055;">指定されたプレビューファイルが見つかりません。</span>');
+            addMessage('<span style="color: #ff0055;">指定されたファイルが見つかりません。</span>');
         }
     }
 });
@@ -584,7 +584,7 @@ window.addEventListener('click', (e) => {
     if (e.target === modal) closeEditModal();
 });
 
-    function openPreview(filename, uuid, size, dateStr) {
+function openPreview(filename, uuid, size, dateStr) {
     const ext = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
     const typeMap = {
         'png': 'image', 'jpg': 'image', 'jpeg': 'image', 'gif': 'image', 'bmp': 'image', 'webp': 'image',
@@ -593,7 +593,7 @@ window.addEventListener('click', (e) => {
         'pdf': 'pdf', 'csv': 'csv', 'xlsx': 'excel', 'xls': 'excel', 'xlsm': 'excel', 'docx': 'word',
         'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text', 'json': 'text', 'log': 'text', 
         'md': 'markdown',
-        'stl': '3d', 'obj': '3d'
+        'stl': '3d', 'obj': '3d', 'glb': '3d', 'gltf': '3d'
     };
 
     const type = typeMap[ext] || 'unsupported';
@@ -701,12 +701,10 @@ window.addEventListener('click', (e) => {
                 content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(await response.text())}</pre>`;
             } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
         },
-        // markdown用のハンドラーを追加
         'markdown': async () => {
             try {
                 const response = await fetch(url);
                 const text = await response.text();
-                // markedでHTMLに変換し、DOMPurifyでサニタイズを実行
                 const rawHtml = marked.parse(text);
                 const cleanHtml = DOMPurify.sanitize(rawHtml);
                 content.innerHTML = `<div class="preview-markdown">${cleanHtml}</div>`;
@@ -860,6 +858,16 @@ window.addEventListener('click', (e) => {
                             loadObjFallback();
                         }
                     }).catch(() => {
+                        container.innerHTML = `<div style="color: red; padding: 20px;">モデルの読み込みに失敗しました</div>`;
+                    });
+                } else if (ext === 'glb' || ext === 'gltf') {
+                    const loader = new THREE.GLTFLoader();
+                    loader.load(url, function (gltf) {
+                        const object = gltf.scene;
+                        scene.add(object);
+                        centerAndScaleModel(object);
+                    }, undefined, function (error) {
+                        console.error(error);
                         container.innerHTML = `<div style="color: red; padding: 20px;">モデルの読み込みに失敗しました</div>`;
                     });
                 }
