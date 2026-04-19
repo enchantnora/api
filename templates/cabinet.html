@@ -7,6 +7,11 @@
     <title>CYBER CABINET</title>
     <script src="{{ url_for('static', path='js/Arrow.es2015.min.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/mammoth.browser.min.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/three.min.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/OrbitControls.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/STLLoader.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/OBJLoader.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/MTLLoader.js') }}" defer></script>
     <style>
         @charset "UTF-8";
         ::selection { background-color: rgba(93, 239, 222, 0.5); }
@@ -285,7 +290,6 @@
             display: none;
         }
 
-        /* パンくずリスト用のスタイル */
         .breadcrumb-item {
             cursor: pointer;
             padding: 2px 4px;
@@ -553,8 +557,7 @@
             max-width: none;
             max-height: none;
         }
-        
-        /* オーディオプレビュー用ダークモードスタイル */
+
         .preview-audio-wrapper {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             width: 100%; height: 100%; background: #000; padding: 20px; box-sizing: border-box;
@@ -796,7 +799,7 @@
                         <div class="item-actions">
                             <div class="action-top">
                                 {%- set ext = item.name.split('.')|last|lower if '.' in item.name else '' %}
-                                {%- set preview_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'mp4', 'webm', 'mov', 'mp3', 'wav', 'm4a', 'aac', 'pdf', 'csv', 'xlsx', 'xls', 'xlsm', 'txt', 'py', 'html', 'css', 'js', 'json', 'log', 'md', 'docx'] %}
+                                {%- set preview_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'mp4', 'webm', 'mov', 'mp3', 'wav', 'm4a', 'aac', 'pdf', 'csv', 'xlsx', 'xls', 'xlsm', 'txt', 'py', 'html', 'css', 'js', 'json', 'log', 'md', 'docx', 'stl', 'obj'] %}
                                 {%- if ext in preview_exts %}
                                 <button class="cli preview-btn" onclick="openPreview('{{ item.name|escape }}', '{{ item.uuid }}', {{ item.size }}, '{{ item.created_at }}'); event.stopPropagation();">VIEW</button>
                                 {%- endif %}
@@ -1394,24 +1397,25 @@
             }
         }
 
-        function openPreview(filename, uuid, size, dateStr) {
+            function openPreview(filename, uuid, size, dateStr) {
             const ext = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
             const typeMap = {
                 'png': 'image', 'jpg': 'image', 'jpeg': 'image', 'gif': 'image', 'bmp': 'image', 'webp': 'image',
                 'svg': 'svg', 'mp4': 'video', 'webm': 'video', 'mov': 'video',
                 'mp3': 'audio', 'wav': 'audio', 'm4a': 'audio', 'aac': 'audio', 'flac': 'audio', 'ogg': 'audio',
                 'pdf': 'pdf', 'csv': 'csv', 'xlsx': 'excel', 'xls': 'excel', 'xlsm': 'excel', 'docx': 'word',
-                'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text', 'json': 'text', 'log': 'text', 'md': 'text'
+                'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text', 'json': 'text', 'log': 'text', 'md': 'text',
+                'stl': '3d', 'obj': '3d'
             };
-
+    
             const type = typeMap[ext] || 'unsupported';
             if (type === 'unsupported') return addMessage(`<span style="color: #ff0055;">${Utils.escapeHtml(filename)} はプレビュー非対応です。[DL]から確認してください。</span>`);
-
+    
             const modal = document.getElementById('preview-modal');
             const content = document.getElementById('modal-content');
             const landscapeBtn = document.getElementById('landscape-btn');
             const url = `${APP.basePath}/f/${uuid}?inline=true`;
-
+    
             document.getElementById('modal-title').textContent = filename;
             document.getElementById('modal-size').textContent = `Size: ${Utils.formatBytes(size)}`;
             if (document.getElementById('modal-date')) document.getElementById('modal-date').textContent = dateStr || '';
@@ -1419,7 +1423,7 @@
             
             content.innerHTML = '<div style="padding: 20px;">Loading...</div>';
             modal.classList.add('active');
-
+    
             const handlers = {
                 'image': () => `<img src="${url}" class="preview-image" alt="preview">`,
                 'video': () => {
@@ -1455,7 +1459,7 @@
                     } catch(e) {
                         console.error('Failed to fetch audio metadata', e);
                     }
-
+    
                     content.innerHTML = `
                         <div class="preview-audio-wrapper">
                             <div class="audio-cover-container">
@@ -1521,9 +1525,140 @@
                         content.innerHTML = html + '</table></div>';
                     } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
                 },
-                'excel': () => renderExcelPreview(uuid, content)
+                'excel': () => renderExcelPreview(uuid, content),
+                '3d': () => {
+                    setTimeout(() => {
+                        const container = document.getElementById('preview-3d-container');
+                        if (!container) return;
+    
+                        container.innerHTML = '';
+                        const scene = new THREE.Scene();
+                        scene.background = new THREE.Color(0xf0f0f0);
+    
+                        const gridHelper = new THREE.GridHelper(100, 50, 0xaaaaaa, 0xdddddd);
+                        scene.add(gridHelper);
+    
+                        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    
+                        const renderer = new THREE.WebGLRenderer({ antialias: true });
+                        renderer.setSize(container.clientWidth, container.clientHeight);
+                        renderer.setPixelRatio(window.devicePixelRatio);
+                        renderer.outputEncoding = THREE.sRGBEncoding;
+                        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                        renderer.toneMappingExposure = 0.8;
+                        container.appendChild(renderer.domElement);
+    
+                        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                        controls.enableDamping = true;
+    
+                        const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
+                        scene.add(ambientLight);
+    
+                        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.2);
+                        hemiLight.position.set(0, 20, 0);
+                        scene.add(hemiLight);
+    
+                        const sunLight = new THREE.DirectionalLight(0xffffff, 0.4);
+                        sunLight.position.set(10, 20, 10);
+                        scene.add(sunLight);
+    
+                        let animationId;
+                        const animate = function () {
+                            if (!document.getElementById('preview-3d-container')) {
+                                cancelAnimationFrame(animationId);
+                                return;
+                            }
+                            animationId = requestAnimationFrame(animate);
+                            controls.update();
+                            renderer.render(scene, camera);
+                        };
+    
+                        const centerAndScaleModel = (object) => {
+                            const box = new THREE.Box3().setFromObject(object);
+                            const size = box.getSize(new THREE.Vector3()).length();
+                            const center = box.getCenter(new THREE.Vector3());
+    
+                            object.position.x += (object.position.x - center.x);
+                            object.position.y += (object.position.y - center.y);
+                            object.position.z += (object.position.z - center.z);
+    
+                            const newNear = size / 100 || 0.1;
+                            const newFar = size * 100 || 1000;
+                            camera.near = newNear;
+                            camera.far = newFar;
+                            camera.updateProjectionMatrix();
+    
+                            camera.position.copy(center).add(new THREE.Vector3(0, size * 0.5, size * 2.0));
+                            controls.maxDistance = size * 10;
+                            controls.target.copy(center);
+                        };
+    
+                        if (ext === 'stl') {
+                            const loader = new THREE.STLLoader();
+                            loader.load(url, function (geometry) {
+                                const material = new THREE.MeshPhongMaterial({
+                                    color: geometry.hasColors ? 0xffffff : 0x999999,
+                                    specular: 0x111111,
+                                    shininess: 30,
+                                    vertexColors: geometry.hasColors
+                                });
+                                const mesh = new THREE.Mesh(geometry, material);
+                                scene.add(mesh);
+                                centerAndScaleModel(mesh);
+                            });
+                        } else if (ext === 'obj') {
+                            fetch(url).then(res => res.text()).then(text => {
+                                const mtlMatch = text.match(/^mtllib\s+(.+)$/m);
+    
+                                const loadObjFallback = () => {
+                                    const objLoader = new THREE.OBJLoader();
+                                    const object = objLoader.parse(text);
+                                    object.traverse(function (child) {
+                                        if (child instanceof THREE.Mesh && (!child.material || !child.material.name)) {
+                                            child.material = new THREE.MeshPhongMaterial({ color: 0x999999 });
+                                        }
+                                    });
+                                    scene.add(object);
+                                    centerAndScaleModel(object);
+                                };
+    
+                                if (mtlMatch) {
+                                    const mtlFilename = mtlMatch[1].trim();
+                                    const mtlUrl = `${APP.basePath}/f_rel/${uuid}/${mtlFilename}`;
+    
+                                    const manager = new THREE.LoadingManager();
+                                    manager.setURLModifier((assetUrl) => {
+                                        if (assetUrl.startsWith('blob:') || assetUrl.startsWith('data:')) return assetUrl;
+                                        const assetName = assetUrl.split('/').pop();
+                                        return `${APP.basePath}/f_rel/${uuid}/${assetName}`;
+                                    });
+    
+                                    const mtlLoader = new THREE.MTLLoader(manager);
+                                    mtlLoader.load(mtlUrl, (materials) => {
+                                        materials.preload();
+                                        const objLoader = new THREE.OBJLoader();
+                                        objLoader.setMaterials(materials);
+                                        const object = objLoader.parse(text);
+                                        scene.add(object);
+                                        centerAndScaleModel(object);
+                                    }, undefined, () => {
+                                        loadObjFallback();
+                                    });
+                                } else {
+                                    loadObjFallback();
+                                }
+                            }).catch(() => {
+                                container.innerHTML = `<div style="color: red; padding: 20px;">モデルの読み込みに失敗しました</div>`;
+                            });
+                        }
+                        
+                        animate();
+                    }, 50);
+                    
+                    return '<div id="preview-3d-container" style="width: 100%; height: 100%; background: #f0f0f0; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: #333;">モデルデータを構築中...</div>';
+                }
             };
-
+    
             const handler = handlers[type];
             if (handler) {
                 const result = handler();

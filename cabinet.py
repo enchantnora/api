@@ -256,13 +256,10 @@ async def upload_file(request: Request, path: str = Form(""), file: UploadFile =
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("DELETE FROM file_links WHERE relative_path = ?", (rel_path,))
         await db.execute("""
             INSERT INTO file_links (uuid, relative_path, filename, created_at)
             VALUES (?, ?, ?, ?)
-            ON CONFLICT(relative_path) DO UPDATE SET
-                uuid = excluded.uuid,
-                filename = excluded.filename,
-                created_at = excluded.created_at
         """, (file_uuid, rel_path, file.filename, now_str))
         await db.commit()
         
@@ -421,6 +418,12 @@ async def download_file_by_uuid(request: Request, uuid: str, inline: bool = Fals
     media_type = None
     if filename.lower().endswith('.svg'):
         media_type = "image/svg+xml"
+    elif filename.lower().endswith('.stl'):
+        media_type = "model/stl"
+    elif filename.lower().endswith('.obj'):
+        media_type = "model/obj"
+    elif filename.lower().endswith('.mtl'):
+        media_type = "model/mtl"
 
     if inline:
         headers = {
@@ -429,6 +432,26 @@ async def download_file_by_uuid(request: Request, uuid: str, inline: bool = Fals
         return FileResponse(target, headers=headers, media_type=media_type)
 
     return FileResponse(target, filename=filename, media_type=media_type)
+
+@router.get("/f_rel/{uuid}/{filename}")
+async def download_relative_file(request: Request, uuid: str, filename: str):
+    base_file_path, _ = await _get_file_target(uuid)
+    
+    safe_filename = Path(filename).name
+    target = base_file_path.parent / safe_filename
+
+    if not target.exists() or not target.is_file():
+        raise HTTPException(status_code=404, detail="Relative file not found")
+
+    media_type = None
+    if safe_filename.lower().endswith('.mtl'):
+        media_type = "model/mtl"
+    elif safe_filename.lower().endswith('.png'):
+        media_type = "image/png"
+    elif safe_filename.lower().endswith('.jpg') or safe_filename.lower().endswith('.jpeg'):
+        media_type = "image/jpeg"
+
+    return FileResponse(target, filename=safe_filename, media_type=media_type)
 
 @router.get("/excel/info/{uuid}")
 async def get_excel_info(uuid: str):
