@@ -389,7 +389,17 @@
             margin-top: 4px;
             font-weight: bold;
         }
-
+        .item-tags {
+                margin-left: 10px;
+                display: inline-flex;
+                flex-wrap: wrap;
+                gap: 2px 6px;
+        }
+        .tag-badge {
+            color: #80e5d8;
+            font-size: 11px;
+            white-space: nowrap;
+        }
         .item-actions {
             display: flex;
             gap: 8px;
@@ -824,9 +834,9 @@
                             <span style="margin-right: 10px;">{{ item.created_at[:10] }}</span>
                             <span class="file-size" data-size="{{ item.size }}">Size: {{ item.size }} B</span>
                             {%- if item.tags %}
-                            <span class="item-tags" style="margin-left: 10px;">
+                            <span class="item-tags">
                                 {%- for tag in item.tags %}
-                                <span style="color: #80e5d8; margin-right: 5px; font-size: 11px;">#{{ tag }}</span>
+                                <span class="tag-badge">#{{ tag }}</span>
                                 {%- endfor %}
                             </span>
                             {%- endif %}
@@ -887,11 +897,14 @@
                 <div class="modal-body" style="background-color: #131d39; padding: 25px; flex-direction: column; align-items: stretch; justify-content: flex-start;">
                     <div class="edit-input-group">
                         <label>NAME</label>
-                        <input type="text" id="edit-name-input">
+                        <div style="display: flex; align-items: center; background: rgba(0, 0, 0, 0.5); border: 1px solid #80e5d8; border-radius: 4px; padding-right: 10px;">
+                            <input type="text" id="edit-name-input" style="border: none; background: transparent; flex: 1; outline: none;">
+                            <span id="edit-ext-display" style="color: #666; font-family: monospace; font-size: 16px; user-select: none; pointer-events: none;"></span>
+                        </div>
                     </div>
-                    <div class="edit-input-group">
+                    <div class="edit-input-group" id="edit-tags-group">
                         <label>TAGS (カンマ区切り)</label>
-                        <input type="text" id="edit-tags-input" placeholder="例: 重要, バンコク, 会議">
+                        <input type="text" id="edit-tags-input" placeholder="例: 名前, 場所, 品番">
                     </div>
                     <div style="display: flex; gap: 15px; margin-top: 10px;">
                         <button class="cli" style="flex: 1; height: 45px;" onclick="saveItemChanges()">保存</button>
@@ -1413,44 +1426,71 @@
         }
 
         let currentEditingItem = null;
+        let currentExt = '';
+
         function closeEditModal() {
             document.getElementById('edit-modal').style.display = 'none';
             currentEditingItem = null;
+            currentExt = '';
         }
+
         function executeRenamePrompt(li) {
             if (li.dataset.protected === 'true' && !APP.isAdmin) {
                 const typeStr = li.classList.contains('folder') ? 'フォルダ' : 'ファイル';
                 return addMessage(`<span style="color: #ff0055;">この${typeStr}は保護されています。</span>`);
             }
 
-            const name = li.querySelector('.item-title').textContent;
-            const tags = Array.from(li.querySelectorAll('.item-tags span')).map(s => s.textContent.replace('#', '')).join(', ');
+            const fullDisplayName = li.querySelector('.item-title').textContent;
+            const isFolder = li.classList.contains('folder');
+            
+            let baseName = fullDisplayName;
+            currentExt = '';
+
+            if (!isFolder) {
+                const lastDot = fullDisplayName.lastIndexOf('.');
+                // .gitignoreなどの先頭ドットのみのケースを除外
+                if (lastDot > 0) {
+                    baseName = fullDisplayName.substring(0, lastDot);
+                    currentExt = fullDisplayName.substring(lastDot);
+                }
+            }
+
+            const tags = isFolder ? '' : Array.from(li.querySelectorAll('.item-tags span')).map(s => s.textContent.replace('#', '')).join(', ');
 
             currentEditingItem = {
                 path: li.dataset.path,
-                name: name,
-                isFolder: li.classList.contains('folder')
+                name: fullDisplayName,
+                isFolder: isFolder
             };
 
-            document.getElementById('edit-name-input').value = name;
+            const nameInput = document.getElementById('edit-name-input');
+            const extDisplay = document.getElementById('edit-ext-display');
+
+            nameInput.value = baseName;
+            extDisplay.textContent = currentExt;
+            extDisplay.style.display = isFolder ? 'none' : 'inline';
+
             document.getElementById('edit-tags-input').value = tags;
+            document.getElementById('edit-tags-group').style.display = isFolder ? 'none' : 'block';
             document.getElementById('edit-modal').style.display = 'flex';
             
-            // 入力欄にフォーカス
-            setTimeout(() => document.getElementById('edit-name-input').focus(), 100);
+            setTimeout(() => nameInput.focus(), 100);
         }
 
         async function saveItemChanges() {
             if (!currentEditingItem) return;
 
-            const newName = document.getElementById('edit-name-input').value.trim();
+            const newBaseName = document.getElementById('edit-name-input').value.trim();
             const tags = document.getElementById('edit-tags-input').value.trim();
 
-            if (!newName) return alert("名前を入力してください。");
+            if (!newBaseName) return alert("名前を入力してください。");
+
+            // 本体名と保持していた拡張子を結合
+            const finalName = newBaseName + currentExt;
 
             const formData = new FormData();
             formData.append("path", currentEditingItem.path);
-            formData.append("new_name", newName);
+            formData.append("new_name", finalName);
             formData.append("tags", tags);
 
             try {
