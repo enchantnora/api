@@ -610,7 +610,7 @@ function openPreview(filename, uuid, size, dateStr) {
     if (document.getElementById('modal-date')) document.getElementById('modal-date').textContent = dateStr || '';
     if (landscapeBtn) landscapeBtn.style.display = 'none';
     
-    content.innerHTML = '<div style="padding: 20px;">Loading...</div>';
+    content.innerHTML = '<div style="padding: 20px; color: #fff;">Loading...</div>';
     modal.classList.add('active');
 
     const handlers = {
