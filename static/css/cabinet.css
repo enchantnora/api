@@ -751,3 +751,26 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
 .preview-markdown img { max-width: 100%; height: auto; border-radius: 4px; }
 .preview-markdown a { color: #5eb6ff; text-decoration: none; }
 .preview-markdown a:hover { text-decoration: underline; }
+
+.preview-markdown table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+}
+
+.preview-markdown th,
+.preview-markdown td {
+    border: 1px solid #556b8d;
+    padding: 8px 12px;
+}
+
+.preview-markdown th {
+    background-color: #ecfafc;
+    font-weight: bold;
+}
+
+.preview-markdown hr {
+    border: none;
+    border-top: 1px solid #556b8d;
+    margin: 16px 0;
+}
