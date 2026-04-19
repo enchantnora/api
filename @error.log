@@ -6299,3 +6299,53 @@ Could not determine dtype for column 59, falling back to string
 [2026-04-19 22:02:56 +0900] [33113] [INFO] Started server process [33113]
 [2026-04-19 22:02:56 +0900] [33113] [INFO] Waiting for application startup.
 [2026-04-19 22:02:56 +0900] [33113] [INFO] Application startup complete.
+[2026-04-19 22:29:22 +0900] [33065] [INFO] Handling signal: term
+[2026-04-19 22:29:22 +0900] [33113] [INFO] Shutting down
+[2026-04-19 22:29:22 +0900] [33113] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-19 22:29:22 +0900] [33111] [INFO] Shutting down
+[2026-04-19 22:29:22 +0900] [33111] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-19 22:29:22 +0900] [33113] [INFO] Waiting for application shutdown.
+[2026-04-19 22:29:22 +0900] [33113] [INFO] Application shutdown complete.
+[2026-04-19 22:29:22 +0900] [33113] [INFO] Finished server process [33113]
+[2026-04-19 22:29:22 +0900] [33065] [ERROR] Worker (pid:33113) was sent SIGTERM!
+[2026-04-19 22:29:22 +0900] [33111] [INFO] Waiting for application shutdown.
+[2026-04-19 22:29:22 +0900] [33111] [INFO] Application shutdown complete.
+[2026-04-19 22:29:22 +0900] [33111] [INFO] Finished server process [33111]
+[2026-04-19 22:29:22 +0900] [33065] [ERROR] Worker (pid:33111) was sent SIGTERM!
+[2026-04-19 22:29:22 +0900] [33065] [INFO] Shutting down: Master
+[2026-04-19 22:29:23 +0900] [33397] [INFO] Starting gunicorn 23.0.0
+[2026-04-19 22:29:23 +0900] [33397] [INFO] Listening at: http://0.0.0.0:9900 (33397)
+[2026-04-19 22:29:23 +0900] [33397] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-19 22:29:23 +0900] [33443] [INFO] Booting worker with pid: 33443
+[2026-04-19 22:29:23 +0900] [33445] [INFO] Booting worker with pid: 33445
+[2026-04-19 22:29:25 +0900] [33443] [INFO] Started server process [33443]
+[2026-04-19 22:29:25 +0900] [33443] [INFO] Waiting for application startup.
+[2026-04-19 22:29:25 +0900] [33443] [INFO] Application startup complete.
+[2026-04-19 22:29:25 +0900] [33445] [INFO] Started server process [33445]
+[2026-04-19 22:29:25 +0900] [33445] [INFO] Waiting for application startup.
+[2026-04-19 22:29:25 +0900] [33445] [INFO] Application startup complete.
+[2026-04-19 22:47:49 +0900] [33397] [INFO] Handling signal: term
+[2026-04-19 22:47:49 +0900] [33445] [INFO] Shutting down
+[2026-04-19 22:47:49 +0900] [33445] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-19 22:47:49 +0900] [33443] [INFO] Shutting down
+[2026-04-19 22:47:49 +0900] [33443] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-19 22:47:49 +0900] [33445] [INFO] Waiting for application shutdown.
+[2026-04-19 22:47:49 +0900] [33445] [INFO] Application shutdown complete.
+[2026-04-19 22:47:49 +0900] [33445] [INFO] Finished server process [33445]
+[2026-04-19 22:47:49 +0900] [33397] [ERROR] Worker (pid:33445) was sent SIGTERM!
+[2026-04-19 22:47:49 +0900] [33443] [INFO] Waiting for application shutdown.
+[2026-04-19 22:47:49 +0900] [33443] [INFO] Application shutdown complete.
+[2026-04-19 22:47:49 +0900] [33443] [INFO] Finished server process [33443]
+[2026-04-19 22:47:49 +0900] [33397] [ERROR] Worker (pid:33443) was sent SIGTERM!
+[2026-04-19 22:47:49 +0900] [33397] [INFO] Shutting down: Master
+[2026-04-19 22:47:50 +0900] [33750] [INFO] Starting gunicorn 23.0.0
+[2026-04-19 22:47:50 +0900] [33750] [INFO] Listening at: http://0.0.0.0:9900 (33750)
+[2026-04-19 22:47:50 +0900] [33750] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-19 22:47:50 +0900] [33796] [INFO] Booting worker with pid: 33796
+[2026-04-19 22:47:50 +0900] [33797] [INFO] Booting worker with pid: 33797
+[2026-04-19 22:47:51 +0900] [33796] [INFO] Started server process [33796]
+[2026-04-19 22:47:51 +0900] [33796] [INFO] Waiting for application startup.
+[2026-04-19 22:47:51 +0900] [33796] [INFO] Application startup complete.
+[2026-04-19 22:47:51 +0900] [33797] [INFO] Started server process [33797]
+[2026-04-19 22:47:51 +0900] [33797] [INFO] Waiting for application startup.
+[2026-04-19 22:47:51 +0900] [33797] [INFO] Application startup complete.

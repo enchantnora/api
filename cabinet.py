@@ -23,8 +23,8 @@ router = APIRouter(prefix=CABINET_PREFIX, tags=["cabinet"])
 
 # 特別な名前
 SPECIAL_NAMES = {
-    "cxc": "1",
-    "wzz": "2",
+    "Cxc": "1",
+    "Wzz": "2",
 }
 
 # mainディレクトリを基準に絶対パスを生成
