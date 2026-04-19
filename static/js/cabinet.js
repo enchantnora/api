@@ -584,6 +584,7 @@ window.addEventListener('click', (e) => {
     if (e.target === modal) closeEditModal();
 });
 
+// ここからopenPreview
 function openPreview(filename, uuid, size, dateStr) {
     const ext = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
     const typeMap = {
@@ -744,22 +745,42 @@ function openPreview(filename, uuid, size, dateStr) {
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.outputEncoding = THREE.sRGBEncoding;
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                renderer.toneMappingExposure = 0.8;
+                
+                const isPBR = (ext === 'glb' || ext === 'gltf');
+                renderer.toneMappingExposure = isPBR ? 1.0 : 0.8;
+                
                 container.appendChild(renderer.domElement);
 
                 const controls = new THREE.OrbitControls(camera, renderer.domElement);
                 controls.enableDamping = true;
 
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
-                scene.add(ambientLight);
+                if (isPBR) {
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+                    scene.add(ambientLight);
 
-                const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.2);
-                hemiLight.position.set(0, 20, 0);
-                scene.add(hemiLight);
+                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+                    hemiLight.position.set(0, 20, 0);
+                    scene.add(hemiLight);
 
-                const sunLight = new THREE.DirectionalLight(0xffffff, 0.4);
-                sunLight.position.set(10, 20, 10);
-                scene.add(sunLight);
+                    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+                    sunLight.position.set(10, 20, 10);
+                    scene.add(sunLight);
+
+                    const fillLight = new THREE.DirectionalLight(0x90b0d0, 0.5);
+                    fillLight.position.set(-10, 0, -10);
+                    scene.add(fillLight);
+                } else {
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
+                    scene.add(ambientLight);
+
+                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.2);
+                    hemiLight.position.set(0, 20, 0);
+                    scene.add(hemiLight);
+
+                    const sunLight = new THREE.DirectionalLight(0xffffff, 0.4);
+                    sunLight.position.set(10, 20, 10);
+                    scene.add(sunLight);
+                }
 
                 let animationId;
                 const animate = function () {
@@ -785,22 +806,30 @@ function openPreview(filename, uuid, size, dateStr) {
 
                 const centerAndScaleModel = (object) => {
                     const box = new THREE.Box3().setFromObject(object);
-                    const size = box.getSize(new THREE.Vector3()).length();
-                    const center = box.getCenter(new THREE.Vector3());
+                    const center = new THREE.Vector3();
+                    box.getCenter(center);
+                    
+                    const size = new THREE.Vector3();
+                    box.getSize(size);
+                    const maxDim = Math.max(size.x, size.y, size.z);
 
-                    object.position.x += (object.position.x - center.x);
-                    object.position.y += (object.position.y - center.y);
-                    object.position.z += (object.position.z - center.z);
+                    // モデルの幾何学的中心をワールド座標の原点(0,0,0)に移動
+                    object.position.x -= center.x;
+                    object.position.y -= center.y;
+                    object.position.z -= center.z;
 
-                    const newNear = size / 100 || 0.1;
-                    const newFar = size * 100 || 1000;
-                    camera.near = newNear;
-                    camera.far = newFar;
+                    // カメラのクリッピング範囲をモデルサイズに合わせて調整
+                    camera.near = maxDim / 100 || 0.1;
+                    camera.far = maxDim * 100 || 1000;
                     camera.updateProjectionMatrix();
 
-                    camera.position.copy(center).add(new THREE.Vector3(0, size * 0.5, size * 2.0));
-                    controls.maxDistance = size * 10;
-                    controls.target.copy(center);
+                    // カメラの初期位置を設定：原点からmaxDimに基づいた適切な距離を保つ
+                    camera.position.set(0, maxDim * 0.4, maxDim * 2.0);
+                    
+                    // 注視点を常に原点(0,0,0)に固定
+                    controls.target.set(0, 0, 0);
+                    controls.maxDistance = maxDim * 10;
+                    controls.update();
                 };
 
                 if (ext === 'stl') {
@@ -891,6 +920,7 @@ function openPreview(filename, uuid, size, dateStr) {
         }
     }
 }
+// ここまでopenPreview
 
 function closeModal() {
     document.getElementById('preview-modal').classList.remove('active');

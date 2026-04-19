@@ -39,11 +39,13 @@ DB_PATH = BASE_DIR / "filer.db"
 # 最大容量設定
 MAX_CAPACITY_BYTES = 8 * 1024 * 1024 * 1024
 
+# プロテクト設定
 def is_protected_item(name: str, is_dir: bool) -> bool:
     if is_dir:
         return name == 'いろいろ'
     return (
         name == 'data.xlsx'
+        or name == '.説明書.md'
         or ('MFR' in name and name.endswith('.xlsx'))
         or ('マスタデータ' in name and name.endswith('.xlsx'))
     )
