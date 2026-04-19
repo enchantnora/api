@@ -507,6 +507,35 @@
             padding: 30px 0;
         }
 
+        /* 編集モーダル用のスタイル */
+        .edit-input-group {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .edit-input-group label {
+            display: block;
+            color: #80e5d8;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .edit-input-group input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #80e5d8;
+            color: #fff;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .edit-input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #80e5d8;
+        }
+
         #preview-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(22, 33, 65, 0.85); z-index: 2000;
@@ -792,9 +821,16 @@
                         <div class="item-info">
                             <div class="item-title">{{ item.name }}</div>
                             <div class="item-meta">
-                                <span style="margin-right: 10px;">{{ item.created_at[:10] }}</span>
-                                <span class="file-size" data-size="{{ item.size }}">Size: {{ item.size }} B</span>
-                            </div>
+                            <span style="margin-right: 10px;">{{ item.created_at[:10] }}</span>
+                            <span class="file-size" data-size="{{ item.size }}">Size: {{ item.size }} B</span>
+                            {%- if item.tags %}
+                            <span class="item-tags" style="margin-left: 10px;">
+                                {%- for tag in item.tags %}
+                                <span style="color: #80e5d8; margin-right: 5px; font-size: 11px;">#{{ tag }}</span>
+                                {%- endfor %}
+                            </span>
+                            {%- endif %}
+                        </div>
                         </div>
                         <div class="item-actions">
                             <div class="action-top">
@@ -838,6 +874,28 @@
                     <div style="display: flex; gap: 12px; align-items: center;">
                         <span id="modal-date" style="font-weight: normal; font-size: 10px; color: #a9c0e0;"></span>
                         <span id="modal-size" style="font-size: 12px;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="edit-modal" class="none_selection" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(22, 33, 65, 0.9); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+            <div class="modal-content-box" style="width: 90%; max-width: 450px; height: auto;">
+                <div class="modal-header">
+                    <span>属性編集</span>
+                    <span class="modal-close" onclick="closeEditModal()">×</span>
+                </div>
+                <div class="modal-body" style="background-color: #131d39; padding: 25px; flex-direction: column; align-items: stretch; justify-content: flex-start;">
+                    <div class="edit-input-group">
+                        <label>NAME</label>
+                        <input type="text" id="edit-name-input">
+                    </div>
+                    <div class="edit-input-group">
+                        <label>TAGS (カンマ区切り)</label>
+                        <input type="text" id="edit-tags-input" placeholder="例: 重要, バンコク, 会議">
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <button class="cli" style="flex: 1; height: 45px;" onclick="saveItemChanges()">保存</button>
+                        <button class="cli danger" style="flex: 1; height: 45px;" onclick="closeEditModal()">キャンセル</button>
                     </div>
                 </div>
             </div>
@@ -1354,49 +1412,65 @@
                 .catch(() => addMessage(`<span style="color: #ff0055;">${filename}のコピーに失敗しました</span>`));
         }
 
-        async function executeRenamePrompt(li) {
+        let currentEditingItem = null;
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+            currentEditingItem = null;
+        }
+        function executeRenamePrompt(li) {
             if (li.dataset.protected === 'true' && !APP.isAdmin) {
                 const typeStr = li.classList.contains('folder') ? 'フォルダ' : 'ファイル';
-                return addMessage(`<span style="color: #ff0055;">この${typeStr}は保護されているため、名前を変更できません。</span>`);
+                return addMessage(`<span style="color: #ff0055;">この${typeStr}は保護されています。</span>`);
             }
 
-            const isFolder = li.classList.contains('folder');
-            const currentFullName = li.querySelector('.item-title').textContent;
+            const name = li.querySelector('.item-title').textContent;
+            const tags = Array.from(li.querySelectorAll('.item-tags span')).map(s => s.textContent.replace('#', '')).join(', ');
+
+            currentEditingItem = {
+                path: li.dataset.path,
+                name: name,
+                isFolder: li.classList.contains('folder')
+            };
+
+            document.getElementById('edit-name-input').value = name;
+            document.getElementById('edit-tags-input').value = tags;
+            document.getElementById('edit-modal').style.display = 'flex';
             
-            let currentName = currentFullName;
-            let extension = "";
+            // 入力欄にフォーカス
+            setTimeout(() => document.getElementById('edit-name-input').focus(), 100);
+        }
 
-            if (!isFolder) {
-                const lastDotIndex = currentFullName.lastIndexOf('.');
-                if (lastDotIndex > 0) {
-                    currentName = currentFullName.substring(0, lastDotIndex);
-                    extension = currentFullName.substring(lastDotIndex);
-                }
-            }
+        async function saveItemChanges() {
+            if (!currentEditingItem) return;
 
-            const newNameInput = prompt(`新しい名前を入力してください\n(現在の名前: ${currentFullName})`, currentName);
-            if (!newNameInput || newNameInput === currentName) return;
+            const newName = document.getElementById('edit-name-input').value.trim();
+            const tags = document.getElementById('edit-tags-input').value.trim();
+
+            if (!newName) return alert("名前を入力してください。");
 
             const formData = new FormData();
-            formData.append("path", li.dataset.path);
-            formData.append("new_name", isFolder ? newNameInput : newNameInput + extension);
+            formData.append("path", currentEditingItem.path);
+            formData.append("new_name", newName);
+            formData.append("tags", tags);
 
             try {
-                const res = await fetch(`${APP.basePath}/rename/`, { method: "POST", body: formData });
+                const res = await fetch(`${APP.basePath}/update_metadata/`, { method: "POST", body: formData });
                 if (res.ok) {
                     location.reload();
                 } else {
-                    let errorMsg = "変更に失敗しました。";
-                    try {
-                        const data = await res.json();
-                        if (data.detail) errorMsg = data.detail;
-                    } catch(e) {}
-                    addMessage(`<span style="color: #ff0055;">${errorMsg}</span>`);
+                    const data = await res.json();
+                    addMessage(`<span style="color: #ff0055;">${data.detail || "エラーが発生しました"}</span>`);
                 }
             } catch (error) {
                 addMessage('<span style="color: #ff0055;">通信エラーが発生しました。</span>');
             }
         }
+
+        // モーダル外クリックで閉じる
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('edit-modal');
+            if (e.target === modal) closeEditModal();
+        });
 
             function openPreview(filename, uuid, size, dateStr) {
             const ext = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
@@ -1573,6 +1647,17 @@
                             controls.update();
                             renderer.render(scene, camera);
                         };
+
+                        window.addEventListener('resize', onWindowResize, false);
+                        function onWindowResize() {
+                            if (!document.getElementById('preview-3d-container')) {
+                                window.removeEventListener('resize', onWindowResize);
+                                return;
+                            }
+                            camera.aspect = container.clientWidth / container.clientHeight;
+                            camera.updateProjectionMatrix();
+                            renderer.setSize(container.clientWidth, container.clientHeight);
+                        }
     
                         const centerAndScaleModel = (object) => {
                             const box = new THREE.Box3().setFromObject(object);

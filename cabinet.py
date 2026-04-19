@@ -1,5 +1,4 @@
 import shutil
-import io
 import aiosqlite
 import shortuuid
 import polars as pl
@@ -11,6 +10,8 @@ from pathlib import Path
 import pyarrow as pa
 import urllib.parse
 from datetime import datetime
+import json
+from PIL import Image, ExifTags
 
 from utils import templates 
 
@@ -57,6 +58,7 @@ async def init_cabinet_db():
                 uuid TEXT PRIMARY KEY,
                 relative_path TEXT UNIQUE NOT NULL,
                 filename TEXT NOT NULL,
+                tags TEXT DEFAULT '[]',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
@@ -92,6 +94,49 @@ async def _get_file_target(uuid: str) -> tuple[Path, str]:
         
     return target, filename
 
+def extract_tags_from_file(file_path: Path, filename: str) -> str:
+    tags = set()
+    ext = filename.split('.')[-1].lower() if '.' in filename else ''
+
+    if ext in ['jpg', 'jpeg', 'png', 'webp', 'gif']:
+        try:
+            with Image.open(file_path) as img:
+                tags.add(f"{img.width}x{img.height}")
+                if hasattr(img, '_getexif') and img._getexif():
+                    exif = img._getexif()
+                    if exif:
+                        for k, v in exif.items():
+                            tag_name = ExifTags.TAGS.get(k)
+                            if tag_name == 'Model' and isinstance(v, str):
+                                model_name = v.strip('\x00').strip()
+                                if model_name:
+                                    tags.add(model_name)
+        except Exception:
+            pass
+
+    elif ext in ['mp3', 'wav', 'flac', 'm4a', 'aac', 'ogg']:
+        try:
+            audio = mutagen.File(file_path)
+            if audio is not None:
+                artist = None
+                if audio.tags:
+                    keys = ['TPE1', '\xa9ART', 'artist', 'Artist', 'ARTIST']
+                    for k in keys:
+                        if k in audio.tags:
+                            val = audio.tags[k]
+                            artist = str(val[0]) if isinstance(val, list) else str(val)
+                            break
+                
+                if artist and artist.lower() != 'unknown':
+                    tags.add(artist)
+
+                if hasattr(audio, 'info') and hasattr(audio.info, 'bitrate') and audio.info.bitrate:
+                    tags.add(f"{int(audio.info.bitrate) // 1000}kbps")
+        except Exception:
+            pass
+
+    return json.dumps(list(tags), ensure_ascii=False)
+
 @router.get("/", name="cc")
 async def list_files(request: Request, path: str = "", query: str = ""):
     target_dir = get_secure_path(path)
@@ -103,9 +148,9 @@ async def list_files(request: Request, path: str = "", query: str = ""):
     file_info = {}
     
     async with aiosqlite.connect(DB_PATH) as db:
-        async with db.execute("SELECT uuid, relative_path, created_at FROM file_links") as cursor:
+        async with db.execute("SELECT uuid, relative_path, created_at, tags FROM file_links") as cursor:
             async for row in cursor:
-                file_info[row[1]] = {"uuid": row[0], "created_at": row[2]}
+                file_info[row[1]] = {"uuid": row[0], "created_at": row[2], "tags": row[3]}
 
     missing_db_entries = []
     
@@ -115,16 +160,33 @@ async def list_files(request: Request, path: str = "", query: str = ""):
         
         for item in search_target:
             item_name_lower = item.name.lower()
-            if all(part in item_name_lower for part in query_parts):
-                rel_path = str(item.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
-                is_dir = item.is_dir()
-                
+            rel_path = str(item.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+            is_dir = item.is_dir()
+            
+            item_tags = []
+            tags_str_lower = ""
+            if not is_dir and rel_path in file_info:
+                tags_json_str = file_info[rel_path].get("tags") or '[]'
+                try:
+                    item_tags = json.loads(tags_json_str)
+                    tags_str_lower = " ".join(item_tags).lower()
+                except:
+                    pass
+            
+            match = True
+            for part in query_parts:
+                if part not in item_name_lower and part not in tags_str_lower:
+                    match = False
+                    break
+                    
+            if match:
                 item_data = {
                     "name": item.name,
                     "is_dir": is_dir,
                     "size": item.stat().st_size if item.is_file() else 0,
                     "path": rel_path,
                     "is_protected": is_protected_item(item.name, is_dir),
+                    "tags": item_tags
                 }
                 
                 if not is_dir:
@@ -137,7 +199,7 @@ async def list_files(request: Request, path: str = "", query: str = ""):
                         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         item_data["uuid"] = new_uuid
                         item_data["created_at"] = now_str
-                        missing_db_entries.append((new_uuid, rel_path, item.name, now_str))
+                        missing_db_entries.append((new_uuid, rel_path, item.name, now_str, '[]'))
                 else:
                     item_data["uuid"] = None
                     item_data["created_at"] = ""
@@ -152,12 +214,21 @@ async def list_files(request: Request, path: str = "", query: str = ""):
             rel_path = str(item.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
             is_dir = item.is_dir()
             
+            item_tags = []
+            if not is_dir and rel_path in file_info:
+                tags_json_str = file_info[rel_path].get("tags") or '[]'
+                try:
+                    item_tags = json.loads(tags_json_str)
+                except:
+                    pass
+            
             item_data = {
                 "name": item.name,
                 "is_dir": is_dir,
                 "size": item.stat().st_size if item.is_file() else 0,
                 "path": rel_path,
                 "is_protected": is_protected_item(item.name, is_dir),
+                "tags": item_tags
             }
             
             if not is_dir:
@@ -170,7 +241,7 @@ async def list_files(request: Request, path: str = "", query: str = ""):
                     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     item_data["uuid"] = new_uuid
                     item_data["created_at"] = now_str
-                    missing_db_entries.append((new_uuid, rel_path, item.name, now_str))
+                    missing_db_entries.append((new_uuid, rel_path, item.name, now_str, '[]'))
             else:
                 item_data["uuid"] = None
                 item_data["created_at"] = ""
@@ -184,8 +255,8 @@ async def list_files(request: Request, path: str = "", query: str = ""):
     if missing_db_entries:
         async with aiosqlite.connect(DB_PATH) as db:
             await db.executemany("""
-                INSERT OR IGNORE INTO file_links (uuid, relative_path, filename, created_at)
-                VALUES (?, ?, ?, ?)
+                INSERT OR IGNORE INTO file_links (uuid, relative_path, filename, created_at, tags)
+                VALUES (?, ?, ?, ?, ?)
             """, missing_db_entries)
             await db.commit()
     
@@ -255,12 +326,14 @@ async def upload_file(request: Request, path: str = Form(""), file: UploadFile =
     file_uuid = shortuuid.uuid()
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    tags_json = extract_tags_from_file(target_file, file.filename)
+    
     async with aiosqlite.connect(DB_PATH) as db:
         await db.execute("DELETE FROM file_links WHERE relative_path = ?", (rel_path,))
         await db.execute("""
-            INSERT INTO file_links (uuid, relative_path, filename, created_at)
-            VALUES (?, ?, ?, ?)
-        """, (file_uuid, rel_path, file.filename, now_str))
+            INSERT INTO file_links (uuid, relative_path, filename, created_at, tags)
+            VALUES (?, ?, ?, ?, ?)
+        """, (file_uuid, rel_path, file.filename, now_str, tags_json))
         await db.commit()
         
     return {"status": "success", "filename": file.filename}
@@ -320,13 +393,14 @@ async def move_file(
         
     return {"status": "success"}
 
-@router.post("/rename/")
-async def rename_item(request: Request, path: str = Form(...), new_name: str = Form(...)):
+@router.post("/update_metadata/")
+async def update_metadata(
+    request: Request,
+    path: str = Form(...),
+    new_name: str = Form(...),
+    tags: str = Form("")
+):
     target = get_secure_path(path)
-    
-    if target == CABINET_DIR:
-        raise HTTPException(status_code=403, detail="Cannot rename root directory")
-    
     if not target.exists():
         raise HTTPException(status_code=404, detail="Item not found")
 
@@ -334,38 +408,38 @@ async def rename_item(request: Request, path: str = Form(...), new_name: str = F
     is_dir = target.is_dir()
 
     if is_protected_item(target.name, is_dir) and admin_level != 1:
-        type_str = "フォルダ" if is_dir else "ファイル"
-        raise HTTPException(status_code=403, detail=f"この{type_str}は保護されています")
-
-    if admin_level != 1:
-        for f in target.rglob('*'):
-            if is_protected_item(f.name, f.is_dir()):
-                raise HTTPException(status_code=403, detail="保護されたアイテムが含まれているため名前を変更できません")
+        raise HTTPException(status_code=403, detail="このアイテムは保護されています")
 
     new_target = target.parent / new_name
-
-    if new_target.exists():
-        raise HTTPException(status_code=400, detail="同名のファイルまたはフォルダが既に存在します")
-
     old_rel_path = str(target.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
     new_rel_path = str(new_target.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
 
-    try:
-        target.rename(new_target)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to rename: {str(e)}")
+    if target.name != new_name:
+        if new_target.exists():
+            raise HTTPException(status_code=400, detail="同名のアイテムが既に存在します")
+        try:
+            target.rename(new_target)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to rename: {str(e)}")
+
+    tag_list = [t.strip() for t in tags.split(",") if t.strip()]
+    tags_json = json.dumps(tag_list, ensure_ascii=False)
 
     async with aiosqlite.connect(DB_PATH) as db:
         if is_dir:
+            # ディレクトリ内の全ファイルのパスを更新
             async with db.execute("SELECT uuid, relative_path FROM file_links WHERE relative_path LIKE ?", (f"{old_rel_path}/%",)) as cursor:
                 rows = await cursor.fetchall()
-            
             for uuid, rel_path in rows:
                 updated_rel_path = rel_path.replace(old_rel_path, new_rel_path, 1)
                 await db.execute("UPDATE file_links SET relative_path = ? WHERE uuid = ?", (updated_rel_path, uuid))
         else:
-            await db.execute("UPDATE file_links SET relative_path = ?, filename = ? WHERE relative_path = ?", (new_rel_path, new_name, old_rel_path))
-        
+            # 単一ファイルのパス、ファイル名、タグを更新
+            await db.execute("""
+                UPDATE file_links 
+                SET relative_path = ?, filename = ?, tags = ? 
+                WHERE relative_path = ?
+            """, (new_rel_path, new_name, tags_json, old_rel_path))
         await db.commit()
 
     return {"status": "success"}
