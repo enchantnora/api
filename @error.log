@@ -6139,3 +6139,13 @@ Could not determine dtype for column 59, falling back to string
 [2026-04-19 20:25:47 +0900] [31898] [INFO] Waiting for application startup.
 [2026-04-19 20:25:47 +0900] [31897] [INFO] Application startup complete.
 [2026-04-19 20:25:47 +0900] [31898] [INFO] Application startup complete.
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
