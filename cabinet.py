@@ -45,7 +45,7 @@ def is_protected_item(name: str, is_dir: bool) -> bool:
         return name == 'いろいろ'
     return (
         name == 'data.xlsx'
-        or name == '.説明書.md'
+        or ('CYBER CABINET' in name)
         or ('MFR' in name and name.endswith('.xlsx'))
         or ('マスタデータ' in name and name.endswith('.xlsx'))
     )
