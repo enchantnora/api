@@ -6734,3 +6734,11 @@ Could not determine dtype for column 10, falling back to string
 [2026-04-20 04:00:33 +0900] [36451] [INFO] Waiting for application startup.
 [2026-04-20 04:00:33 +0900] [36451] [INFO] Application startup complete.
 [2026-04-20 04:00:33 +0900] [36453] [INFO] Application startup complete.
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string

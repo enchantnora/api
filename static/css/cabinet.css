@@ -545,7 +545,7 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
 #preview-modal.active { display: flex; }
 
 .modal-content-box {
-    background-color: #fff; width: 95%; height: 95%; border-radius: 10px;
+    background-color: #162141; width: 95%; height: 95%; border-radius: 10px;
     display: flex; flex-direction: column; overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 3px #80e5d8;
 }
@@ -568,7 +568,7 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
 .modal-body {
     flex-grow: 1; overflow-y: auto; display: flex;
     align-items: center; justify-content: center;
-    background-color: #000;
+    background-color: #162141; border-radius: 10px;
 }
 
 .preview-image { 
@@ -634,13 +634,13 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
 
 .preview-text { 
     width: 100%; height: 100%; background: #fff; padding: 15px; box-sizing: border-box;
-    border: 1px solid #ccc; border-radius: 4px; font-family: monospace; white-space: pre-wrap;
+    border: 1px solid #ccc; font-family: monospace; white-space: pre-wrap;
     overflow-y: auto; font-size: 14px; color: #333; margin: 0; text-align: left;
 }
 
 .preview-csv-container {
     width: 100%; height: 100%; background: #fff; box-sizing: border-box;
-    border: 1px solid #ccc; border-radius: 4px; overflow: auto;
+    border: 1px solid #ccc; overflow: auto;
 }
 .preview-csv {
     width: 100%; border-collapse: collapse; font-size: 14px; color: #333;
@@ -693,7 +693,6 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
     background: #fff;
     padding: 20px;
     box-sizing: border-box;
-    border-radius: 4px;
     overflow-y: auto;
     color: #333;
     line-height: 1.6;
