@@ -13,7 +13,10 @@ from datetime import datetime
 import json
 from PIL import Image, ExifTags
 
-from utils import templates 
+# 分割したファイルからのインポート
+from utils import (
+    get_file_timestamp, templates
+)
 
 # URLのプレフィックスを変数として定義
 CABINET_PREFIX = "/cc"
@@ -273,10 +276,15 @@ async def list_files(request: Request, path: str = "", query: str = ""):
 
     formatted_current_path = path if path.endswith("/") else path + "/"
 
+    css_timestamp = await get_file_timestamp('./static/css/cabinet.css')
+    js_timestamp = await get_file_timestamp('./static/js/cabinet.js')
+
     return templates.TemplateResponse(
         request=request,
         name="cabinet.html",
         context={
+            "css_timestamp": css_timestamp,
+            "js_timestamp": js_timestamp,
             "items": items,
             "current_path": formatted_current_path,
             "parent_path": parent_path,

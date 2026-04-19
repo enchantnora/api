@@ -6419,3 +6419,53 @@ Could not determine dtype for column 35, falling back to string
 Could not determine dtype for column 36, falling back to string
 Could not determine dtype for column 41, falling back to string
 Could not determine dtype for column 46, falling back to string
+[2026-04-20 00:58:36 +0900] [33750] [INFO] Handling signal: term
+[2026-04-20 00:58:36 +0900] [33796] [INFO] Shutting down
+[2026-04-20 00:58:36 +0900] [33796] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 00:58:36 +0900] [33797] [INFO] Shutting down
+[2026-04-20 00:58:36 +0900] [33797] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 00:58:36 +0900] [33796] [INFO] Waiting for application shutdown.
+[2026-04-20 00:58:36 +0900] [33796] [INFO] Application shutdown complete.
+[2026-04-20 00:58:36 +0900] [33796] [INFO] Finished server process [33796]
+[2026-04-20 00:58:36 +0900] [33750] [ERROR] Worker (pid:33796) was sent SIGTERM!
+[2026-04-20 00:58:36 +0900] [33797] [INFO] Waiting for application shutdown.
+[2026-04-20 00:58:36 +0900] [33797] [INFO] Application shutdown complete.
+[2026-04-20 00:58:36 +0900] [33797] [INFO] Finished server process [33797]
+[2026-04-20 00:58:36 +0900] [33750] [ERROR] Worker (pid:33797) was sent SIGTERM!
+[2026-04-20 00:58:37 +0900] [33750] [INFO] Shutting down: Master
+[2026-04-20 00:58:37 +0900] [34379] [INFO] Starting gunicorn 23.0.0
+[2026-04-20 00:58:37 +0900] [34379] [INFO] Listening at: http://0.0.0.0:9900 (34379)
+[2026-04-20 00:58:37 +0900] [34379] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-20 00:58:37 +0900] [34425] [INFO] Booting worker with pid: 34425
+[2026-04-20 00:58:37 +0900] [34427] [INFO] Booting worker with pid: 34427
+[2026-04-20 00:58:39 +0900] [34425] [INFO] Started server process [34425]
+[2026-04-20 00:58:39 +0900] [34425] [INFO] Waiting for application startup.
+[2026-04-20 00:58:39 +0900] [34425] [INFO] Application startup complete.
+[2026-04-20 00:58:39 +0900] [34427] [INFO] Started server process [34427]
+[2026-04-20 00:58:39 +0900] [34427] [INFO] Waiting for application startup.
+[2026-04-20 00:58:39 +0900] [34427] [INFO] Application startup complete.
+[2026-04-20 01:30:58 +0900] [34379] [INFO] Handling signal: term
+[2026-04-20 01:30:58 +0900] [34425] [INFO] Shutting down
+[2026-04-20 01:30:58 +0900] [34425] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 01:30:58 +0900] [34427] [INFO] Shutting down
+[2026-04-20 01:30:58 +0900] [34427] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 01:30:58 +0900] [34425] [INFO] Waiting for application shutdown.
+[2026-04-20 01:30:58 +0900] [34425] [INFO] Application shutdown complete.
+[2026-04-20 01:30:58 +0900] [34425] [INFO] Finished server process [34425]
+[2026-04-20 01:30:58 +0900] [34379] [ERROR] Worker (pid:34425) was sent SIGTERM!
+[2026-04-20 01:30:58 +0900] [34427] [INFO] Waiting for application shutdown.
+[2026-04-20 01:30:58 +0900] [34427] [INFO] Application shutdown complete.
+[2026-04-20 01:30:58 +0900] [34427] [INFO] Finished server process [34427]
+[2026-04-20 01:30:58 +0900] [34379] [ERROR] Worker (pid:34427) was sent SIGTERM!
+[2026-04-20 01:30:58 +0900] [34379] [INFO] Shutting down: Master
+[2026-04-20 01:30:59 +0900] [34675] [INFO] Starting gunicorn 23.0.0
+[2026-04-20 01:30:59 +0900] [34675] [INFO] Listening at: http://0.0.0.0:9900 (34675)
+[2026-04-20 01:30:59 +0900] [34675] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-20 01:30:59 +0900] [34721] [INFO] Booting worker with pid: 34721
+[2026-04-20 01:30:59 +0900] [34723] [INFO] Booting worker with pid: 34723
+[2026-04-20 01:31:00 +0900] [34721] [INFO] Started server process [34721]
+[2026-04-20 01:31:00 +0900] [34721] [INFO] Waiting for application startup.
+[2026-04-20 01:31:00 +0900] [34721] [INFO] Application startup complete.
+[2026-04-20 01:31:00 +0900] [34723] [INFO] Started server process [34723]
+[2026-04-20 01:31:00 +0900] [34723] [INFO] Waiting for application startup.
+[2026-04-20 01:31:00 +0900] [34723] [INFO] Application startup complete.

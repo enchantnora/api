@@ -5,7 +5,7 @@
     <meta name="robots" content="none">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>CYBER CABINET</title>
-    <script src="{{ url_for('static', path='js/cabinet.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/cabinet.js') }}?ver={{js_timestamp}}" defer></script>
     <script src="{{ url_for('static', path='js/Arrow.es2015.min.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/mammoth.browser.min.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/three.min.js') }}" defer></script>
@@ -15,7 +15,7 @@
     <script src="{{ url_for('static', path='js/MTLLoader.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/purify.min.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/marked.min.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', path='css/cabinet.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/cabinet.css') }}?ver={{css_timestamp}}">
     <style>
         {% if admin == 1 %}
         #crown { color: #fff; text-shadow: 0 0 10px #ff8282; box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.6), 0px -3px 3px rgba(255, 130, 130, 0.3) inset; }
@@ -212,7 +212,7 @@
         <div id="edit-modal" class="none_selection" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(22, 33, 65, 0.9); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
             <div class="modal-content-box" style="width: 90%; max-width: 450px; height: auto;">
                 <div class="modal-header">
-                    <span>属性編集</span>
+                    <span id="edit-modal-title">属性編集</span>
                     <span class="modal-close" onclick="closeEditModal()">×</span>
                 </div>
                 <div class="modal-body" style="background-color: #131d39; padding: 25px; flex-direction: column; align-items: stretch; justify-content: flex-start;">

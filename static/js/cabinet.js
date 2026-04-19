@@ -530,6 +530,11 @@ function executeRenamePrompt(li) {
         isFolder: isFolder
     };
 
+    const modalTitle = document.getElementById('edit-modal-title');
+    if (modalTitle) {
+        modalTitle.textContent = fullDisplayName;
+    }
+
     const nameInput = document.getElementById('edit-name-input');
     const extDisplay = document.getElementById('edit-ext-display');
 
