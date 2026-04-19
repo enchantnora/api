@@ -12,6 +12,8 @@
     <script src="{{ url_for('static', path='js/STLLoader.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/OBJLoader.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/MTLLoader.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/purify.min.js') }}" defer></script>
+    <script src="{{ url_for('static', path='js/marked.min.js') }}" defer></script>
     <style>
         @charset "UTF-8";
         ::selection { background-color: rgba(93, 239, 222, 0.5); }
@@ -295,7 +297,7 @@
             padding: 2px 4px;
             border-radius: 4px;
             transition: all 0.2s;
-            border:1px solid #aaa;
+            border:1px solid #ccc;
             color: #333;
         }
         .breadcrumb-item:hover {
@@ -697,6 +699,71 @@
             display: table;
         }
         ::-webkit-scrollbar { display: none; }
+        .preview-markdown {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            overflow-y: auto;
+            color: #333;
+            line-height: 1.6;
+            text-align: left;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+        .preview-markdown h1, .preview-markdown h2, .preview-markdown h3 {
+            color: #162141;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .preview-markdown h1 { font-size: 24px; }
+        .preview-markdown h2 { font-size: 20px; }
+        .preview-markdown h3 { font-size: 18px; }
+        .preview-markdown p { margin-bottom: 10px; }
+        .preview-markdown pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        .preview-markdown code {
+            background: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #d14;
+        }
+        .preview-markdown pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        .preview-markdown blockquote {
+            border-left: 4px solid #80e5d8;
+            margin: 0 0 10px 0;
+            padding-left: 15px;
+            color: #666;
+            background: #f9f9f9;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .preview-markdown ul, .preview-markdown ol {
+            padding-left: 20px;
+            margin-bottom: 10px;
+            list-style-position: outside;
+        }
+        .preview-markdown ul { list-style-type: disc; }
+        .preview-markdown ol { list-style-type: decimal; }
+        .preview-markdown img { max-width: 100%; height: auto; border-radius: 4px; }
+        .preview-markdown a { color: #5eb6ff; text-decoration: none; }
+        .preview-markdown a:hover { text-decoration: underline; }
+        
         {% if admin == 1 %}
         #crown { color: #fff; text-shadow: 0 0 10px #ff8282; box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.6), 0px -3px 3px rgba(255, 130, 130, 0.3) inset; }
         #title { color: #fff; text-shadow: 0 0 15px #ff8282; }
@@ -1520,7 +1587,8 @@
                 'svg': 'svg', 'mp4': 'video', 'webm': 'video', 'mov': 'video',
                 'mp3': 'audio', 'wav': 'audio', 'm4a': 'audio', 'aac': 'audio', 'flac': 'audio', 'ogg': 'audio',
                 'pdf': 'pdf', 'csv': 'csv', 'xlsx': 'excel', 'xls': 'excel', 'xlsm': 'excel', 'docx': 'word',
-                'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text', 'json': 'text', 'log': 'text', 'md': 'text',
+                'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text', 'json': 'text', 'log': 'text', 
+                'md': 'markdown',
                 'stl': '3d', 'obj': '3d'
             };
     
@@ -1628,6 +1696,19 @@
                         const response = await fetch(url);
                         content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(await response.text())}</pre>`;
                     } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
+                },
+                // markdown用のハンドラーを追加
+                'markdown': async () => {
+                    try {
+                        const response = await fetch(url);
+                        const text = await response.text();
+                        // markedでHTMLに変換し、DOMPurifyでサニタイズを実行
+                        const rawHtml = marked.parse(text);
+                        const cleanHtml = DOMPurify.sanitize(rawHtml);
+                        content.innerHTML = `<div class="preview-markdown">${cleanHtml}</div>`;
+                    } catch (err) { 
+                        content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; 
+                    }
                 },
                 'csv': async () => {
                     try {
