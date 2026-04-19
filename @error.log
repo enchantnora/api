@@ -6823,3 +6823,28 @@ Could not determine dtype for column 36, falling back to string
 Could not determine dtype for column 55, falling back to string
 Could not determine dtype for column 57, falling back to string
 Could not determine dtype for column 59, falling back to string
+[2026-04-20 06:55:40 +0900] [36852] [INFO] Handling signal: term
+[2026-04-20 06:55:40 +0900] [36898] [INFO] Shutting down
+[2026-04-20 06:55:40 +0900] [36898] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 06:55:40 +0900] [36900] [INFO] Shutting down
+[2026-04-20 06:55:40 +0900] [36900] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 06:55:40 +0900] [36898] [INFO] Waiting for application shutdown.
+[2026-04-20 06:55:40 +0900] [36898] [INFO] Application shutdown complete.
+[2026-04-20 06:55:40 +0900] [36898] [INFO] Finished server process [36898]
+[2026-04-20 06:55:40 +0900] [36852] [ERROR] Worker (pid:36898) was sent SIGTERM!
+[2026-04-20 06:55:40 +0900] [36900] [INFO] Waiting for application shutdown.
+[2026-04-20 06:55:40 +0900] [36900] [INFO] Application shutdown complete.
+[2026-04-20 06:55:40 +0900] [36900] [INFO] Finished server process [36900]
+[2026-04-20 06:55:40 +0900] [36852] [ERROR] Worker (pid:36900) was sent SIGTERM!
+[2026-04-20 06:55:40 +0900] [36852] [INFO] Shutting down: Master
+[2026-04-20 06:55:41 +0900] [37431] [INFO] Starting gunicorn 23.0.0
+[2026-04-20 06:55:41 +0900] [37431] [INFO] Listening at: http://0.0.0.0:9900 (37431)
+[2026-04-20 06:55:41 +0900] [37431] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-20 06:55:41 +0900] [37477] [INFO] Booting worker with pid: 37477
+[2026-04-20 06:55:41 +0900] [37478] [INFO] Booting worker with pid: 37478
+[2026-04-20 06:55:42 +0900] [37477] [INFO] Started server process [37477]
+[2026-04-20 06:55:42 +0900] [37477] [INFO] Waiting for application startup.
+[2026-04-20 06:55:42 +0900] [37477] [INFO] Application startup complete.
+[2026-04-20 06:55:42 +0900] [37478] [INFO] Started server process [37478]
+[2026-04-20 06:55:42 +0900] [37478] [INFO] Waiting for application startup.
+[2026-04-20 06:55:42 +0900] [37478] [INFO] Application startup complete.

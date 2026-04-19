@@ -124,16 +124,27 @@ def extract_tags_from_file(file_path: Path, filename: str) -> str:
             audio = mutagen.File(file_path)
             if audio is not None:
                 artist = None
+                album = None
                 if audio.tags:
-                    keys = ['TPE1', '\xa9ART', 'artist', 'Artist', 'ARTIST']
-                    for k in keys:
+                    artist_keys = ['TPE1', '\xa9ART', 'artist', 'Artist', 'ARTIST']
+                    for k in artist_keys:
                         if k in audio.tags:
                             val = audio.tags[k]
                             artist = str(val[0]) if isinstance(val, list) else str(val)
                             break
+                    
+                    album_keys = ['TALB', '\xa9alb', 'album', 'Album', 'ALBUM']
+                    for k in album_keys:
+                        if k in audio.tags:
+                            val = audio.tags[k]
+                            album = str(val[0]) if isinstance(val, list) else str(val)
+                            break
                 
                 if artist and artist.lower() != 'unknown':
                     tags.add(artist)
+
+                if album and album.lower() != 'unknown':
+                    tags.add(album)
 
                 if hasattr(audio, 'info') and hasattr(audio.info, 'bitrate') and audio.info.bitrate:
                     tags.add(f"{int(audio.info.bitrate) // 1000}kbps")
