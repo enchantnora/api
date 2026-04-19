@@ -110,11 +110,12 @@ async def list_files(request: Request, path: str = "", query: str = ""):
     missing_db_entries = []
     
     if query:
-        query_lower = query.lower()
+        query_parts = query.lower().split()
         search_target = CABINET_DIR.rglob('*')
         
         for item in search_target:
-            if query_lower in item.name.lower():
+            item_name_lower = item.name.lower()
+            if all(part in item_name_lower for part in query_parts):
                 rel_path = str(item.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
                 is_dir = item.is_dir()
                 

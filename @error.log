@@ -5959,3 +5959,80 @@ Could not determine dtype for column 7, falling back to string
 [2026-04-17 20:24:32 +0900] [24578] [WARNING] Invalid HTTP request received.
 [2026-04-17 20:24:34 +0900] [24578] [WARNING] Invalid HTTP request received.
 [2026-04-17 20:24:39 +0900] [24578] [WARNING] Invalid HTTP request received.
+[2026-04-18 20:56:26 +0900] [24578] [WARNING] Invalid HTTP request received.
+[2026-04-18 20:56:40 +0900] [24578] [WARNING] Invalid HTTP request received.
+[2026-04-18 20:59:22 +0900] [24578] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+[2026-04-19 18:25:09 +0900] [24530] [INFO] Handling signal: term
+[2026-04-19 18:25:09 +0900] [24578] [INFO] Shutting down
+[2026-04-19 18:25:09 +0900] [24578] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-19 18:25:09 +0900] [24576] [INFO] Shutting down
+[2026-04-19 18:25:09 +0900] [24576] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-19 18:25:09 +0900] [24578] [INFO] Waiting for application shutdown.
+[2026-04-19 18:25:09 +0900] [24578] [INFO] Application shutdown complete.
+[2026-04-19 18:25:09 +0900] [24578] [INFO] Finished server process [24578]
+[2026-04-19 18:25:09 +0900] [24530] [ERROR] Worker (pid:24578) was sent SIGTERM!
+[2026-04-19 18:25:09 +0900] [24576] [INFO] Waiting for application shutdown.
+[2026-04-19 18:25:09 +0900] [24576] [INFO] Application shutdown complete.
+[2026-04-19 18:25:09 +0900] [24576] [INFO] Finished server process [24576]
+[2026-04-19 18:25:09 +0900] [24530] [ERROR] Worker (pid:24576) was sent SIGTERM!
+[2026-04-19 18:25:09 +0900] [24530] [INFO] Shutting down: Master
+[2026-04-19 18:25:10 +0900] [30961] [INFO] Starting gunicorn 23.0.0
+[2026-04-19 18:25:10 +0900] [30961] [INFO] Listening at: http://0.0.0.0:9900 (30961)
+[2026-04-19 18:25:10 +0900] [30961] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-19 18:25:10 +0900] [31007] [INFO] Booting worker with pid: 31007
+[2026-04-19 18:25:10 +0900] [31008] [INFO] Booting worker with pid: 31008
+[2026-04-19 18:25:11 +0900] [31007] [INFO] Started server process [31007]
+[2026-04-19 18:25:11 +0900] [31007] [INFO] Waiting for application startup.
+[2026-04-19 18:25:11 +0900] [31007] [INFO] Application startup complete.
+[2026-04-19 18:25:11 +0900] [31008] [INFO] Started server process [31008]
+[2026-04-19 18:25:11 +0900] [31008] [INFO] Waiting for application startup.
+[2026-04-19 18:25:11 +0900] [31008] [INFO] Application startup complete.
