@@ -12,6 +12,7 @@ import urllib.parse
 from datetime import datetime
 import json
 from PIL import Image, ExifTags
+import asyncio
 
 # 分割したファイルからのインポート
 from utils import (
@@ -69,12 +70,14 @@ async def init_cabinet_db():
         """)
         await db.commit()
 
-def get_cabinet_size(directory: Path) -> int:
-    total_size = 0
-    for f in directory.rglob('*'):
-        if f.is_file():
-            total_size += f.stat().st_size
-    return total_size
+async def get_cabinet_size(directory: Path) -> int:
+    def _calculate():
+        total_size = 0
+        for f in directory.rglob('*'):
+            if f.is_file():
+                total_size += f.stat().st_size
+        return total_size
+    return await asyncio.to_thread(_calculate)
 
 def get_secure_path(path: str) -> Path:
     clean_path = path.lstrip("/\\")
@@ -289,7 +292,7 @@ async def list_files(request: Request, path: str = "", query: str = ""):
         if parent_path == ".":
             parent_path = ""
 
-    used_capacity = get_cabinet_size(CABINET_DIR)
+    used_capacity = await get_cabinet_size(CABINET_DIR)
     admin = get_admin_level(request)
 
     formatted_current_path = path if path.endswith("/") else path + "/"
@@ -317,15 +320,19 @@ async def list_files(request: Request, path: str = "", query: str = ""):
 @router.post("/upload/")
 async def upload_file(request: Request, path: str = Form(""), file: UploadFile = File(...)):
     target_dir = get_secure_path(path)
-    target_dir.mkdir(parents=True, exist_ok=True)
+    await asyncio.to_thread(target_dir.mkdir, parents=True, exist_ok=True)
     target_file = target_dir / file.filename
     
-    if target_file.exists() and is_protected_item(file.filename, False):
+    if await asyncio.to_thread(target_file.exists) and is_protected_item(file.filename, False):
         if get_admin_level(request) != 1:
             raise HTTPException(status_code=403, detail="保護されたファイルの上書きは禁止されています")
             
-    used_capacity = get_cabinet_size(CABINET_DIR)
-    old_file_size = target_file.stat().st_size if target_file.exists() else 0
+    used_capacity = await get_cabinet_size(CABINET_DIR)
+    
+    def get_old_size():
+        return target_file.stat().st_size if target_file.exists() else 0
+        
+    old_file_size = await asyncio.to_thread(get_old_size)
     
     if file.size is not None and (used_capacity - old_file_size + file.size) > MAX_CAPACITY_BYTES:
         raise HTTPException(status_code=400, detail="Capacity limit exceeded (Pre-check)")
@@ -335,24 +342,27 @@ async def upload_file(request: Request, path: str = Form(""), file: UploadFile =
     chunk_size = 1024 * 1024
     
     try:
-        with open(temp_file, "wb") as f:
-            while chunk := await file.read(chunk_size):
-                written_size += len(chunk)
-                if (used_capacity - old_file_size + written_size) > MAX_CAPACITY_BYTES:
-                    raise HTTPException(status_code=400, detail="Capacity limit exceeded during upload")
-                f.write(chunk)
+        def write_chunk(chunk_data):
+            with open(temp_file, "ab") as f:
+                f.write(chunk_data)
 
-        temp_file.replace(target_file)
+        while chunk := await file.read(chunk_size):
+            written_size += len(chunk)
+            if (used_capacity - old_file_size + written_size) > MAX_CAPACITY_BYTES:
+                raise HTTPException(status_code=400, detail="Capacity limit exceeded during upload")
+            await asyncio.to_thread(write_chunk, chunk)
+
+        await asyncio.to_thread(temp_file.replace, target_file)
         
     except Exception as e:
-        temp_file.unlink(missing_ok=True)
+        await asyncio.to_thread(temp_file.unlink, missing_ok=True)
         raise e
         
     rel_path = str(target_file.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
     file_uuid = shortuuid.uuid()
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    tags_json = extract_tags_from_file(target_file, file.filename)
+    tags_json = await asyncio.to_thread(extract_tags_from_file, target_file, file.filename)
     
     async with aiosqlite.connect(DB_PATH) as db:
         await db.execute("DELETE FROM file_links WHERE relative_path = ?", (rel_path,))
@@ -395,16 +405,16 @@ async def move_file(
             raise HTTPException(status_code=403, detail="このファイルは保護されているため移動できません")
     
     target_dir = get_secure_path(target_path)
-    if not target_dir.exists() or not target_dir.is_dir():
+    if not await asyncio.to_thread(target_dir.exists) or not await asyncio.to_thread(target_dir.is_dir):
         raise HTTPException(status_code=404, detail="Target directory not found")
         
     destination_path = target_dir / filename
     
-    if destination_path.exists():
+    if await asyncio.to_thread(destination_path.exists):
         raise HTTPException(status_code=400, detail="同名のファイルが移動先に既に存在します")
         
     try:
-        shutil.move(str(source_path), str(destination_path))
+        await asyncio.to_thread(shutil.move, str(source_path), str(destination_path))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to move file: {str(e)}")
         
@@ -478,30 +488,34 @@ async def delete_item(request: Request, path: str):
     if target == CABINET_DIR:
         raise HTTPException(status_code=403, detail="Cannot delete root directory")
     
-    if not target.exists():
+    if not await asyncio.to_thread(target.exists):
         raise HTTPException(status_code=404, detail="Item not found")
 
     admin_level = get_admin_level(request)
-    is_dir = target.is_dir()
+    is_dir = await asyncio.to_thread(target.is_dir)
 
     if is_protected_item(target.name, is_dir) and admin_level != 1:
         type_str = "フォルダ" if is_dir else "ファイル"
         raise HTTPException(status_code=403, detail=f"この{type_str}は保護されています")
 
     if admin_level != 1:
-        for f in target.rglob('*'):
-            if is_protected_item(f.name, f.is_dir()):
-                raise HTTPException(status_code=403, detail="保護されたアイテムが含まれているため削除できません")
+        def check_protected_children():
+            for f in target.rglob('*'):
+                if is_protected_item(f.name, f.is_dir()):
+                    return True
+            return False
+        if await asyncio.to_thread(check_protected_children):
+            raise HTTPException(status_code=403, detail="保護されたアイテムが含まれているため削除できません")
         
     rel_path = str(target.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
         
     if is_dir:
-        shutil.rmtree(target)
+        await asyncio.to_thread(shutil.rmtree, target)
         async with aiosqlite.connect(DB_PATH) as db:
             await db.execute("DELETE FROM file_links WHERE relative_path LIKE ?", (f"{rel_path}/%",))
             await db.commit()
     else:
-        target.unlink()
+        await asyncio.to_thread(target.unlink)
         async with aiosqlite.connect(DB_PATH) as db:
             await db.execute("DELETE FROM file_links WHERE relative_path = ?", (rel_path,))
             await db.commit()
