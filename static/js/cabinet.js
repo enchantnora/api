@@ -352,6 +352,9 @@ function executeUpload(file, targetPath = APP.currentPath) {
         <div class="item-info">
             <div class="item-title">${Utils.escapeHtml(displayPath + file.name)}</div>
             <div class="item-meta"><span>Uploading...</span><span class="upload-percent" style="margin-left: 5px;">0%</span></div>
+        </div>
+        <div class="item-actions">
+            <button class="cli danger cancel-upload-btn" style="position: relative; z-index: 2;">中止</button>
         </div>`;
 
     const statusMsg = fileList.querySelector('.status-message');
@@ -361,6 +364,12 @@ function executeUpload(file, targetPath = APP.currentPath) {
     const progressBg = uploadLi.querySelector('.upload-progress-bg');
     const progressText = uploadLi.querySelector('.upload-percent');
     const xhr = new XMLHttpRequest();
+
+    const cancelBtn = uploadLi.querySelector('.cancel-upload-btn');
+    cancelBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        xhr.abort();
+    });
 
     xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
@@ -389,6 +398,15 @@ function executeUpload(file, targetPath = APP.currentPath) {
         APP.currentRemainingCapacity += file.size;
         uploadLi.remove();
         addMessage(`<span style="color: #ff0055;">通信エラーが発生しました。</span>`);
+        if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
+    };
+
+    xhr.onabort = () => {
+        APP.activeUploads--;
+        APP.currentRemainingCapacity += file.size;
+        uploadLi.remove();
+        addMessage(`<span style="color: #ff8282;">アップロードを中止しました: ${Utils.escapeHtml(file.name)}</span>`);
+        if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
     };
 
     xhr.open('POST', `${APP.basePath}/upload/`, true);

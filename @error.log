@@ -6995,3 +6995,7 @@ Could not determine dtype for column 36, falling back to string
 Could not determine dtype for column 55, falling back to string
 Could not determine dtype for column 57, falling back to string
 Could not determine dtype for column 59, falling back to string
+[2026-04-20 23:08:25 +0900] [39403] [WARNING] Invalid HTTP request received.
+[2026-04-20 23:08:32 +0900] [39403] [WARNING] Invalid HTTP request received.
+[2026-04-20 23:08:32 +0900] [39401] [WARNING] Invalid HTTP request received.
+[2026-04-20 23:08:36 +0900] [39401] [WARNING] Invalid HTTP request received.
