@@ -180,6 +180,21 @@ async def index(request: Request, db: aiosqlite.Connection = Depends(get_db)):
     response.set_cookie(key="user_uuid", value=user_uuid, max_age=180*24*3600)
     return response
 
+def build_search_query(keys: list[str], base_query: str, q: str) -> tuple[str, list]:
+    if not keys:
+        return f"{base_query} WHERE keyword LIKE ?", [f"%{q}%"]
+    
+    conds_list = []
+    params = []
+    for k in keys:
+        conds_list.append("(keyword LIKE ? OR name LIKE ? OR code LIKE ?)")
+        params.extend([f"%{k}%", f"%{k}%", f"%{k}%"])
+    conds = " AND ".join(conds_list)
+    
+    query = f"{base_query} WHERE ({conds}) OR keyword LIKE ?"
+    params.append(f"%{q}%")
+    return query, params
+
 @app.get("/search/", name="search")
 async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db)):
     q = q.strip()
@@ -188,6 +203,7 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
         
     keys = normalize_text(q).split()
     use_fts = all(len(k) >= 3 for k in keys) if keys else False
+    base_query = "SELECT slug, sk, code, name FROM product"
     
     try:
         if use_fts:
@@ -201,7 +217,7 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
             name_code_cond = " AND ".join(conds_list) if conds_list else "0"
             
             query = f"""
-                SELECT slug, sk, code, name FROM product 
+                {base_query} 
                 WHERE (rowid IN (
                     SELECT rowid FROM product_fts 
                     WHERE product_fts MATCH ?
@@ -214,20 +230,7 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
             async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()
         else:
-            if keys:
-                conds_list = []
-                params = []
-                for k in keys:
-                    conds_list.append("(keyword LIKE ? OR name LIKE ? OR code LIKE ?)")
-                    params.extend([f"%{k}%", f"%{k}%", f"%{k}%"])
-                conds = " AND ".join(conds_list)
-                
-                query = f"SELECT slug, sk, code, name FROM product WHERE ({conds}) OR keyword LIKE ?"
-                params.append(f"%{q}%")
-            else:
-                query = "SELECT slug, sk, code, name FROM product WHERE keyword LIKE ?"
-                params = [f"%{q}%"]
-            
+            query, params = build_search_query(keys, base_query, q)
             async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()
                 
@@ -236,21 +239,9 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
         
     except aiosqlite.Error as e:
         if use_fts:
-            if keys:
-                conds_list = []
-                params = []
-                for k in keys:
-                    conds_list.append("(keyword LIKE ? OR name LIKE ? OR code LIKE ?)")
-                    params.extend([f"%{k}%", f"%{k}%", f"%{k}%"])
-                conds = " AND ".join(conds_list)
-                query_like = f"SELECT slug, sk, code, name FROM product WHERE ({conds}) OR keyword LIKE ?"
-                params.append(f"%{q}%")
-            else:
-                query_like = "SELECT slug, sk, code, name FROM product WHERE keyword LIKE ?"
-                params = [f"%{q}%"]
-            
             try:
-                async with db.execute(query_like, params) as cursor:
+                query, params = build_search_query(keys, base_query, q)
+                async with db.execute(query, params) as cursor:
                     rows = await cursor.fetchall()
                 results = [dict(row) for row in rows]
                 return {"products": results, "count": len(rows)}
@@ -387,19 +378,17 @@ async def write_uuid_data(user_uuid: str, req_type: str, data: UuidData, db: aio
     col = "favorite" if req_type == "f" else "history"
     now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    fav_val = data.value if req_type == "f" else ""
+    hist_val = data.value if req_type == "h" else ""
+    
     try:
-        async with db.execute("SELECT uuid FROM user_uuid WHERE uuid = ?", (user_uuid,)) as cursor:
-            row = await cursor.fetchone()
-            
-        if row:
-            await db.execute(f"UPDATE user_uuid SET {col} = ?, days = ? WHERE uuid = ?", (data.value, now_str, user_uuid))
-        else:
-            fav_val = data.value if req_type == "f" else ""
-            hist_val = data.value if req_type == "h" else ""
-            await db.execute(
-                "INSERT INTO user_uuid (uuid, favorite, history, days) VALUES (?, ?, ?, ?)",
-                (user_uuid, fav_val, hist_val, now_str)
-            )
+        await db.execute(f"""
+            INSERT INTO user_uuid (uuid, favorite, history, days) 
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(uuid) DO UPDATE SET 
+                {col} = excluded.{col},
+                days = excluded.days
+        """, (user_uuid, fav_val, hist_val, now_str))
         await db.commit()
         return {"status": "success"}
     except aiosqlite.Error as e:
@@ -654,18 +643,9 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
     elif status == 2:
         keys = normalize_text(q).split()
         try:
-            if keys:
-                conds_list = []
-                params = []
-                for k in keys:
-                    conds_list.append("(keyword LIKE ? OR name LIKE ? OR code LIKE ?)")
-                    params.extend([f"%{k}%", f"%{k}%", f"%{k}%"])
-                conds = " AND ".join(conds_list)
-                query = f"SELECT sk, name, code, slug FROM product WHERE ({conds}) OR keyword LIKE ? ORDER BY rowid DESC LIMIT 50"
-                params.append(f"%{q}%")
-            else:
-                query = "SELECT sk, name, code, slug FROM product WHERE keyword LIKE ? ORDER BY rowid DESC LIMIT 50"
-                params = [f"%{q}%"]
+            base_query = "SELECT sk, name, code, slug FROM product"
+            query, params = build_search_query(keys, base_query, q)
+            query += " ORDER BY rowid DESC LIMIT 50"
             
             async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()

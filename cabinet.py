@@ -178,6 +178,46 @@ async def list_files(request: Request, path: str = "", query: str = ""):
 
     missing_db_entries = []
     
+    # 共通化するアイテム処理関数
+    def process_item(item, rel_path, is_dir):
+        item_tags = []
+        if not is_dir and rel_path in file_info:
+            tags_json_str = file_info[rel_path].get("tags") or '[]'
+            try:
+                item_tags = json.loads(tags_json_str)
+            except:
+                pass
+        
+        item_data = {
+            "name": item.name,
+            "is_dir": is_dir,
+            "size": item.stat().st_size if item.is_file() else 0,
+            "path": rel_path,
+            "is_protected": is_protected_item(item.name, is_dir),
+            "tags": item_tags
+        }
+        
+        if not is_dir:
+            if rel_path in file_info:
+                item_data["uuid"] = file_info[rel_path]["uuid"]
+                dt_str = file_info[rel_path]["created_at"]
+                item_data["created_at"] = dt_str[:19] if dt_str else ""
+            else:
+                new_uuid = shortuuid.uuid()
+                now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                item_data["uuid"] = new_uuid
+                item_data["created_at"] = now_str
+                missing_db_entries.append((new_uuid, rel_path, item.name, now_str, '[]'))
+        else:
+            item_data["uuid"] = None
+            item_data["created_at"] = ""
+            try:
+                item_data["item_count"] = len(list(item.iterdir()))
+            except PermissionError:
+                item_data["item_count"] = 0
+                
+        return item_data
+
     if query:
         query_parts = query.lower().split()
         search_target = CABINET_DIR.rglob('*')
@@ -187,13 +227,11 @@ async def list_files(request: Request, path: str = "", query: str = ""):
             rel_path = str(item.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
             is_dir = item.is_dir()
             
-            item_tags = []
             tags_str_lower = ""
             if not is_dir and rel_path in file_info:
                 tags_json_str = file_info[rel_path].get("tags") or '[]'
                 try:
-                    item_tags = json.loads(tags_json_str)
-                    tags_str_lower = " ".join(item_tags).lower()
+                    tags_str_lower = " ".join(json.loads(tags_json_str)).lower()
                 except:
                     pass
             
@@ -204,77 +242,12 @@ async def list_files(request: Request, path: str = "", query: str = ""):
                     break
                     
             if match:
-                item_data = {
-                    "name": item.name,
-                    "is_dir": is_dir,
-                    "size": item.stat().st_size if item.is_file() else 0,
-                    "path": rel_path,
-                    "is_protected": is_protected_item(item.name, is_dir),
-                    "tags": item_tags
-                }
-                
-                if not is_dir:
-                    if rel_path in file_info:
-                        item_data["uuid"] = file_info[rel_path]["uuid"]
-                        dt_str = file_info[rel_path]["created_at"]
-                        item_data["created_at"] = dt_str[:19] if dt_str else ""
-                    else:
-                        new_uuid = shortuuid.uuid()
-                        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        item_data["uuid"] = new_uuid
-                        item_data["created_at"] = now_str
-                        missing_db_entries.append((new_uuid, rel_path, item.name, now_str, '[]'))
-                else:
-                    item_data["uuid"] = None
-                    item_data["created_at"] = ""
-                    try:
-                        item_data["item_count"] = len(list(item.iterdir()))
-                    except PermissionError:
-                        item_data["item_count"] = 0
-                    
-                items.append(item_data)
+                items.append(process_item(item, rel_path, is_dir))
     else:
         for item in target_dir.iterdir():
             rel_path = str(item.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
             is_dir = item.is_dir()
-            
-            item_tags = []
-            if not is_dir and rel_path in file_info:
-                tags_json_str = file_info[rel_path].get("tags") or '[]'
-                try:
-                    item_tags = json.loads(tags_json_str)
-                except:
-                    pass
-            
-            item_data = {
-                "name": item.name,
-                "is_dir": is_dir,
-                "size": item.stat().st_size if item.is_file() else 0,
-                "path": rel_path,
-                "is_protected": is_protected_item(item.name, is_dir),
-                "tags": item_tags
-            }
-            
-            if not is_dir:
-                if rel_path in file_info:
-                    item_data["uuid"] = file_info[rel_path]["uuid"]
-                    dt_str = file_info[rel_path]["created_at"]
-                    item_data["created_at"] = dt_str[:19] if dt_str else ""
-                else:
-                    new_uuid = shortuuid.uuid()
-                    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    item_data["uuid"] = new_uuid
-                    item_data["created_at"] = now_str
-                    missing_db_entries.append((new_uuid, rel_path, item.name, now_str, '[]'))
-            else:
-                item_data["uuid"] = None
-                item_data["created_at"] = ""
-                try:
-                    item_data["item_count"] = len(list(item.iterdir()))
-                except PermissionError:
-                    item_data["item_count"] = 0
-                
-            items.append(item_data)
+            items.append(process_item(item, rel_path, is_dir))
         
     if missing_db_entries:
         async with aiosqlite.connect(DB_PATH) as db:

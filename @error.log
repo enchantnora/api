@@ -6999,3 +6999,40 @@ Could not determine dtype for column 59, falling back to string
 [2026-04-20 23:08:32 +0900] [39403] [WARNING] Invalid HTTP request received.
 [2026-04-20 23:08:32 +0900] [39401] [WARNING] Invalid HTTP request received.
 [2026-04-20 23:08:36 +0900] [39401] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 6, falling back to string
+[2026-04-21 03:57:20 +0900] [39355] [INFO] Handling signal: term
+[2026-04-21 03:57:20 +0900] [39403] [INFO] Shutting down
+[2026-04-21 03:57:20 +0900] [39403] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-21 03:57:20 +0900] [39401] [INFO] Shutting down
+[2026-04-21 03:57:20 +0900] [39401] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-21 03:57:20 +0900] [39403] [INFO] Waiting for application shutdown.
+[2026-04-21 03:57:20 +0900] [39403] [INFO] Application shutdown complete.
+[2026-04-21 03:57:20 +0900] [39403] [INFO] Finished server process [39403]
+[2026-04-21 03:57:20 +0900] [39355] [ERROR] Worker (pid:39403) was sent SIGTERM!
+[2026-04-21 03:57:20 +0900] [39401] [INFO] Waiting for application shutdown.
+[2026-04-21 03:57:20 +0900] [39401] [INFO] Application shutdown complete.
+[2026-04-21 03:57:20 +0900] [39401] [INFO] Finished server process [39401]
+[2026-04-21 03:57:20 +0900] [39355] [ERROR] Worker (pid:39401) was sent SIGTERM!
+[2026-04-21 03:57:20 +0900] [39355] [INFO] Shutting down: Master
+[2026-04-21 03:57:21 +0900] [40295] [INFO] Starting gunicorn 23.0.0
+[2026-04-21 03:57:21 +0900] [40295] [INFO] Listening at: http://0.0.0.0:9900 (40295)
+[2026-04-21 03:57:21 +0900] [40295] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-21 03:57:21 +0900] [40341] [INFO] Booting worker with pid: 40341
+[2026-04-21 03:57:21 +0900] [40342] [INFO] Booting worker with pid: 40342
+[2026-04-21 03:57:23 +0900] [40342] [INFO] Started server process [40342]
+[2026-04-21 03:57:23 +0900] [40342] [INFO] Waiting for application startup.
+[2026-04-21 03:57:23 +0900] [40341] [INFO] Started server process [40341]
+[2026-04-21 03:57:23 +0900] [40341] [INFO] Waiting for application startup.
+[2026-04-21 03:57:23 +0900] [40342] [INFO] Application startup complete.
+[2026-04-21 03:57:23 +0900] [40341] [INFO] Application startup complete.
