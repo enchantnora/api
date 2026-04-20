@@ -6848,3 +6848,50 @@ Could not determine dtype for column 59, falling back to string
 [2026-04-20 06:55:42 +0900] [37478] [INFO] Started server process [37478]
 [2026-04-20 06:55:42 +0900] [37478] [INFO] Waiting for application startup.
 [2026-04-20 06:55:42 +0900] [37478] [INFO] Application startup complete.
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+[2026-04-20 12:52:48 +0900] [37431] [INFO] Handling signal: term
+[2026-04-20 12:52:48 +0900] [37478] [INFO] Shutting down
+[2026-04-20 12:52:48 +0900] [37478] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 12:52:48 +0900] [37477] [INFO] Shutting down
+[2026-04-20 12:52:48 +0900] [37477] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-20 12:52:48 +0900] [37478] [INFO] Waiting for application shutdown.
+[2026-04-20 12:52:48 +0900] [37478] [INFO] Application shutdown complete.
+[2026-04-20 12:52:48 +0900] [37478] [INFO] Finished server process [37478]
+[2026-04-20 12:52:48 +0900] [37477] [INFO] Waiting for application shutdown.
+[2026-04-20 12:52:48 +0900] [37431] [ERROR] Worker (pid:37478) was sent SIGTERM!
+[2026-04-20 12:52:48 +0900] [37477] [INFO] Application shutdown complete.
+[2026-04-20 12:52:48 +0900] [37477] [INFO] Finished server process [37477]
+[2026-04-20 12:52:48 +0900] [37431] [ERROR] Worker (pid:37477) was sent SIGTERM!
+[2026-04-20 12:52:48 +0900] [37431] [INFO] Shutting down: Master
+[2026-04-20 12:52:49 +0900] [38157] [INFO] Starting gunicorn 23.0.0
+[2026-04-20 12:52:49 +0900] [38157] [INFO] Listening at: http://0.0.0.0:9900 (38157)
+[2026-04-20 12:52:49 +0900] [38157] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-20 12:52:49 +0900] [38203] [INFO] Booting worker with pid: 38203
+[2026-04-20 12:52:49 +0900] [38205] [INFO] Booting worker with pid: 38205
+[2026-04-20 12:52:50 +0900] [38203] [INFO] Started server process [38203]
+[2026-04-20 12:52:50 +0900] [38203] [INFO] Waiting for application startup.
+[2026-04-20 12:52:50 +0900] [38203] [INFO] Application startup complete.
+[2026-04-20 12:52:50 +0900] [38205] [INFO] Started server process [38205]
+[2026-04-20 12:52:50 +0900] [38205] [INFO] Waiting for application startup.
+[2026-04-20 12:52:50 +0900] [38205] [INFO] Application startup complete.

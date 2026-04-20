@@ -150,6 +150,11 @@ def extract_tags_from_file(file_path: Path, filename: str) -> str:
                     tags.add(f"{int(audio.info.bitrate) // 1000}kbps")
         except Exception:
             pass
+    elif ext in ['stl', 'obj', 'glb', 'gltf']:
+        try:
+            tags.add('3D')
+        except Exception:
+            pass
 
     return json.dumps(list(tags), ensure_ascii=False)
 
