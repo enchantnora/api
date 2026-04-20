@@ -71,14 +71,14 @@
                     <div class="icons none_selection" onclick="btn3()">
                         <span class="e">📅</span><span class="t">SHIFT更新</span>
                     </div>
-                    {% elif admin >= 2 %}<div class="icons none_selection" onclick="btn1()" style="opacity: 0.33;">
-                        <span class="e">🔬</span><span class="t">Data解析</span>
+                    {% elif admin >= 2 %}<div class="icons none_selection" onclick="btn4()" style="opacity: 0.33;">
+                        <span class="e">🛎️</span><span class="t">Data展開</span>
                     </div>
-                    <div class="icons none_selection" onclick="btn2()" style="opacity: 0.33;">
-                        <span class="e">🔗</span><span class="t">DB更新</span>
+                    <div class="icons none_selection" onclick="btn5()" style="opacity: 0.33;">
+                        <span class="e">⚡</span><span class="t">構造解析</span>
                     </div>
-                    <div class="icons none_selection" onclick="btn3()" style="opacity: 0.33;">
-                        <span class="e">📅</span><span class="t">SHIFT更新</span>
+                    <div class="icons none_selection" onclick="btn6()" style="opacity: 0.33;">
+                        <span class="e">👑</span><span class="t">情報集計</span>
                     </div>
                     {% else %}<div class="icons none_selection" onclick="btn1()" style="opacity: 0.33;">
                         <span class="e">🔬</span><span class="t">Data解析</span>
@@ -254,6 +254,10 @@
                 dataFormatting: "{{ url_for('data_formatting') }}",
                 apply: "{{ url_for('apply') }}",
                 docs: "{{ url_for('docs') }}"
+                {% elif admin == 2 %}
+                dataFormatting: null,
+                apply: null,
+                docs: null,
                 {% else %}
                 dataFormatting: null,
                 apply: null,

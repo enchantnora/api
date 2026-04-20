@@ -26,8 +26,8 @@ router = APIRouter(prefix=CABINET_PREFIX, tags=["cabinet"])
 
 # 特別な名前
 SPECIAL_NAMES = {
-    "Cxc": "1",
-    "Wzz": "2",
+    "cxc": "1",
+    "wzz": "2",
 }
 
 # mainディレクトリを基準に絶対パスを生成
@@ -366,6 +366,7 @@ async def upload_file(request: Request, path: str = Form(""), file: UploadFile =
 
 @router.post("/mkdir/")
 async def create_directory(request: Request, response: Response, path: str = Form(""), folder_name: str = Form(...)):
+    folder_name = folder_name.lower()
     if folder_name in SPECIAL_NAMES:
         target_level = SPECIAL_NAMES[folder_name]
         if request.cookies.get("cabinet_admin") == target_level:

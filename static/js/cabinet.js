@@ -1,3 +1,25 @@
+// ボタン処理
+async function executeAdminTask(url, taskName) {
+    if (!url || !APP.isAdmin) return addMessage('<span style="color: #ff0055;">管理者のみ実行可能</span>');
+    if (APP.isProcessing) return;
+    APP.isProcessing = true;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        addMessage(`<span style="color: #70c65b;">${taskName}: ${data.status}</span>`);
+    } catch (error) {
+        addMessage(`<span style="color: #ff0055;">エラーが発生しました。${error}</span>`);
+    } finally {
+        APP.isProcessing = false;
+    }
+}
+
+const btn1 = () => executeAdminTask(APP.endpoints.dataFormatting, "Data解析");
+const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+const btn3 = () => APP.endpoints.docs ? window.open(APP.endpoints.docs, '_blank') : addMessage('<span style="color: #ff0055;">管理者のみ実行可能</span>');
+const btn4 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+const btn5 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+const btn6 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
 
 // ユーティリティ関数
 const Utils = {
@@ -263,26 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
-
-// ボタン処理
-async function executeAdminTask(url, taskName) {
-    if (!url || !APP.isAdmin) return addMessage('<span style="color: #ff0055;">管理者のみ実行可能</span>');
-    if (APP.isProcessing) return;
-    APP.isProcessing = true;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        addMessage(`<span style="color: #70c65b;">${taskName}: ${data.status}</span>`);
-    } catch (error) {
-        addMessage(`<span style="color: #ff0055;">エラーが発生しました。${error}</span>`);
-    } finally {
-        APP.isProcessing = false;
-    }
-}
-
-const btn1 = () => executeAdminTask(APP.endpoints.dataFormatting, "Data解析");
-const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
-const btn3 = () => APP.endpoints.docs ? window.open(APP.endpoints.docs, '_blank') : addMessage('<span style="color: #ff0055;">管理者のみ実行可能</span>');
 
 function navigate(path) { window.location.href = `${APP.basePath}/?path=${encodeURIComponent(path)}`; }
 
