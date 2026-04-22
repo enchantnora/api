@@ -311,22 +311,27 @@ async def upload_file(request: Request, path: str = Form(""), file: UploadFile =
         raise HTTPException(status_code=400, detail="Capacity limit exceeded (Pre-check)")
         
     temp_file = target_dir / f"{file.filename}.{shortuuid.uuid()}.tmp"
-    written_size = 0
     chunk_size = 1024 * 1024
     
     try:
-        def write_chunk(chunk_data):
-            with open(temp_file, "ab") as f:
-                f.write(chunk_data)
+        def save_file_sync():
+            written_size = 0
+            with open(temp_file, "wb") as f:
+                while True:
+                    chunk = file.file.read(chunk_size)
+                    if not chunk:
+                        break
+                    written_size += len(chunk)
+                    if (used_capacity - old_file_size + written_size) > MAX_CAPACITY_BYTES:
+                        raise ValueError("Capacity limit exceeded during upload")
+                    f.write(chunk)
 
-        while chunk := await file.read(chunk_size):
-            written_size += len(chunk)
-            if (used_capacity - old_file_size + written_size) > MAX_CAPACITY_BYTES:
-                raise HTTPException(status_code=400, detail="Capacity limit exceeded during upload")
-            await asyncio.to_thread(write_chunk, chunk)
-
+        await asyncio.to_thread(save_file_sync)
         await asyncio.to_thread(temp_file.replace, target_file)
         
+    except ValueError as e:
+        await asyncio.to_thread(temp_file.unlink, missing_ok=True)
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         await asyncio.to_thread(temp_file.unlink, missing_ok=True)
         raise e

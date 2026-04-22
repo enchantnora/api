@@ -7036,3 +7036,89 @@ Could not determine dtype for column 6, falling back to string
 [2026-04-21 03:57:23 +0900] [40341] [INFO] Waiting for application startup.
 [2026-04-21 03:57:23 +0900] [40342] [INFO] Application startup complete.
 [2026-04-21 03:57:23 +0900] [40341] [INFO] Application startup complete.
+[2026-04-21 23:53:10 +0900] [40342] [WARNING] Invalid HTTP request received.
+[2026-04-21 23:53:12 +0900] [40341] [WARNING] Invalid HTTP request received.
+[2026-04-21 23:54:14 +0900] [40342] [WARNING] Invalid HTTP request received.
+[2026-04-22 10:50:58 +0900] [40341] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/cabinet.py", line 332, in upload_file
+    raise e
+  File "/home/pi/API/cabinet.py", line 328, in upload_file
+    await asyncio.to_thread(temp_file.replace, target_file)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/pathlib.py", line 1188, in replace
+    os.replace(self, target)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/pi/API/cabinet/いろいろ/seikei(共有).numbers.7LAAsSuqZ8gJmZ7SLfbiTu.tmp' -> '/home/pi/API/cabinet/いろいろ/seikei(共有).numbers'
+[2026-04-22 12:35:06 +0900] [40295] [INFO] Handling signal: term
+[2026-04-22 12:35:06 +0900] [40342] [INFO] Shutting down
+[2026-04-22 12:35:06 +0900] [40342] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-22 12:35:06 +0900] [40341] [INFO] Shutting down
+[2026-04-22 12:35:06 +0900] [40341] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-22 12:35:06 +0900] [40342] [INFO] Waiting for application shutdown.
+[2026-04-22 12:35:06 +0900] [40342] [INFO] Application shutdown complete.
+[2026-04-22 12:35:06 +0900] [40342] [INFO] Finished server process [40342]
+[2026-04-22 12:35:06 +0900] [40295] [ERROR] Worker (pid:40342) was sent SIGTERM!
+[2026-04-22 12:35:06 +0900] [40341] [INFO] Waiting for application shutdown.
+[2026-04-22 12:35:06 +0900] [40341] [INFO] Application shutdown complete.
+[2026-04-22 12:35:06 +0900] [40341] [INFO] Finished server process [40341]
+[2026-04-22 12:35:06 +0900] [40295] [ERROR] Worker (pid:40341) was sent SIGTERM!
+[2026-04-22 12:35:06 +0900] [40295] [INFO] Shutting down: Master
+[2026-04-22 12:35:07 +0900] [42934] [INFO] Starting gunicorn 23.0.0
+[2026-04-22 12:35:07 +0900] [42934] [INFO] Listening at: http://0.0.0.0:9900 (42934)
+[2026-04-22 12:35:07 +0900] [42934] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-22 12:35:07 +0900] [42980] [INFO] Booting worker with pid: 42980
+[2026-04-22 12:35:07 +0900] [42982] [INFO] Booting worker with pid: 42982
+[2026-04-22 12:35:08 +0900] [42980] [INFO] Started server process [42980]
+[2026-04-22 12:35:08 +0900] [42980] [INFO] Waiting for application startup.
+[2026-04-22 12:35:08 +0900] [42980] [INFO] Application startup complete.
+[2026-04-22 12:35:09 +0900] [42982] [INFO] Started server process [42982]
+[2026-04-22 12:35:09 +0900] [42982] [INFO] Waiting for application startup.
+[2026-04-22 12:35:09 +0900] [42982] [INFO] Application startup complete.

@@ -13,6 +13,9 @@ def on_starting(server):
 loglevel = "info"
 capture_output = True
 
+# タイムアウト時間（秒）を追加。大容量アップロード用に1時間に設定。
+timeout = 3600
+
 # アクセスログのフォーマット
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
 
