@@ -7122,3 +7122,28 @@ FileNotFoundError: [Errno 2] No such file or directory: '/home/pi/API/cabinet/„Å
 [2026-04-22 12:35:09 +0900] [42982] [INFO] Started server process [42982]
 [2026-04-22 12:35:09 +0900] [42982] [INFO] Waiting for application startup.
 [2026-04-22 12:35:09 +0900] [42982] [INFO] Application startup complete.
+[2026-04-22 12:44:00 +0900] [42934] [INFO] Handling signal: term
+[2026-04-22 12:44:00 +0900] [42982] [INFO] Shutting down
+[2026-04-22 12:44:00 +0900] [42982] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-22 12:44:00 +0900] [42980] [INFO] Shutting down
+[2026-04-22 12:44:00 +0900] [42980] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-22 12:44:00 +0900] [42982] [INFO] Waiting for application shutdown.
+[2026-04-22 12:44:00 +0900] [42982] [INFO] Application shutdown complete.
+[2026-04-22 12:44:00 +0900] [42982] [INFO] Finished server process [42982]
+[2026-04-22 12:44:00 +0900] [42934] [ERROR] Worker (pid:42982) was sent SIGTERM!
+[2026-04-22 12:44:00 +0900] [42980] [INFO] Waiting for application shutdown.
+[2026-04-22 12:44:00 +0900] [42980] [INFO] Application shutdown complete.
+[2026-04-22 12:44:00 +0900] [42980] [INFO] Finished server process [42980]
+[2026-04-22 12:44:00 +0900] [42934] [ERROR] Worker (pid:42980) was sent SIGTERM!
+[2026-04-22 12:44:00 +0900] [42934] [INFO] Shutting down: Master
+[2026-04-22 12:44:01 +0900] [43151] [INFO] Starting gunicorn 23.0.0
+[2026-04-22 12:44:01 +0900] [43151] [INFO] Listening at: http://0.0.0.0:9900 (43151)
+[2026-04-22 12:44:01 +0900] [43151] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-22 12:44:01 +0900] [43197] [INFO] Booting worker with pid: 43197
+[2026-04-22 12:44:01 +0900] [43199] [INFO] Booting worker with pid: 43199
+[2026-04-22 12:44:03 +0900] [43197] [INFO] Started server process [43197]
+[2026-04-22 12:44:03 +0900] [43197] [INFO] Waiting for application startup.
+[2026-04-22 12:44:03 +0900] [43197] [INFO] Application startup complete.
+[2026-04-22 12:44:03 +0900] [43199] [INFO] Started server process [43199]
+[2026-04-22 12:44:03 +0900] [43199] [INFO] Waiting for application startup.
+[2026-04-22 12:44:03 +0900] [43199] [INFO] Application startup complete.

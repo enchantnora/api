@@ -291,66 +291,69 @@ async def list_files(request: Request, path: str = "", query: str = ""):
     )
 
 @router.post("/upload/")
-async def upload_file(request: Request, path: str = Form(""), file: UploadFile = File(...)):
+async def upload_file(
+    request: Request,
+    path: str = Form(""),
+    filename: str = Form(...),
+    total_size: int = Form(...),
+    chunk_index: int = Form(...),
+    total_chunks: int = Form(...),
+    upload_id: str = Form(...),
+    file: UploadFile = File(None)
+):
     target_dir = get_secure_path(path)
     await asyncio.to_thread(target_dir.mkdir, parents=True, exist_ok=True)
-    target_file = target_dir / file.filename
+    target_file = target_dir / filename
     
-    if await asyncio.to_thread(target_file.exists) and is_protected_item(file.filename, False):
-        if get_admin_level(request) != 1:
-            raise HTTPException(status_code=403, detail="保護されたファイルの上書きは禁止されています")
+    if chunk_index == 0:
+        if await asyncio.to_thread(target_file.exists) and is_protected_item(filename, False):
+            if get_admin_level(request) != 1:
+                raise HTTPException(status_code=403, detail="保護されたファイルの上書きは禁止されています")
+                
+        used_capacity = await get_cabinet_size(CABINET_DIR)
+        
+        def get_old_size():
+            return target_file.stat().st_size if target_file.exists() else 0
             
-    used_capacity = await get_cabinet_size(CABINET_DIR)
-    
-    def get_old_size():
-        return target_file.stat().st_size if target_file.exists() else 0
+        old_file_size = await asyncio.to_thread(get_old_size)
         
-    old_file_size = await asyncio.to_thread(get_old_size)
-    
-    if file.size is not None and (used_capacity - old_file_size + file.size) > MAX_CAPACITY_BYTES:
-        raise HTTPException(status_code=400, detail="Capacity limit exceeded (Pre-check)")
-        
-    temp_file = target_dir / f"{file.filename}.{shortuuid.uuid()}.tmp"
-    chunk_size = 1024 * 1024
+        if (used_capacity - old_file_size + total_size) > MAX_CAPACITY_BYTES:
+            raise HTTPException(status_code=400, detail="Capacity limit exceeded (Pre-check)")
+            
+    temp_file = target_dir / f"{filename}.{upload_id}.tmp"
     
     try:
-        def save_file_sync():
-            written_size = 0
-            with open(temp_file, "wb") as f:
-                while True:
-                    chunk = file.file.read(chunk_size)
-                    if not chunk:
-                        break
-                    written_size += len(chunk)
-                    if (used_capacity - old_file_size + written_size) > MAX_CAPACITY_BYTES:
-                        raise ValueError("Capacity limit exceeded during upload")
-                    f.write(chunk)
-
-        await asyncio.to_thread(save_file_sync)
-        await asyncio.to_thread(temp_file.replace, target_file)
+        if file is not None:
+            chunk_data = await file.read()
+            def write_chunk():
+                with open(temp_file, "ab") as f:
+                    f.write(chunk_data)
+            await asyncio.to_thread(write_chunk)
+            
+        if chunk_index == total_chunks - 1:
+            await asyncio.to_thread(temp_file.replace, target_file)
+            
+            rel_path = str(target_file.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
+            file_uuid = shortuuid.uuid()
+            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            tags_json = await asyncio.to_thread(extract_tags_from_file, target_file, filename)
+            
+            async with aiosqlite.connect(DB_PATH) as db:
+                await db.execute("DELETE FROM file_links WHERE relative_path = ?", (rel_path,))
+                await db.execute("""
+                    INSERT INTO file_links (uuid, relative_path, filename, created_at, tags)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (file_uuid, rel_path, filename, now_str, tags_json))
+                await db.commit()
+                
+            return {"status": "success", "filename": filename, "completed": True}
+            
+        return {"status": "success", "chunk_index": chunk_index, "completed": False}
         
-    except ValueError as e:
-        await asyncio.to_thread(temp_file.unlink, missing_ok=True)
-        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         await asyncio.to_thread(temp_file.unlink, missing_ok=True)
-        raise e
-        
-    rel_path = str(target_file.resolve().relative_to(CABINET_DIR)).replace("\\", "/")
-    file_uuid = shortuuid.uuid()
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    tags_json = await asyncio.to_thread(extract_tags_from_file, target_file, file.filename)
-    
-    async with aiosqlite.connect(DB_PATH) as db:
-        await db.execute("DELETE FROM file_links WHERE relative_path = ?", (rel_path,))
-        await db.execute("""
-            INSERT INTO file_links (uuid, relative_path, filename, created_at, tags)
-            VALUES (?, ?, ?, ?, ?)
-        """, (file_uuid, rel_path, file.filename, now_str, tags_json))
-        await db.commit()
-        
-    return {"status": "success", "filename": file.filename}
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/mkdir/")
 async def create_directory(request: Request, response: Response, path: str = Form(""), folder_name: str = Form(...)):

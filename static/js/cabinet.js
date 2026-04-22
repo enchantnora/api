@@ -327,7 +327,7 @@ function traverseFileTree(item, path = "") {
     }
 }
 
-function executeUpload(file, targetPath = APP.currentPath) {
+async function executeUpload(file, targetPath = APP.currentPath) {
     if (file.size > APP.currentRemainingCapacity) {
         alert(`【容量超過】\nストレージの空き容量が不足しています。\n\nファイル名: ${file.name}\nサイズ: ${Utils.formatBytes(file.size)}`);
         return;
@@ -335,10 +335,6 @@ function executeUpload(file, targetPath = APP.currentPath) {
 
     APP.currentRemainingCapacity -= file.size;
     APP.activeUploads++;
-
-    const formData = new FormData();
-    formData.append("path", targetPath);
-    formData.append("file", file);
 
     const fileList = document.getElementById('file-list');
     const uploadLi = document.createElement('li');
@@ -363,54 +359,72 @@ function executeUpload(file, targetPath = APP.currentPath) {
     
     const progressBg = uploadLi.querySelector('.upload-progress-bg');
     const progressText = uploadLi.querySelector('.upload-percent');
-    const xhr = new XMLHttpRequest();
-
+    
+    let isCancelled = false;
     const cancelBtn = uploadLi.querySelector('.cancel-upload-btn');
     cancelBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        xhr.abort();
+        isCancelled = true;
     });
 
-    xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-            const percent = (event.loaded / event.total) * 100;
-            progressBg.style.width = `${percent}%`;
-            progressText.textContent = `${Math.floor(percent)}%`;
-        }
-    };
+    const chunkSize = 10 * 1024 * 1024;
+    const totalChunks = Math.ceil(file.size / chunkSize) || 1;
+    const uploadId = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
-    xhr.onload = () => {
-        APP.activeUploads--;
-        if (xhr.status === 200) {
-            if (APP.activeUploads === 0) location.reload();
-        } else {
+    for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+        if (isCancelled) {
+            APP.activeUploads--;
             APP.currentRemainingCapacity += file.size;
             uploadLi.remove();
-            let errorMsg = "アップロードに失敗しました。";
-            try { if (JSON.parse(xhr.responseText).detail) errorMsg = JSON.parse(xhr.responseText).detail; } catch(e) {}
-            addMessage(`<span style="color: #ff0055;">${errorMsg}</span>`);
+            addMessage(`<span style="color: #ff8282;">アップロードを中止しました: ${Utils.escapeHtml(file.name)}</span>`);
             if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
+            return;
         }
-    };
 
-    xhr.onerror = () => {
-        APP.activeUploads--;
-        APP.currentRemainingCapacity += file.size;
-        uploadLi.remove();
-        addMessage(`<span style="color: #ff0055;">通信エラーが発生しました。</span>`);
-        if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
-    };
+        const start = chunkIndex * chunkSize;
+        const end = Math.min(start + chunkSize, file.size);
+        const chunk = file.slice(start, end);
 
-    xhr.onabort = () => {
-        APP.activeUploads--;
-        APP.currentRemainingCapacity += file.size;
-        uploadLi.remove();
-        addMessage(`<span style="color: #ff8282;">アップロードを中止しました: ${Utils.escapeHtml(file.name)}</span>`);
-        if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
-    };
+        const formData = new FormData();
+        formData.append("path", targetPath);
+        formData.append("filename", file.name);
+        formData.append("total_size", file.size);
+        formData.append("chunk_index", chunkIndex);
+        formData.append("total_chunks", totalChunks);
+        formData.append("upload_id", uploadId);
+        formData.append("file", chunk);
 
-    xhr.open('POST', `${APP.basePath}/upload/`, true);
-    xhr.send(formData);
+        try {
+            const response = await fetch(`${APP.basePath}/upload/`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.detail || "Upload failed");
+            }
+
+            const data = await response.json();
+            
+            const percent = ((chunkIndex + 1) / totalChunks) * 100;
+            progressBg.style.width = `${percent}%`;
+            progressText.textContent = `${Math.floor(percent)}%`;
+
+            if (data.completed) {
+                APP.activeUploads--;
+                if (APP.activeUploads === 0) location.reload();
+                return;
+            }
+        } catch (error) {
+            APP.activeUploads--;
+            APP.currentRemainingCapacity += file.size;
+            uploadLi.remove();
+            addMessage(`<span style="color: #ff0055;">アップロードエラー: ${error.message}</span>`);
+            if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
+            return;
+        }
+    }
 }
 
 async function executeMove(uuid, filename, targetPath) {
