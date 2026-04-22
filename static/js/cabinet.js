@@ -651,6 +651,7 @@ function openPreview(filename, uuid, size, dateStr) {
         'image': () => `<img src="${url}" class="preview-image" alt="preview">`,
         'video': () => {
             if (landscapeBtn) landscapeBtn.style.display = 'block';
+            // 動画は元の仕様に戻します（クリックでコントロールを表示）
             return `<video id="preview-video-el" class="preview-video" playsinline autoplay loop onclick="this.setAttribute('controls', 'controls'); this.onclick=null;"><source src="${url}"></video>`;
         },
         'audio': async () => {
@@ -683,8 +684,9 @@ function openPreview(filename, uuid, size, dateStr) {
                 console.error('Failed to fetch audio metadata', e);
             }
 
+            // 修正箇所: preview-audio-wrapperをクリックした際に中のaudioタグのミュートを解除するロジックを追加
             content.innerHTML = `
-                <div class="preview-audio-wrapper">
+                <div class="preview-audio-wrapper" onclick="const a=this.querySelector('audio'); if(a){a.muted=false;}">
                     <div class="audio-cover-container">
                         ${coverHtml}
                     </div>
