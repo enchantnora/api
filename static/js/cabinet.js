@@ -367,7 +367,7 @@ async function executeUpload(file, targetPath = APP.currentPath) {
         isCancelled = true;
     });
 
-    const chunkSize = 10 * 1024 * 1024;
+    const chunkSize = 50 * 1024 * 1024;
     const totalChunks = Math.ceil(file.size / chunkSize) || 1;
     const uploadId = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
