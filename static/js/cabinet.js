@@ -556,7 +556,10 @@ function executeRenamePrompt(li) {
         }
     }
 
-    const tags = isFolder ? '' : Array.from(li.querySelectorAll('.item-tags span')).map(s => s.textContent.replace('#', '')).join(', ');
+    const tags = isFolder ? '' : Array.from(li.querySelectorAll('.item-tags span'))
+        .map(s => s.textContent.replace('#', '').trim())
+        .filter(t => t !== '管理者用')
+        .join(', ');
 
     currentEditingItem = {
         path: li.dataset.path,
