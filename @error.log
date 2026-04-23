@@ -7259,3 +7259,12 @@ Could not determine dtype for column 41, falling back to string
 Could not determine dtype for column 46, falling back to string
 Could not determine dtype for column 10, falling back to string
 Could not determine dtype for column 16, falling back to string
+[2026-04-23 00:50:22 +0900] [43535] [WARNING] Invalid HTTP request received.
+[2026-04-23 00:50:23 +0900] [43535] [WARNING] Invalid HTTP request received.
+[2026-04-23 00:50:42 +0900] [43535] [WARNING] Invalid HTTP request received.
+[2026-04-23 02:07:13 +0900] [43534] [WARNING] Invalid HTTP request received.
+[2026-04-23 02:07:20 +0900] [43535] [WARNING] Invalid HTTP request received.
+[2026-04-23 02:07:23 +0900] [43535] [WARNING] Invalid HTTP request received.
+[2026-04-23 02:07:27 +0900] [43535] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
