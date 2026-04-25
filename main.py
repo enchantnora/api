@@ -736,5 +736,10 @@ async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
 # ------------------------------------
 
 @app.get('/test', name="test")
-async def first(request: Request):
-    return templates.TemplateResponse(request, 'test.html')
+async def test(request: Request):
+    context = {
+        'title': '真・テスト',
+        "com": 'com'
+    }
+    response = templates.TemplateResponse(request, 'test.html', context)
+    return response

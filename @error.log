@@ -17219,3 +17219,831 @@ NameError: name 'Cookie' is not defined
 [2026-04-25 21:52:42 +0900] [56462] [INFO] Started server process [56462]
 [2026-04-25 21:52:42 +0900] [56462] [INFO] Waiting for application startup.
 [2026-04-25 21:52:42 +0900] [56462] [INFO] Application startup complete.
+[2026-04-25 21:55:07 +0900] [56414] [INFO] Handling signal: term
+[2026-04-25 21:55:07 +0900] [56462] [INFO] Shutting down
+[2026-04-25 21:55:07 +0900] [56462] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 21:55:07 +0900] [56460] [INFO] Shutting down
+[2026-04-25 21:55:07 +0900] [56460] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 21:55:07 +0900] [56462] [INFO] Waiting for application shutdown.
+[2026-04-25 21:55:07 +0900] [56462] [INFO] Application shutdown complete.
+[2026-04-25 21:55:07 +0900] [56462] [INFO] Finished server process [56462]
+[2026-04-25 21:55:07 +0900] [56414] [ERROR] Worker (pid:56462) was sent SIGTERM!
+[2026-04-25 21:55:07 +0900] [56460] [INFO] Waiting for application shutdown.
+[2026-04-25 21:55:07 +0900] [56460] [INFO] Application shutdown complete.
+[2026-04-25 21:55:07 +0900] [56460] [INFO] Finished server process [56460]
+[2026-04-25 21:55:07 +0900] [56414] [ERROR] Worker (pid:56460) was sent SIGTERM!
+[2026-04-25 21:55:07 +0900] [56414] [INFO] Shutting down: Master
+[2026-04-25 21:55:08 +0900] [56693] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:55:08 +0900] [56693] [INFO] Listening at: http://0.0.0.0:9900 (56693)
+[2026-04-25 21:55:08 +0900] [56693] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:55:08 +0900] [56739] [INFO] Booting worker with pid: 56739
+[2026-04-25 21:55:08 +0900] [56741] [INFO] Booting worker with pid: 56741
+[2026-04-25 21:55:09 +0900] [56739] [INFO] Started server process [56739]
+[2026-04-25 21:55:09 +0900] [56739] [INFO] Waiting for application startup.
+[2026-04-25 21:55:09 +0900] [56739] [INFO] Application startup complete.
+[2026-04-25 21:55:09 +0900] [56739] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 742, in test
+    "css_timestamp": css_timestamp,
+                     ^^^^^^^^^^^^^
+NameError: name 'css_timestamp' is not defined
+[2026-04-25 21:55:09 +0900] [56741] [INFO] Started server process [56741]
+[2026-04-25 21:55:09 +0900] [56741] [INFO] Waiting for application startup.
+[2026-04-25 21:55:09 +0900] [56741] [INFO] Application startup complete.
+[2026-04-25 21:55:11 +0900] [56741] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 742, in test
+    "css_timestamp": css_timestamp,
+                     ^^^^^^^^^^^^^
+NameError: name 'css_timestamp' is not defined
+[2026-04-25 21:55:12 +0900] [56741] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 742, in test
+    "css_timestamp": css_timestamp,
+                     ^^^^^^^^^^^^^
+NameError: name 'css_timestamp' is not defined
+[2026-04-25 21:55:35 +0900] [56693] [INFO] Handling signal: term
+[2026-04-25 21:55:35 +0900] [56739] [INFO] Shutting down
+[2026-04-25 21:55:35 +0900] [56739] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 21:55:35 +0900] [56741] [INFO] Shutting down
+[2026-04-25 21:55:35 +0900] [56741] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 21:55:35 +0900] [56739] [INFO] Waiting for application shutdown.
+[2026-04-25 21:55:35 +0900] [56739] [INFO] Application shutdown complete.
+[2026-04-25 21:55:35 +0900] [56739] [INFO] Finished server process [56739]
+[2026-04-25 21:55:35 +0900] [56693] [ERROR] Worker (pid:56739) was sent SIGTERM!
+[2026-04-25 21:55:36 +0900] [56741] [INFO] Waiting for application shutdown.
+[2026-04-25 21:55:36 +0900] [56741] [INFO] Application shutdown complete.
+[2026-04-25 21:55:36 +0900] [56741] [INFO] Finished server process [56741]
+[2026-04-25 21:55:36 +0900] [56693] [ERROR] Worker (pid:56741) was sent SIGTERM!
+[2026-04-25 21:55:36 +0900] [56693] [INFO] Shutting down: Master
+[2026-04-25 21:55:36 +0900] [56802] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:55:36 +0900] [56802] [INFO] Listening at: http://0.0.0.0:9900 (56802)
+[2026-04-25 21:55:36 +0900] [56802] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:55:36 +0900] [56848] [INFO] Booting worker with pid: 56848
+[2026-04-25 21:55:36 +0900] [56849] [INFO] Booting worker with pid: 56849
+[2026-04-25 21:55:38 +0900] [56849] [INFO] Started server process [56849]
+[2026-04-25 21:55:38 +0900] [56849] [INFO] Waiting for application startup.
+[2026-04-25 21:55:38 +0900] [56849] [INFO] Application startup complete.
+[2026-04-25 21:55:38 +0900] [56848] [INFO] Started server process [56848]
+[2026-04-25 21:55:38 +0900] [56848] [INFO] Waiting for application startup.
+[2026-04-25 21:55:38 +0900] [56848] [INFO] Application startup complete.
+[2026-04-25 21:57:29 +0900] [56802] [INFO] Handling signal: term
+[2026-04-25 21:57:29 +0900] [56849] [INFO] Shutting down
+[2026-04-25 21:57:29 +0900] [56849] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 21:57:29 +0900] [56848] [INFO] Shutting down
+[2026-04-25 21:57:29 +0900] [56848] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 21:57:29 +0900] [56849] [INFO] Waiting for application shutdown.
+[2026-04-25 21:57:29 +0900] [56849] [INFO] Application shutdown complete.
+[2026-04-25 21:57:29 +0900] [56849] [INFO] Finished server process [56849]
+[2026-04-25 21:57:29 +0900] [56848] [INFO] Waiting for application shutdown.
+[2026-04-25 21:57:29 +0900] [56848] [INFO] Application shutdown complete.
+[2026-04-25 21:57:29 +0900] [56848] [INFO] Finished server process [56848]
+[2026-04-25 21:57:29 +0900] [56802] [ERROR] Worker (pid:56849) was sent SIGTERM!
+[2026-04-25 21:57:29 +0900] [56802] [ERROR] Worker (pid:56848) was sent SIGTERM!
+[2026-04-25 21:57:29 +0900] [56802] [INFO] Shutting down: Master
+[2026-04-25 21:57:30 +0900] [56914] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:30 +0900] [56914] [INFO] Listening at: http://0.0.0.0:9900 (56914)
+[2026-04-25 21:57:30 +0900] [56914] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:30 +0900] [56960] [INFO] Booting worker with pid: 56960
+[2026-04-25 21:57:30 +0900] [56962] [INFO] Booting worker with pid: 56962
+[2026-04-25 21:57:31 +0900] [56960] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:31 +0900] [56960] [INFO] Worker exiting (pid: 56960)
+[2026-04-25 21:57:31 +0900] [56962] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:31 +0900] [56962] [INFO] Worker exiting (pid: 56962)
+[2026-04-25 21:57:32 +0900] [56914] [ERROR] Worker (pid:56960) exited with code 3
+[2026-04-25 21:57:32 +0900] [56914] [ERROR] Worker (pid:56962) was sent SIGTERM!
+[2026-04-25 21:57:32 +0900] [56914] [ERROR] Shutting down: Master
+[2026-04-25 21:57:32 +0900] [56914] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 21:57:32 +0900] [56971] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:32 +0900] [56971] [INFO] Listening at: http://0.0.0.0:9900 (56971)
+[2026-04-25 21:57:32 +0900] [56971] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:32 +0900] [57015] [INFO] Booting worker with pid: 57015
+[2026-04-25 21:57:32 +0900] [57016] [INFO] Booting worker with pid: 57016
+[2026-04-25 21:57:34 +0900] [57015] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:34 +0900] [57015] [INFO] Worker exiting (pid: 57015)
+[2026-04-25 21:57:34 +0900] [57016] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:34 +0900] [57016] [INFO] Worker exiting (pid: 57016)
+[2026-04-25 21:57:34 +0900] [56971] [ERROR] Worker (pid:57015) exited with code 3
+[2026-04-25 21:57:34 +0900] [56971] [ERROR] Worker (pid:57016) was sent SIGTERM!
+[2026-04-25 21:57:34 +0900] [56971] [ERROR] Shutting down: Master
+[2026-04-25 21:57:34 +0900] [56971] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 21:57:35 +0900] [57025] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:35 +0900] [57025] [INFO] Listening at: http://0.0.0.0:9900 (57025)
+[2026-04-25 21:57:35 +0900] [57025] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:35 +0900] [57069] [INFO] Booting worker with pid: 57069
+[2026-04-25 21:57:35 +0900] [57070] [INFO] Booting worker with pid: 57070
+[2026-04-25 21:57:36 +0900] [57070] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:36 +0900] [57070] [INFO] Worker exiting (pid: 57070)
+[2026-04-25 21:57:36 +0900] [57069] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:36 +0900] [57069] [INFO] Worker exiting (pid: 57069)
+[2026-04-25 21:57:37 +0900] [57025] [ERROR] Worker (pid:57070) exited with code 3
+[2026-04-25 21:57:37 +0900] [57025] [ERROR] Worker (pid:57069) was sent SIGTERM!
+[2026-04-25 21:57:37 +0900] [57025] [ERROR] Shutting down: Master
+[2026-04-25 21:57:37 +0900] [57025] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 21:57:38 +0900] [57079] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:38 +0900] [57079] [INFO] Listening at: http://0.0.0.0:9900 (57079)
+[2026-04-25 21:57:38 +0900] [57079] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:38 +0900] [57123] [INFO] Booting worker with pid: 57123
+[2026-04-25 21:57:38 +0900] [57125] [INFO] Booting worker with pid: 57125
+[2026-04-25 21:57:39 +0900] [57123] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:39 +0900] [57123] [INFO] Worker exiting (pid: 57123)
+[2026-04-25 21:57:39 +0900] [57125] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:39 +0900] [57125] [INFO] Worker exiting (pid: 57125)
+[2026-04-25 21:57:40 +0900] [57079] [ERROR] Worker (pid:57123) exited with code 3
+[2026-04-25 21:57:40 +0900] [57079] [ERROR] Worker (pid:57125) was sent SIGTERM!
+[2026-04-25 21:57:40 +0900] [57079] [ERROR] Shutting down: Master
+[2026-04-25 21:57:40 +0900] [57079] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 21:57:40 +0900] [57133] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:40 +0900] [57133] [INFO] Listening at: http://0.0.0.0:9900 (57133)
+[2026-04-25 21:57:40 +0900] [57133] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:40 +0900] [57177] [INFO] Booting worker with pid: 57177
+[2026-04-25 21:57:40 +0900] [57179] [INFO] Booting worker with pid: 57179
+[2026-04-25 21:57:42 +0900] [57177] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:42 +0900] [57177] [INFO] Worker exiting (pid: 57177)
+[2026-04-25 21:57:42 +0900] [57179] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:42 +0900] [57179] [INFO] Worker exiting (pid: 57179)
+[2026-04-25 21:57:42 +0900] [57133] [ERROR] Worker (pid:57177) exited with code 3
+[2026-04-25 21:57:42 +0900] [57133] [ERROR] Worker (pid:57179) was sent SIGTERM!
+[2026-04-25 21:57:42 +0900] [57133] [ERROR] Shutting down: Master
+[2026-04-25 21:57:42 +0900] [57133] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 21:57:43 +0900] [57187] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:43 +0900] [57187] [INFO] Listening at: http://0.0.0.0:9900 (57187)
+[2026-04-25 21:57:43 +0900] [57187] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:43 +0900] [57231] [INFO] Booting worker with pid: 57231
+[2026-04-25 21:57:43 +0900] [57232] [INFO] Booting worker with pid: 57232
+[2026-04-25 21:57:44 +0900] [57231] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:44 +0900] [57231] [INFO] Worker exiting (pid: 57231)
+[2026-04-25 21:57:44 +0900] [57232] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request, com: str = Cookie(default=None)):
+                                                ^^^^^^
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:44 +0900] [57232] [INFO] Worker exiting (pid: 57232)
+[2026-04-25 21:57:45 +0900] [57187] [ERROR] Worker (pid:57231) exited with code 3
+[2026-04-25 21:57:45 +0900] [57187] [ERROR] Worker (pid:57232) was sent SIGTERM!
+[2026-04-25 21:57:45 +0900] [57187] [ERROR] Shutting down: Master
+[2026-04-25 21:57:45 +0900] [57187] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 21:57:45 +0900] [57241] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:45 +0900] [57241] [INFO] Listening at: http://0.0.0.0:9900 (57241)
+[2026-04-25 21:57:45 +0900] [57241] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:45 +0900] [57285] [INFO] Booting worker with pid: 57285
+[2026-04-25 21:57:45 +0900] [57287] [INFO] Booting worker with pid: 57287
+[2026-04-25 21:57:47 +0900] [57285] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request):
+                                      
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:47 +0900] [57285] [INFO] Worker exiting (pid: 57285)
+[2026-04-25 21:57:47 +0900] [57287] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 739, in <module>
+    async def test(request: Request):
+                                      
+NameError: name 'Cookie' is not defined
+[2026-04-25 21:57:47 +0900] [57287] [INFO] Worker exiting (pid: 57287)
+[2026-04-25 21:57:47 +0900] [57241] [ERROR] Worker (pid:57285) exited with code 3
+[2026-04-25 21:57:47 +0900] [57241] [ERROR] Worker (pid:57287) was sent SIGTERM!
+[2026-04-25 21:57:47 +0900] [57241] [ERROR] Shutting down: Master
+[2026-04-25 21:57:47 +0900] [57241] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 21:57:48 +0900] [57296] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:48 +0900] [57296] [INFO] Listening at: http://0.0.0.0:9900 (57296)
+[2026-04-25 21:57:48 +0900] [57296] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:48 +0900] [57340] [INFO] Booting worker with pid: 57340
+[2026-04-25 21:57:48 +0900] [57341] [INFO] Booting worker with pid: 57341
+[2026-04-25 21:57:49 +0900] [57341] [INFO] Started server process [57341]
+[2026-04-25 21:57:49 +0900] [57341] [INFO] Waiting for application startup.
+[2026-04-25 21:57:49 +0900] [57341] [INFO] Application startup complete.
+[2026-04-25 21:57:49 +0900] [57340] [INFO] Started server process [57340]
+[2026-04-25 21:57:49 +0900] [57340] [INFO] Waiting for application startup.
+[2026-04-25 21:57:49 +0900] [57340] [INFO] Application startup complete.
+[2026-04-25 21:57:52 +0900] [57296] [INFO] Handling signal: term
+[2026-04-25 21:57:52 +0900] [57341] [INFO] Shutting down
+[2026-04-25 21:57:52 +0900] [57341] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 21:57:52 +0900] [57340] [INFO] Shutting down
+[2026-04-25 21:57:52 +0900] [57340] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 21:57:52 +0900] [57341] [INFO] Waiting for application shutdown.
+[2026-04-25 21:57:52 +0900] [57341] [INFO] Application shutdown complete.
+[2026-04-25 21:57:52 +0900] [57341] [INFO] Finished server process [57341]
+[2026-04-25 21:57:52 +0900] [57296] [ERROR] Worker (pid:57341) was sent SIGTERM!
+[2026-04-25 21:57:52 +0900] [57340] [INFO] Waiting for application shutdown.
+[2026-04-25 21:57:52 +0900] [57340] [INFO] Application shutdown complete.
+[2026-04-25 21:57:52 +0900] [57340] [INFO] Finished server process [57340]
+[2026-04-25 21:57:52 +0900] [57296] [ERROR] Worker (pid:57340) was sent SIGTERM!
+[2026-04-25 21:57:52 +0900] [57296] [INFO] Shutting down: Master
+[2026-04-25 21:57:53 +0900] [57405] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 21:57:53 +0900] [57405] [INFO] Listening at: http://0.0.0.0:9900 (57405)
+[2026-04-25 21:57:53 +0900] [57405] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 21:57:53 +0900] [57451] [INFO] Booting worker with pid: 57451
+[2026-04-25 21:57:53 +0900] [57452] [INFO] Booting worker with pid: 57452
+[2026-04-25 21:57:55 +0900] [57451] [INFO] Started server process [57451]
+[2026-04-25 21:57:55 +0900] [57451] [INFO] Waiting for application startup.
+[2026-04-25 21:57:55 +0900] [57451] [INFO] Application startup complete.
+[2026-04-25 21:57:55 +0900] [57452] [INFO] Started server process [57452]
+[2026-04-25 21:57:55 +0900] [57452] [INFO] Waiting for application startup.
+[2026-04-25 21:57:55 +0900] [57452] [INFO] Application startup complete.
