@@ -18047,3 +18047,424 @@ NameError: name 'Cookie' is not defined
 [2026-04-25 21:57:55 +0900] [57452] [INFO] Started server process [57452]
 [2026-04-25 21:57:55 +0900] [57452] [INFO] Waiting for application startup.
 [2026-04-25 21:57:55 +0900] [57452] [INFO] Application startup complete.
+[2026-04-25 22:01:29 +0900] [57405] [INFO] Handling signal: term
+[2026-04-25 22:01:29 +0900] [57452] [INFO] Shutting down
+[2026-04-25 22:01:29 +0900] [57452] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 22:01:29 +0900] [57451] [INFO] Shutting down
+[2026-04-25 22:01:29 +0900] [57451] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-04-25 22:01:29 +0900] [57452] [INFO] Waiting for application shutdown.
+[2026-04-25 22:01:29 +0900] [57452] [INFO] Application shutdown complete.
+[2026-04-25 22:01:29 +0900] [57452] [INFO] Finished server process [57452]
+[2026-04-25 22:01:29 +0900] [57451] [INFO] Waiting for application shutdown.
+[2026-04-25 22:01:29 +0900] [57451] [INFO] Application shutdown complete.
+[2026-04-25 22:01:29 +0900] [57451] [INFO] Finished server process [57451]
+[2026-04-25 22:01:29 +0900] [57405] [ERROR] Worker (pid:57452) was sent SIGTERM!
+[2026-04-25 22:01:29 +0900] [57405] [ERROR] Worker (pid:57451) was sent SIGTERM!
+[2026-04-25 22:01:29 +0900] [57405] [INFO] Shutting down: Master
+[2026-04-25 22:01:30 +0900] [57606] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 22:01:30 +0900] [57606] [INFO] Listening at: http://0.0.0.0:9900 (57606)
+[2026-04-25 22:01:30 +0900] [57606] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 22:01:30 +0900] [57652] [INFO] Booting worker with pid: 57652
+[2026-04-25 22:01:30 +0900] [57653] [INFO] Booting worker with pid: 57653
+[2026-04-25 22:01:30 +0900] [57652] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:30 +0900] [57652] [INFO] Worker exiting (pid: 57652)
+[2026-04-25 22:01:30 +0900] [57653] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:30 +0900] [57653] [INFO] Worker exiting (pid: 57653)
+[2026-04-25 22:01:30 +0900] [57606] [ERROR] Worker (pid:57652) exited with code 3
+[2026-04-25 22:01:30 +0900] [57606] [ERROR] Worker (pid:57653) was sent SIGTERM!
+[2026-04-25 22:01:30 +0900] [57606] [ERROR] Shutting down: Master
+[2026-04-25 22:01:30 +0900] [57606] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 22:01:31 +0900] [57654] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 22:01:31 +0900] [57654] [INFO] Listening at: http://0.0.0.0:9900 (57654)
+[2026-04-25 22:01:31 +0900] [57654] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 22:01:31 +0900] [57698] [INFO] Booting worker with pid: 57698
+[2026-04-25 22:01:31 +0900] [57698] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:31 +0900] [57698] [INFO] Worker exiting (pid: 57698)
+[2026-04-25 22:01:31 +0900] [57699] [INFO] Booting worker with pid: 57699
+[2026-04-25 22:01:31 +0900] [57699] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:31 +0900] [57699] [INFO] Worker exiting (pid: 57699)
+[2026-04-25 22:01:31 +0900] [57654] [ERROR] Worker (pid:57698) exited with code 3
+[2026-04-25 22:01:31 +0900] [57654] [ERROR] Worker (pid:57699) was sent SIGTERM!
+[2026-04-25 22:01:31 +0900] [57654] [ERROR] Shutting down: Master
+[2026-04-25 22:01:31 +0900] [57654] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 22:01:31 +0900] [57700] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 22:01:31 +0900] [57700] [INFO] Listening at: http://0.0.0.0:9900 (57700)
+[2026-04-25 22:01:31 +0900] [57700] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 22:01:31 +0900] [57744] [INFO] Booting worker with pid: 57744
+[2026-04-25 22:01:31 +0900] [57745] [INFO] Booting worker with pid: 57745
+[2026-04-25 22:01:31 +0900] [57744] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:31 +0900] [57744] [INFO] Worker exiting (pid: 57744)
+[2026-04-25 22:01:31 +0900] [57745] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:31 +0900] [57745] [INFO] Worker exiting (pid: 57745)
+[2026-04-25 22:01:32 +0900] [57700] [ERROR] Worker (pid:57744) exited with code 3
+[2026-04-25 22:01:32 +0900] [57700] [ERROR] Worker (pid:57745) was sent SIGTERM!
+[2026-04-25 22:01:32 +0900] [57700] [ERROR] Shutting down: Master
+[2026-04-25 22:01:32 +0900] [57700] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 22:01:32 +0900] [57746] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 22:01:32 +0900] [57746] [INFO] Listening at: http://0.0.0.0:9900 (57746)
+[2026-04-25 22:01:32 +0900] [57746] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 22:01:32 +0900] [57790] [INFO] Booting worker with pid: 57790
+[2026-04-25 22:01:32 +0900] [57790] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:32 +0900] [57790] [INFO] Worker exiting (pid: 57790)
+[2026-04-25 22:01:32 +0900] [57791] [INFO] Booting worker with pid: 57791
+[2026-04-25 22:01:32 +0900] [57746] [ERROR] Worker (pid:57790) exited with code 3
+[2026-04-25 22:01:32 +0900] [57746] [ERROR] Worker (pid:57791) was sent SIGTERM!
+[2026-04-25 22:01:32 +0900] [57746] [ERROR] Shutting down: Master
+[2026-04-25 22:01:32 +0900] [57746] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 22:01:33 +0900] [57792] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 22:01:33 +0900] [57792] [INFO] Listening at: http://0.0.0.0:9900 (57792)
+[2026-04-25 22:01:33 +0900] [57792] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 22:01:33 +0900] [57836] [INFO] Booting worker with pid: 57836
+[2026-04-25 22:01:33 +0900] [57836] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:33 +0900] [57836] [INFO] Worker exiting (pid: 57836)
+[2026-04-25 22:01:33 +0900] [57837] [INFO] Booting worker with pid: 57837
+[2026-04-25 22:01:33 +0900] [57837] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 608, in spawn_worker
+    worker.init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/workers.py", line 75, in init_process
+    super().init_process()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 135, in init_process
+    self.load_wsgi()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/workers/base.py", line 147, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 370, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1004, in source_to_code
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/pi/API/main.py", line 744
+    "user_uuid": user_uuid,
+               ^
+SyntaxError: invalid syntax
+[2026-04-25 22:01:33 +0900] [57837] [INFO] Worker exiting (pid: 57837)
+[2026-04-25 22:01:33 +0900] [57792] [ERROR] Worker (pid:57836) exited with code 3
+[2026-04-25 22:01:33 +0900] [57792] [ERROR] Worker (pid:57837) was sent SIGTERM!
+[2026-04-25 22:01:33 +0900] [57792] [ERROR] Shutting down: Master
+[2026-04-25 22:01:33 +0900] [57792] [ERROR] Reason: Worker failed to boot.
+[2026-04-25 22:01:49 +0900] [57885] [INFO] Starting gunicorn 23.0.0
+[2026-04-25 22:01:49 +0900] [57885] [INFO] Listening at: http://0.0.0.0:9900 (57885)
+[2026-04-25 22:01:49 +0900] [57885] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-04-25 22:01:49 +0900] [57931] [INFO] Booting worker with pid: 57931
+[2026-04-25 22:01:49 +0900] [57933] [INFO] Booting worker with pid: 57933
+[2026-04-25 22:01:51 +0900] [57931] [INFO] Started server process [57931]
+[2026-04-25 22:01:51 +0900] [57931] [INFO] Waiting for application startup.
+[2026-04-25 22:01:51 +0900] [57931] [INFO] Application startup complete.
+[2026-04-25 22:01:51 +0900] [57933] [INFO] Started server process [57933]
+[2026-04-25 22:01:51 +0900] [57933] [INFO] Waiting for application startup.
+[2026-04-25 22:01:51 +0900] [57933] [INFO] Application startup complete.

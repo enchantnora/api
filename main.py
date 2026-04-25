@@ -740,7 +740,7 @@ async def test(request: Request):
     user_uuid = request.cookies.get("user_uuid")
     context = {
         'title': '真・テスト',
-        "com": 'com'
+        "com": 'com',
         "user_uuid": user_uuid,
     }
     response = templates.TemplateResponse(request, 'test.html', context)
