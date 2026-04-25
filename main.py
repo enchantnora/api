@@ -732,3 +732,10 @@ async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
         media_type="text/csv; charset=Shift_JIS",
         headers={"Content-Disposition": "attachment; filename=wgt.csv"}
     )
+
+# ------------------------------------
+
+@app.get('/test', name="test")
+async def index(request: Request, com: str = Cookie(default=None)):
+        context = {"request": request, 'title': '真・テスト', "com": com}
+        return templates.TemplateResponse('test.html', context)
