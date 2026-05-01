@@ -723,6 +723,8 @@ async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
                     
                     line = f"{sk},{code},{name},{calculated_wgt}\n"
                     
+                    line = line.replace("•", "・")
+                    
                     yield line.encode('cp932', errors='replace')
         except Exception:
             pass

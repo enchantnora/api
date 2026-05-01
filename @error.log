@@ -18530,3 +18530,30 @@ Could not determine dtype for column 7, falling back to string
 [2026-05-01 21:04:58 +0900] [59241] [WARNING] Invalid HTTP request received.
 [2026-05-01 21:05:00 +0900] [59239] [WARNING] Invalid HTTP request received.
 [2026-05-01 21:05:17 +0900] [59241] [WARNING] Invalid HTTP request received.
+[2026-05-02 03:09:09 +0900] [59241] [WARNING] Invalid HTTP request received.
+[2026-05-02 03:09:09 +0900] [59241] [WARNING] Invalid HTTP request received.
+[2026-05-02 03:23:35 +0900] [59193] [INFO] Handling signal: term
+[2026-05-02 03:23:35 +0900] [59239] [INFO] Shutting down
+[2026-05-02 03:23:35 +0900] [59239] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-02 03:23:35 +0900] [59241] [INFO] Shutting down
+[2026-05-02 03:23:35 +0900] [59241] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-02 03:23:35 +0900] [59239] [INFO] Waiting for application shutdown.
+[2026-05-02 03:23:35 +0900] [59239] [INFO] Application shutdown complete.
+[2026-05-02 03:23:35 +0900] [59239] [INFO] Finished server process [59239]
+[2026-05-02 03:23:35 +0900] [59193] [ERROR] Worker (pid:59239) was sent SIGTERM!
+[2026-05-02 03:23:35 +0900] [59241] [INFO] Waiting for application shutdown.
+[2026-05-02 03:23:35 +0900] [59241] [INFO] Application shutdown complete.
+[2026-05-02 03:23:35 +0900] [59241] [INFO] Finished server process [59241]
+[2026-05-02 03:23:35 +0900] [59193] [ERROR] Worker (pid:59241) was sent SIGTERM!
+[2026-05-02 03:23:35 +0900] [59193] [INFO] Shutting down: Master
+[2026-05-02 03:23:36 +0900] [69598] [INFO] Starting gunicorn 23.0.0
+[2026-05-02 03:23:36 +0900] [69598] [INFO] Listening at: http://0.0.0.0:9900 (69598)
+[2026-05-02 03:23:36 +0900] [69598] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-02 03:23:36 +0900] [69644] [INFO] Booting worker with pid: 69644
+[2026-05-02 03:23:36 +0900] [69646] [INFO] Booting worker with pid: 69646
+[2026-05-02 03:23:37 +0900] [69644] [INFO] Started server process [69644]
+[2026-05-02 03:23:37 +0900] [69644] [INFO] Waiting for application startup.
+[2026-05-02 03:23:37 +0900] [69644] [INFO] Application startup complete.
+[2026-05-02 03:23:37 +0900] [69646] [INFO] Started server process [69646]
+[2026-05-02 03:23:37 +0900] [69646] [INFO] Waiting for application startup.
+[2026-05-02 03:23:37 +0900] [69646] [INFO] Application startup complete.
