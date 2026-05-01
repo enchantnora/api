@@ -756,7 +756,7 @@ function openPreview(filename, uuid, size, dateStr) {
             try {
                 const response = await fetch(url);
                 const rows = (await response.text()).split('\n');
-                let html = '<div class="preview-csv-container"><table class="preview-csv">';
+                let html = '<div class="preview-csv-container" style="overflow: auto; width: 100%; height: 100%; box-sizing: border-box;"><table class="preview-csv">';
                 rows.forEach((row, index) => {
                     if (!row.trim() && index === rows.length - 1) return;
                     html += '<tr>' + row.split(',').map(col => `<${index === 0 ? 'th' : 'td'}>${Utils.escapeHtml(col.trim())}</${index === 0 ? 'th' : 'td'}>`).join('') + '</tr>';
@@ -852,20 +852,16 @@ function openPreview(filename, uuid, size, dateStr) {
                     box.getSize(size);
                     const maxDim = Math.max(size.x, size.y, size.z);
 
-                    // モデルの幾何学的中心をワールド座標の原点(0,0,0)に移動
                     object.position.x -= center.x;
                     object.position.y -= center.y;
                     object.position.z -= center.z;
 
-                    // カメラのクリッピング範囲をモデルサイズに合わせて調整
                     camera.near = maxDim / 100 || 0.1;
                     camera.far = maxDim * 100 || 1000;
                     camera.updateProjectionMatrix();
 
-                    // カメラの初期位置を設定：原点からmaxDimに基づいた適切な距離を保つ
                     camera.position.set(0, maxDim * 0.4, maxDim * 2.0);
                     
-                    // 注視点を常に原点(0,0,0)に固定
                     controls.target.set(0, 0, 0);
                     controls.maxDistance = maxDim * 10;
                     controls.update();
@@ -991,12 +987,12 @@ async function renderExcelPreview(uuid, content) {
         const remainingCount = sheets.length - displaySheets.length;
 
         content.innerHTML = `
-        <div class="excel-preview-wrapper">
+        <div class="excel-preview-wrapper" style="display: flex; flex-direction: column; width: 100%; height: 100%; box-sizing: border-box;">
             <div class="excel-tabs">
                 ${displaySheets.map((s, i) => `<div class="excel-tab ${i === 0 ? 'active' : ''}" onclick="switchExcelSheet(this, '${uuid}', '${Utils.escapeHtml(s)}')">${Utils.escapeHtml(s)}</div>`).join('')}
                 ${remainingCount > 0 ? `<div class="excel-tab disabled-tab" title="すべてのシートを確認するにはダウンロードしてください">...他${remainingCount}シート</div>` : ''}
             </div>
-            <div class="excel-sheet-container preview-csv-container" style="border: none;" id="excel-sheet-container">
+            <div class="excel-sheet-container preview-csv-container" style="border: none; overflow: auto; flex-grow: 1;" id="excel-sheet-container">
                 <div style="padding: 20px;">シートを読み込み中...</div>
             </div>
         </div>`;

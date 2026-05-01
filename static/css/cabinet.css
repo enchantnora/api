@@ -642,6 +642,23 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
     width: 100%; height: 100%; background: #fff; box-sizing: border-box;
     border: 1px solid #ccc; overflow: auto;
 }
+.preview-csv-container::-webkit-scrollbar {
+    display: block;
+    width: 10px;
+    height: 10px;
+}
+.preview-csv-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+.preview-csv-container::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 4px;
+}
+.preview-csv-container::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
 .preview-csv {
     width: 100%; border-collapse: collapse; font-size: 14px; color: #333;
 }
@@ -699,6 +716,19 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
     text-align: left;
     font-family: "Helvetica Neue", Arial, sans-serif;
 }
+
+.preview-markdown::-webkit-scrollbar {
+    display: block;
+    width: 8px;
+}
+.preview-markdown::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+.preview-markdown::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 4px;
+}
+
 .preview-markdown h1, .preview-markdown h2, .preview-markdown h3 {
     color: #162141;
     border-bottom: 1px solid #eee;
