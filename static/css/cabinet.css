@@ -568,7 +568,7 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
 .modal-body {
     flex-grow: 1; overflow-y: auto; display: flex;
     align-items: center; justify-content: center;
-    background-color: #162141; border-radius: 10px;
+    background-color: #162141; border-radius: 4px;
 }
 
 .preview-image { 

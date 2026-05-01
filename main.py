@@ -706,7 +706,7 @@ async def apply(request: Request, db: aiosqlite.Connection = Depends(get_db)):
 @app.get("/wgtcsv", name="wgtcsv")
 async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
     async def iter_csv():
-        yield "sk,code,name,wgt\n".encode('cp932', errors='replace')
+        yield "ＳＫ番号,商品ＣＤ,商品名,重量(g)\n".encode('cp932', errors='replace')
         
         try:
             async with db.execute("SELECT sk, code, name, wgt FROM product") as cursor:
@@ -714,7 +714,7 @@ async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
                     sk = str(row["sk"] or "").replace(",", " ").replace('"', '')
                     code = str(row["code"] or "").replace(",", " ").replace('"', '')
                     
-                    raw_name = str(row["name"] or "").replace(",", " ").replace('"', '')
+                    raw_name = str(row["name"] or "").replace("•", "･").replace(",", " ").replace('"', '')
                     name = zen_to_han_fast_single(raw_name)
                     
                     wgt_str = row["wgt"] or ""
@@ -722,8 +722,6 @@ async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
                     calculated_wgt = parse_wgt(wgt_str)
                     
                     line = f"{sk},{code},{name},{calculated_wgt}\n"
-                    
-                    line = line.replace("•", "・")
                     
                     yield line.encode('cp932', errors='replace')
         except Exception:

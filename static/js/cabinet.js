@@ -716,7 +716,7 @@ function openPreview(filename, uuid, size, dateStr) {
                     Object.assign(svgEl.style, { width: '100%', height: '100%', maxHeight: '100%', display: 'block', margin: 'auto' });
                     
                     const containerId = 'svg-container-' + Date.now();
-                    content.innerHTML = `<div id="${containerId}" style="width: 100%; height: 100%; background-color: #fff; overflow: auto; display: grid; place-items: center; box-sizing: border-box; border-radius: 4px; padding: 15px; opacity: 0; transition: opacity 0.2s ease;">${svgEl.outerHTML}</div>`;
+                    content.innerHTML = `<div id="${containerId}" style="width: 100%; height: 100%; background-color: #fff; overflow: auto; display: grid; place-items: center; box-sizing: border-box; padding: 15px; opacity: 0; transition: opacity 0.2s ease;">${svgEl.outerHTML}</div>`;
                     
                     setTimeout(() => {
                         const container = document.getElementById(containerId);
@@ -724,7 +724,7 @@ function openPreview(filename, uuid, size, dateStr) {
                     }, 50);
                 } else throw new Error("SVG parse failed");
             } catch (err) {
-                content.innerHTML = `<div style="width: 100%; height: 100%; background-color: #fff; display: grid; place-items: center; overflow: auto; border-radius: 4px;"><img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;"></div>`;
+                content.innerHTML = `<div style="width: 100%; height: 100%; background-color: #fff; display: grid; place-items: center; overflow: auto;"><img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;"></div>`;
             }
         },
         'word': async () => {
@@ -996,7 +996,7 @@ async function renderExcelPreview(uuid, content) {
                 ${displaySheets.map((s, i) => `<div class="excel-tab ${i === 0 ? 'active' : ''}" onclick="switchExcelSheet(this, '${uuid}', '${Utils.escapeHtml(s)}')">${Utils.escapeHtml(s)}</div>`).join('')}
                 ${remainingCount > 0 ? `<div class="excel-tab disabled-tab" title="すべてのシートを確認するにはダウンロードしてください">...他${remainingCount}シート</div>` : ''}
             </div>
-            <div class="excel-sheet-container preview-csv-container" style="border: none; border-radius: 0;" id="excel-sheet-container">
+            <div class="excel-sheet-container preview-csv-container" style="border: none;" id="excel-sheet-container">
                 <div style="padding: 20px;">シートを読み込み中...</div>
             </div>
         </div>`;
