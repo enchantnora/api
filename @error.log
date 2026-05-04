@@ -20190,3 +20190,28 @@ IndentationError: unexpected indent
 [2026-05-04 23:31:22 +0900] [77141] [INFO] Started server process [77141]
 [2026-05-04 23:31:22 +0900] [77141] [INFO] Waiting for application startup.
 [2026-05-04 23:31:22 +0900] [77141] [INFO] Application startup complete.
+[2026-05-04 23:46:15 +0900] [77093] [INFO] Handling signal: term
+[2026-05-04 23:46:15 +0900] [77139] [INFO] Shutting down
+[2026-05-04 23:46:15 +0900] [77139] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-04 23:46:15 +0900] [77141] [INFO] Shutting down
+[2026-05-04 23:46:15 +0900] [77141] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-04 23:46:15 +0900] [77139] [INFO] Waiting for application shutdown.
+[2026-05-04 23:46:15 +0900] [77139] [INFO] Application shutdown complete.
+[2026-05-04 23:46:15 +0900] [77139] [INFO] Finished server process [77139]
+[2026-05-04 23:46:15 +0900] [77141] [INFO] Waiting for application shutdown.
+[2026-05-04 23:46:15 +0900] [77093] [ERROR] Worker (pid:77139) was sent SIGTERM!
+[2026-05-04 23:46:15 +0900] [77141] [INFO] Application shutdown complete.
+[2026-05-04 23:46:15 +0900] [77141] [INFO] Finished server process [77141]
+[2026-05-04 23:46:15 +0900] [77093] [ERROR] Worker (pid:77141) was sent SIGTERM!
+[2026-05-04 23:46:15 +0900] [77093] [INFO] Shutting down: Master
+[2026-05-04 23:46:16 +0900] [77323] [INFO] Starting gunicorn 23.0.0
+[2026-05-04 23:46:16 +0900] [77323] [INFO] Listening at: http://0.0.0.0:9900 (77323)
+[2026-05-04 23:46:16 +0900] [77323] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-04 23:46:16 +0900] [77369] [INFO] Booting worker with pid: 77369
+[2026-05-04 23:46:16 +0900] [77371] [INFO] Booting worker with pid: 77371
+[2026-05-04 23:46:17 +0900] [77369] [INFO] Started server process [77369]
+[2026-05-04 23:46:17 +0900] [77369] [INFO] Waiting for application startup.
+[2026-05-04 23:46:17 +0900] [77369] [INFO] Application startup complete.
+[2026-05-04 23:46:17 +0900] [77371] [INFO] Started server process [77371]
+[2026-05-04 23:46:17 +0900] [77371] [INFO] Waiting for application startup.
+[2026-05-04 23:46:17 +0900] [77371] [INFO] Application startup complete.

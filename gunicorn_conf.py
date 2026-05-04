@@ -16,11 +16,9 @@ capture_output = True
 # タイムアウト時間（秒）を追加。大容量アップロード用に1時間に設定。
 timeout = 3600
 
-# アクセスログのフォーマット
-access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
-
-# アクセスログの出力先
-accesslog = "./@access.log"
+# Gunicorn側のアクセスログは無効化
+# access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
+# accesslog = "./@access.log"
 
 # エラーログの出力先
 errorlog = "./@error.log"
