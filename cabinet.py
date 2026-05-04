@@ -355,6 +355,27 @@ async def upload_file(
         await asyncio.to_thread(temp_file.unlink, missing_ok=True)
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/update_file/")
+async def update_file(request: Request, uuid: str = Form(...), file: UploadFile = File(...)):
+    target_file, filename = await _get_file_target(uuid)
+    
+    if is_protected_item(filename, False):
+        if get_admin_level(request) != 1:
+            raise HTTPException(status_code=403, detail="保護されたファイルの上書きは禁止されています")
+            
+    if not filename.lower().endswith('.txt'):
+        raise HTTPException(status_code=400, detail="テキストファイルのみ更新可能です")
+        
+    try:
+        content = await file.read()
+        def write_file():
+            with open(target_file, "wb") as f:
+                f.write(content)
+        await asyncio.to_thread(write_file)
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.post("/mkdir/")
 async def create_directory(request: Request, response: Response, path: str = Form(""), folder_name: str = Form(...)):
     folder_name = folder_name.lower()

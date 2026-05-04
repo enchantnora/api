@@ -166,8 +166,12 @@
                         <div class="item-actions">
                             <div class="action-top">
                                 {%- set ext = item.name.split('.')|last|lower if '.' in item.name else '' %}
-                                {%- set preview_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'mp4', 'webm', 'mov', 'mp3', 'wav', 'm4a', 'aac', 'pdf', 'csv', 'xlsx', 'xls', 'xlsm', 'txt', 'py', 'html', 'css', 'js', 'json', 'log', 'md', 'docx', 'stl', 'obj', 'glb', 'gltf'] %}
-                                {%- if ext in preview_exts %}
+                                {%- set preview_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'mp4', 'webm', 'mov', 'mp3', 'wav', 'm4a', 'aac', 'pdf', 'csv', 'xlsx', 'xls', 'xlsm', 'py', 'html', 'css', 'js', 'json', 'log', 'md', 'docx', 'stl', 'obj', 'glb', 'gltf'] %}
+                                {%- set edit_exts = ['txt'] %}
+                                
+                                {%- if ext in edit_exts %}
+                                <button class="cli edit-btn" onclick="openPreview('{{ item.name|escape }}', '{{ item.uuid }}', {{ item.size }}, '{{ item.created_at }}'); event.stopPropagation();">EDIT</button>
+                                {%- elif ext in preview_exts %}
                                 <button class="cli preview-btn" onclick="openPreview('{{ item.name|escape }}', '{{ item.uuid }}', {{ item.size }}, '{{ item.created_at }}'); event.stopPropagation();">VIEW</button>
                                 {%- endif %}
                                 
@@ -201,6 +205,7 @@
                     <div style="display: flex; gap: 10px;">
                         <button class="cli none_selection" style="height: 30px; font-size: 12px; padding: 0 13px;" onclick="closeModal()">閉じる</button>
                         <button id="landscape-btn" class="cli preview-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="toggleLandscape()">横画面</button>
+                        <button id="save-txt-btn" class="cli edit-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="saveTextFile()">保存</button>
                     </div>
                     <div style="display: flex; gap: 12px; align-items: center;">
                         <span id="modal-date" style="font-weight: normal; font-size: 10px; color: #a9c0e0;"></span>

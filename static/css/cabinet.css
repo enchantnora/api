@@ -442,7 +442,13 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
     background-color: #5eb6ff;
     box-shadow: 0 0 10px rgba(94, 182, 255, 0.8);
 }
-
+.cli.edit-btn {
+    background-color: #ffd182;
+}
+.cli.edit-btn:hover {
+    background-color: #ffb84d;
+    box-shadow: 0 0 10px rgba(255, 184, 77, 0.8);
+}
 .delete-confirm-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -802,4 +808,21 @@ p, ul { padding: 0; margin: 0; list-style-type: none; }
     border: none;
     border-top: 1px solid #556b8d;
     margin: 16px 0;
+}
+.preview-text::-webkit-scrollbar {
+    display: block;
+    width: 10px;
+    height: 10px;
+}
+.preview-text::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+.preview-text::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 4px;
+    cursor: default;
+}
+.preview-text::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }

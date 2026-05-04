@@ -217,8 +217,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const previewModal = document.getElementById('preview-modal');
     if (previewModal) {
-        previewModal.addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-        previewModal.addEventListener('touchend', function(e) { if (e.target === this) { e.preventDefault(); closeModal(); } });
+        previewModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                const saveBtn = document.getElementById('save-txt-btn');
+                if (saveBtn && saveBtn.style.display !== 'none') return;
+                closeModal();
+            }
+        });
+        previewModal.addEventListener('touchend', function(e) {
+            if (e.target === this) {
+                e.preventDefault();
+                const saveBtn = document.getElementById('save-txt-btn');
+                if (saveBtn && saveBtn.style.display !== 'none') return;
+                closeModal();
+            }
+        });
     }
 
     const onPathDiv = document.getElementById('on_path');
@@ -615,7 +628,7 @@ async function saveItemChanges() {
     }
 }
 
-// モーダル外クリックで閉じる
+// 属性編集モーダル外クリックで閉じる
 window.addEventListener('click', (e) => {
     const modal = document.getElementById('edit-modal');
     if (e.target === modal) closeEditModal();
@@ -736,7 +749,19 @@ function openPreview(filename, uuid, size, dateStr) {
         'text': async () => {
             try {
                 const response = await fetch(url);
-                content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(await response.text())}</pre>`;
+                const textContent = await response.text();
+                
+                if (ext === 'txt') {
+                    content.innerHTML = `<textarea id="edit-text-area" class="preview-text" style="resize: none; outline: none;">${Utils.escapeHtml(textContent)}</textarea>`;
+                    
+                    const saveBtn = document.getElementById('save-txt-btn');
+                    if (saveBtn) {
+                        saveBtn.style.display = 'block';
+                        saveBtn.dataset.uuid = uuid;
+                    }
+                } else {
+                    content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(textContent)}</pre>`;
+                }
             } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
         },
         'markdown': async () => {
@@ -961,10 +986,47 @@ function closeModal() {
     const landscapeBtn = document.getElementById('landscape-btn');
     if (landscapeBtn) landscapeBtn.style.display = 'none';
 
+    const saveBtn = document.getElementById('save-txt-btn');
+    if (saveBtn) {
+        saveBtn.style.display = 'none';
+        saveBtn.dataset.uuid = '';
+    }
+
     const currentUrl = new URL(window.location.href);
     if (currentUrl.searchParams.has('preview')) {
         currentUrl.searchParams.delete('preview');
         window.history.replaceState(null, '', currentUrl);
+    }
+}
+
+async function saveTextFile() {
+    const saveBtn = document.getElementById('save-txt-btn');
+    const uuid = saveBtn.dataset.uuid;
+    const textarea = document.getElementById('edit-text-area');
+    
+    if (!uuid || !textarea) return;
+    
+    const formData = new FormData();
+    formData.append("uuid", uuid);
+    
+    const fileBlob = new Blob([textarea.value], { type: 'text/plain' });
+    formData.append("file", fileBlob);
+    
+    try {
+        const res = await fetch(`${APP.basePath}/update_file/`, { 
+            method: 'POST', 
+            body: formData 
+        });
+        
+        if (res.ok) {
+            addMessage('<span style="color: #70c65b;">ファイルを保存しました。</span>');
+            closeModal();
+        } else {
+            const errorData = await res.json().catch(() => ({}));
+            addMessage(`<span style="color: #ff0055;">保存に失敗しました: ${errorData.detail || ""}</span>`);
+        }
+    } catch (err) {
+        addMessage('<span style="color: #ff0055;">通信エラーが発生しました。</span>');
     }
 }
 

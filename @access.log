@@ -6,3 +6,6 @@
 [2026/05/05 02:09:23] 66.132.224.91 "GET /favicon.ico" 200 "Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)"
 [2026/05/05 02:09:30] 66.132.224.91 "GET /.well-known/security.txt" 404 "Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)"
 [2026/05/05 03:09:42] 216.73.216.27 "GET /robots.txt" 404 "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-SearchBot/1.0; +searchbot@anthropic.com)"
+[2026/05/05 04:22:51] 43.135.134.127 "GET /" 200 "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+[2026/05/05 04:22:58] 216.73.216.27 "GET /robots.txt" 404 "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-SearchBot/1.0; +searchbot@anthropic.com)"
+[2026/05/05 04:31:51] 217.154.63.119 "GET /.env" 404 "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"
