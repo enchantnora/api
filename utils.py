@@ -108,9 +108,6 @@ templates.env.globals["url_for"] = custom_url_for
 
 # --- DB Dependency ---
 async def get_db(request: Request):
-    """
-    複数ファイルから呼び出せるようにRequestオブジェクトからDB接続を取得します。
-    """
     yield request.app.state.db
 
 
@@ -136,7 +133,7 @@ def process_csv_and_schema(csv_path: str, table_name: str):
     is_memo_target = table_name == 'memo' and "slug" in df.columns and "memo" in df.columns
     if is_memo_target:
         today_str = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-        if (df["slug"] == "file_timestamp").any():i
+        if (df["slug"] == "file_timestamp").any():
             df = df.with_columns(
                 pl.when(pl.col("slug") == "file_timestamp")
                 .then(pl.lit(today_str))

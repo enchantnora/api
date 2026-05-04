@@ -19,6 +19,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from pathlib import Path
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
+from starlette.middleware.base import BaseHTTPMiddleware
 
 # 分割したファイルからのインポート
 from utils import (
@@ -29,6 +30,7 @@ from utils import (
     templates, CABINET_DIR, RE_CHART_FILE, RE_CHART_DATE
 )
 from cabinet import router as cabinet_router, init_cabinet_db
+from middleware import block_malicious_requests
 
 dbfile = 'dbfile.db'
 
@@ -53,6 +55,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(debug=False, docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 
+# ミドルウェア
+app.add_middleware(BaseHTTPMiddleware, dispatch=block_malicious_requests)
 # ファイラールーター
 app.include_router(cabinet_router)
 
