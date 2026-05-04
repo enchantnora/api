@@ -20234,3 +20234,9 @@ IndentationError: unexpected indent
 [2026-05-04 23:52:02 +0900] [77541] [INFO] Using worker: uvicorn.workers.UvicornWorker
 [2026-05-04 23:52:02 +0900] [77587] [INFO] Booting worker with pid: 77587
 [2026-05-04 23:52:02 +0900] [77589] [INFO] Booting worker with pid: 77589
+[2026-05-04 23:52:03 +0900] [77587] [INFO] Started server process [77587]
+[2026-05-04 23:52:03 +0900] [77587] [INFO] Waiting for application startup.
+[2026-05-04 23:52:03 +0900] [77587] [INFO] Application startup complete.
+[2026-05-04 23:52:03 +0900] [77589] [INFO] Started server process [77589]
+[2026-05-04 23:52:03 +0900] [77589] [INFO] Waiting for application startup.
+[2026-05-04 23:52:03 +0900] [77589] [INFO] Application startup complete.
