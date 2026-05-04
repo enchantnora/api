@@ -20215,3 +20215,22 @@ IndentationError: unexpected indent
 [2026-05-04 23:46:17 +0900] [77371] [INFO] Started server process [77371]
 [2026-05-04 23:46:17 +0900] [77371] [INFO] Waiting for application startup.
 [2026-05-04 23:46:17 +0900] [77371] [INFO] Application startup complete.
+[2026-05-04 23:52:01 +0900] [77323] [INFO] Handling signal: term
+[2026-05-04 23:52:01 +0900] [77371] [INFO] Shutting down
+[2026-05-04 23:52:01 +0900] [77371] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-04 23:52:01 +0900] [77369] [INFO] Shutting down
+[2026-05-04 23:52:01 +0900] [77369] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-04 23:52:01 +0900] [77371] [INFO] Waiting for application shutdown.
+[2026-05-04 23:52:01 +0900] [77371] [INFO] Application shutdown complete.
+[2026-05-04 23:52:01 +0900] [77371] [INFO] Finished server process [77371]
+[2026-05-04 23:52:01 +0900] [77323] [ERROR] Worker (pid:77371) was sent SIGTERM!
+[2026-05-04 23:52:01 +0900] [77369] [INFO] Waiting for application shutdown.
+[2026-05-04 23:52:01 +0900] [77369] [INFO] Application shutdown complete.
+[2026-05-04 23:52:01 +0900] [77369] [INFO] Finished server process [77369]
+[2026-05-04 23:52:01 +0900] [77323] [ERROR] Worker (pid:77369) was sent SIGTERM!
+[2026-05-04 23:52:01 +0900] [77323] [INFO] Shutting down: Master
+[2026-05-04 23:52:02 +0900] [77541] [INFO] Starting gunicorn 23.0.0
+[2026-05-04 23:52:02 +0900] [77541] [INFO] Listening at: http://0.0.0.0:9900 (77541)
+[2026-05-04 23:52:02 +0900] [77541] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-04 23:52:02 +0900] [77587] [INFO] Booting worker with pid: 77587
+[2026-05-04 23:52:02 +0900] [77589] [INFO] Booting worker with pid: 77589

@@ -12,14 +12,15 @@ access_logger.setLevel(logging.INFO)
 access_logger.addHandler(file_handler)
 access_logger.propagate = False # Uvicorn標準ログOFF
 
-# ログから除外するIP
+# 管理者IP(ログ無し)
 ADMIN_IPS = {
     "120.50.246.183",
     "127.0.0.1"
 }
 
 BLOCKED_IPS = {
-    "104.199.178.69"
+    "104.199.178.69",
+    "34.28.216.15"
 }
 
 BLOCKED_KEYWORDS = (
