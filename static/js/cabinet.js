@@ -748,7 +748,7 @@ function openPreview(filename, uuid, size, dateStr) {
         },
         'text': async () => {
             try {
-                const response = await fetch(url);
+                const response = await fetch(url, { cache: 'no-store' });
                 const textContent = await response.text();
                 
                 if (ext === 'txt') {
@@ -1021,6 +1021,7 @@ async function saveTextFile() {
         if (res.ok) {
             addMessage('<span style="color: #70c65b;">ファイルを保存しました。</span>');
             closeModal();
+            setTimeout(() => { location.reload(); }, 500); 
         } else {
             const errorData = await res.json().catch(() => ({}));
             addMessage(`<span style="color: #ff0055;">保存に失敗しました: ${errorData.detail || ""}</span>`);
