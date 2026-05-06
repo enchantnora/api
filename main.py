@@ -710,31 +710,27 @@ async def apply(request: Request, db: aiosqlite.Connection = Depends(get_db)):
 @app.get("/wgtcsv", name="wgtcsv")
 async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
     async def iter_csv():
-        yield "ＳＫ番号,商品ＣＤ,商品名,重量(g)\n".encode('cp932', errors='replace')
+        yield "ＳＫ番号,商品ＣＤ,商品名,重量(g)\n".encode('utf-8-sig')
         
         try:
             async with db.execute("SELECT sk, code, name, wgt FROM product") as cursor:
                 async for row in cursor:
                     sk = str(row["sk"] or "").replace(",", " ").replace('"', '')
                     code = str(row["code"] or "").replace(",", " ").replace('"', '')
-                    
                     raw_name = str(row["name"] or "").replace("•", "･").replace(",", " ").replace('"', '')
                     name = zen_to_han_fast_single(raw_name)
-                    
                     wgt_str = row["wgt"] or ""
-                    
                     calculated_wgt = parse_wgt(wgt_str)
                     
                     line = f"{sk},{code},{name},{calculated_wgt}\n"
-                    
-                    yield line.encode('cp932', errors='replace')
+                    yield line.encode('utf-8')
         except Exception:
             pass
 
     return StreamingResponse(
         iter_csv(),
-        media_type="text/csv; charset=Shift_JIS",
-        headers={"Content-Disposition": "attachment; filename=wgt.csv"}
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="wgt.csv"'}
     )
 
 # ------------------------------------
