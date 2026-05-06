@@ -173,3 +173,17 @@ Could not determine dtype for column 46, falling back to string
 [2026-05-06 11:14:59 +0900] [81152] [INFO] Started server process [81152]
 [2026-05-06 11:14:59 +0900] [81152] [INFO] Waiting for application startup.
 [2026-05-06 11:14:59 +0900] [81152] [INFO] Application startup complete.
+[2026-05-06 14:09:44 +0900] [81152] [WARNING] Invalid HTTP request received.
+[2026-05-06 14:09:51 +0900] [81152] [WARNING] Invalid HTTP request received.
+[2026-05-06 14:09:52 +0900] [81152] [WARNING] Invalid HTTP request received.
+[2026-05-06 14:09:56 +0900] [81152] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
