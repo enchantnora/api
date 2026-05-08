@@ -31,7 +31,7 @@ BLOCKED_KEYWORDS = (
     "wlwmanifest.xml"
 )
 
-async def block_malicious_requests(request: Request, call_next):
+async def requests_control(request: Request, call_next):
     client_ip = request.headers.get("cf-connecting-ip")
     if not client_ip and request.client:
         client_ip = request.client.host

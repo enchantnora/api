@@ -187,3 +187,66 @@ Could not determine dtype for column 36, falling back to string
 Could not determine dtype for column 55, falling back to string
 Could not determine dtype for column 57, falling back to string
 Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+[2026-05-07 14:21:09 +0900] [81152] [WARNING] Invalid HTTP request received.
+[2026-05-07 14:21:16 +0900] [81150] [WARNING] Invalid HTTP request received.
+[2026-05-07 14:21:17 +0900] [81152] [WARNING] Invalid HTTP request received.
+[2026-05-07 14:21:21 +0900] [81152] [WARNING] Invalid HTTP request received.
+[2026-05-07 14:51:29 +0900] [81150] [WARNING] Invalid HTTP request received.
+[2026-05-07 14:51:36 +0900] [81150] [WARNING] Invalid HTTP request received.
+[2026-05-07 14:53:00 +0900] [81150] [WARNING] Invalid HTTP request received.
+[2026-05-07 18:20:00 +0900] [81152] [WARNING] Invalid HTTP request received.
+[2026-05-07 18:20:00 +0900] [81150] [WARNING] Invalid HTTP request received.
+[2026-05-08 09:31:51 +0900] [81104] [INFO] Handling signal: term
+[2026-05-08 09:31:51 +0900] [81150] [INFO] Shutting down
+[2026-05-08 09:31:51 +0900] [81150] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-08 09:31:51 +0900] [81152] [INFO] Shutting down
+[2026-05-08 09:31:51 +0900] [81152] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-08 09:31:51 +0900] [81150] [INFO] Waiting for application shutdown.
+[2026-05-08 09:31:51 +0900] [81150] [INFO] Application shutdown complete.
+[2026-05-08 09:31:51 +0900] [81150] [INFO] Finished server process [81150]
+[2026-05-08 09:31:51 +0900] [81104] [ERROR] Worker (pid:81150) was sent SIGTERM!
+[2026-05-08 09:31:51 +0900] [81152] [INFO] Waiting for application shutdown.
+[2026-05-08 09:31:51 +0900] [81152] [INFO] Application shutdown complete.
+[2026-05-08 09:31:51 +0900] [81152] [INFO] Finished server process [81152]
+[2026-05-08 09:31:51 +0900] [81104] [ERROR] Worker (pid:81152) was sent SIGTERM!
+[2026-05-08 09:31:51 +0900] [81104] [INFO] Shutting down: Master
+[2026-05-08 09:31:52 +0900] [84688] [INFO] Starting gunicorn 23.0.0
+[2026-05-08 09:31:52 +0900] [84688] [INFO] Listening at: http://0.0.0.0:9900 (84688)
+[2026-05-08 09:31:52 +0900] [84688] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-08 09:31:52 +0900] [84734] [INFO] Booting worker with pid: 84734
+[2026-05-08 09:31:52 +0900] [84736] [INFO] Booting worker with pid: 84736
+[2026-05-08 09:31:54 +0900] [84734] [INFO] Started server process [84734]
+[2026-05-08 09:31:54 +0900] [84734] [INFO] Waiting for application startup.
+[2026-05-08 09:31:54 +0900] [84734] [INFO] Application startup complete.
+[2026-05-08 09:31:54 +0900] [84736] [INFO] Started server process [84736]
+[2026-05-08 09:31:54 +0900] [84736] [INFO] Waiting for application startup.
+[2026-05-08 09:31:54 +0900] [84736] [INFO] Application startup complete.
