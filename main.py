@@ -745,3 +745,7 @@ async def test(request: Request):
     }
     response = templates.TemplateResponse(request, 'test.html', context)
     return response
+
+@app.get('/test.html', name="test2")
+async def test2(request: Request):
+    return templates.TemplateResponse(request, 'test.html')

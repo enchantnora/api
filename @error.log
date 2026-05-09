@@ -250,3 +250,644 @@ Could not determine dtype for column 10, falling back to string
 [2026-05-08 09:31:54 +0900] [84736] [INFO] Started server process [84736]
 [2026-05-08 09:31:54 +0900] [84736] [INFO] Waiting for application startup.
 [2026-05-08 09:31:54 +0900] [84736] [INFO] Application startup complete.
+[2026-05-08 15:54:23 +0900] [84736] [WARNING] Invalid HTTP request received.
+[2026-05-08 15:54:29 +0900] [84736] [WARNING] Invalid HTTP request received.
+[2026-05-08 15:55:07 +0900] [84736] [WARNING] Invalid HTTP request received.
+[2026-05-09 12:23:52 +0900] [84734] [WARNING] Invalid HTTP request received.
+[2026-05-09 14:30:59 +0900] [84736] [WARNING] Invalid HTTP request received.
+[2026-05-09 14:31:08 +0900] [84736] [WARNING] Invalid HTTP request received.
+[2026-05-09 14:31:09 +0900] [84736] [WARNING] Invalid HTTP request received.
+[2026-05-09 14:31:19 +0900] [84736] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 19, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 25, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 40, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 16, falling back to string
+[2026-05-10 03:58:56 +0900] [84688] [INFO] Handling signal: term
+[2026-05-10 03:58:56 +0900] [84734] [INFO] Shutting down
+[2026-05-10 03:58:56 +0900] [84734] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-10 03:58:56 +0900] [84736] [INFO] Shutting down
+[2026-05-10 03:58:56 +0900] [84736] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-10 03:58:56 +0900] [84734] [INFO] Waiting for application shutdown.
+[2026-05-10 03:58:56 +0900] [84734] [INFO] Application shutdown complete.
+[2026-05-10 03:58:56 +0900] [84734] [INFO] Finished server process [84734]
+[2026-05-10 03:58:56 +0900] [84736] [INFO] Waiting for application shutdown.
+[2026-05-10 03:58:56 +0900] [84688] [ERROR] Worker (pid:84734) was sent SIGTERM!
+[2026-05-10 03:58:56 +0900] [84736] [INFO] Application shutdown complete.
+[2026-05-10 03:58:56 +0900] [84736] [INFO] Finished server process [84736]
+[2026-05-10 03:58:56 +0900] [84688] [ERROR] Worker (pid:84736) was sent SIGTERM!
+[2026-05-10 03:58:56 +0900] [84688] [INFO] Shutting down: Master
+[2026-05-10 03:58:57 +0900] [87896] [INFO] Starting gunicorn 23.0.0
+[2026-05-10 03:58:57 +0900] [87896] [INFO] Listening at: http://0.0.0.0:9900 (87896)
+[2026-05-10 03:58:57 +0900] [87896] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-10 03:58:57 +0900] [87942] [INFO] Booting worker with pid: 87942
+[2026-05-10 03:58:57 +0900] [87944] [INFO] Booting worker with pid: 87944
+[2026-05-10 03:58:58 +0900] [87942] [INFO] Started server process [87942]
+[2026-05-10 03:58:58 +0900] [87942] [INFO] Waiting for application startup.
+[2026-05-10 03:58:58 +0900] [87944] [INFO] Started server process [87944]
+[2026-05-10 03:58:58 +0900] [87944] [INFO] Waiting for application startup.
+[2026-05-10 03:58:58 +0900] [87942] [INFO] Application startup complete.
+[2026-05-10 03:58:58 +0900] [87944] [INFO] Application startup complete.
+[2026-05-10 04:02:49 +0900] [87896] [INFO] Handling signal: term
+[2026-05-10 04:02:49 +0900] [87942] [INFO] Shutting down
+[2026-05-10 04:02:49 +0900] [87942] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-10 04:02:49 +0900] [87944] [INFO] Shutting down
+[2026-05-10 04:02:49 +0900] [87944] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-10 04:02:49 +0900] [87942] [INFO] Waiting for application shutdown.
+[2026-05-10 04:02:49 +0900] [87942] [INFO] Application shutdown complete.
+[2026-05-10 04:02:49 +0900] [87942] [INFO] Finished server process [87942]
+[2026-05-10 04:02:49 +0900] [87896] [ERROR] Worker (pid:87942) was sent SIGTERM!
+[2026-05-10 04:02:49 +0900] [87944] [INFO] Waiting for application shutdown.
+[2026-05-10 04:02:49 +0900] [87944] [INFO] Application shutdown complete.
+[2026-05-10 04:02:49 +0900] [87944] [INFO] Finished server process [87944]
+[2026-05-10 04:02:49 +0900] [87896] [ERROR] Worker (pid:87944) was sent SIGTERM!
+[2026-05-10 04:02:49 +0900] [87896] [INFO] Shutting down: Master
+[2026-05-10 04:02:50 +0900] [88093] [INFO] Starting gunicorn 23.0.0
+[2026-05-10 04:02:50 +0900] [88093] [INFO] Listening at: http://0.0.0.0:9900 (88093)
+[2026-05-10 04:02:50 +0900] [88093] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-10 04:02:50 +0900] [88140] [INFO] Booting worker with pid: 88140
+[2026-05-10 04:02:50 +0900] [88144] [INFO] Booting worker with pid: 88144
+[2026-05-10 04:02:52 +0900] [88144] [INFO] Started server process [88144]
+[2026-05-10 04:02:52 +0900] [88144] [INFO] Waiting for application startup.
+[2026-05-10 04:02:52 +0900] [88144] [INFO] Application startup complete.
+[2026-05-10 04:02:52 +0900] [88140] [INFO] Started server process [88140]
+[2026-05-10 04:02:52 +0900] [88140] [INFO] Waiting for application startup.
+[2026-05-10 04:02:52 +0900] [88140] [INFO] Application startup complete.
+[2026-05-10 04:03:00 +0900] [88144] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/middleware.py", line 53, in requests_control
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 751, in test
+    return templates.TemplateResponse("test.html", {"request": request})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 148, in TemplateResponse
+    template = self.get_template(name)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 115, in get_template
+    return self.env.get_template(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 964, in _load_template
+    template = self.cache.get(cache_key)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 477, in get
+    return self[key]
+           ~~~~^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 515, in __getitem__
+    rv = self._mapping[key]
+         ~~~~~~~~~~~~~^^^^^
+TypeError: unhashable type: 'dict'
+[2026-05-10 04:03:02 +0900] [88144] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/middleware.py", line 53, in requests_control
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 751, in test
+    return templates.TemplateResponse("test.html", {"request": request})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 148, in TemplateResponse
+    template = self.get_template(name)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 115, in get_template
+    return self.env.get_template(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 964, in _load_template
+    template = self.cache.get(cache_key)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 477, in get
+    return self[key]
+           ~~~~^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 515, in __getitem__
+    rv = self._mapping[key]
+         ~~~~~~~~~~~~~^^^^^
+TypeError: unhashable type: 'dict'
+[2026-05-10 04:03:04 +0900] [88144] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/middleware.py", line 53, in requests_control
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 751, in test
+    return templates.TemplateResponse("test.html", {"request": request})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 148, in TemplateResponse
+    template = self.get_template(name)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 115, in get_template
+    return self.env.get_template(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 964, in _load_template
+    template = self.cache.get(cache_key)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 477, in get
+    return self[key]
+           ~~~~^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 515, in __getitem__
+    rv = self._mapping[key]
+         ~~~~~~~~~~~~~^^^^^
+TypeError: unhashable type: 'dict'
+[2026-05-10 04:04:45 +0900] [88093] [INFO] Handling signal: term
+[2026-05-10 04:04:45 +0900] [88144] [INFO] Shutting down
+[2026-05-10 04:04:45 +0900] [88144] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-10 04:04:45 +0900] [88140] [INFO] Shutting down
+[2026-05-10 04:04:45 +0900] [88140] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-10 04:04:45 +0900] [88144] [INFO] Waiting for application shutdown.
+[2026-05-10 04:04:45 +0900] [88144] [INFO] Application shutdown complete.
+[2026-05-10 04:04:45 +0900] [88144] [INFO] Finished server process [88144]
+[2026-05-10 04:04:45 +0900] [88093] [ERROR] Worker (pid:88144) was sent SIGTERM!
+[2026-05-10 04:04:45 +0900] [88140] [INFO] Waiting for application shutdown.
+[2026-05-10 04:04:45 +0900] [88140] [INFO] Application shutdown complete.
+[2026-05-10 04:04:45 +0900] [88140] [INFO] Finished server process [88140]
+[2026-05-10 04:04:45 +0900] [88093] [ERROR] Worker (pid:88140) was sent SIGTERM!
+[2026-05-10 04:04:45 +0900] [88093] [INFO] Shutting down: Master
+[2026-05-10 04:04:45 +0900] [88213] [INFO] Starting gunicorn 23.0.0
+[2026-05-10 04:04:45 +0900] [88213] [INFO] Listening at: http://0.0.0.0:9900 (88213)
+[2026-05-10 04:04:45 +0900] [88213] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-10 04:04:45 +0900] [88259] [INFO] Booting worker with pid: 88259
+[2026-05-10 04:04:46 +0900] [88261] [INFO] Booting worker with pid: 88261
+[2026-05-10 04:04:47 +0900] [88259] [INFO] Started server process [88259]
+[2026-05-10 04:04:47 +0900] [88259] [INFO] Waiting for application startup.
+[2026-05-10 04:04:47 +0900] [88259] [INFO] Application startup complete.
+[2026-05-10 04:04:47 +0900] [88261] [INFO] Started server process [88261]
+[2026-05-10 04:04:47 +0900] [88261] [INFO] Waiting for application startup.
+[2026-05-10 04:04:47 +0900] [88261] [INFO] Application startup complete.
+[2026-05-10 04:04:48 +0900] [88259] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/middleware.py", line 53, in requests_control
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 751, in test2
+    return templates.TemplateResponse("test.html", {"request": request})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 148, in TemplateResponse
+    template = self.get_template(name)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 115, in get_template
+    return self.env.get_template(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 964, in _load_template
+    template = self.cache.get(cache_key)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 477, in get
+    return self[key]
+           ~~~~^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 515, in __getitem__
+    rv = self._mapping[key]
+         ~~~~~~~~~~~~~^^^^^
+TypeError: unhashable type: 'dict'
+[2026-05-10 04:04:50 +0900] [88259] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/middleware.py", line 53, in requests_control
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 751, in test2
+    return templates.TemplateResponse("test.html", {"request": request})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 148, in TemplateResponse
+    template = self.get_template(name)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 115, in get_template
+    return self.env.get_template(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 964, in _load_template
+    template = self.cache.get(cache_key)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 477, in get
+    return self[key]
+           ~~~~^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 515, in __getitem__
+    rv = self._mapping[key]
+         ~~~~~~~~~~~~~^^^^^
+TypeError: unhashable type: 'dict'
+[2026-05-10 04:05:02 +0900] [88261] [ERROR] Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/middleware.py", line 53, in requests_control
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/API/main.py", line 751, in test2
+    return templates.TemplateResponse("test.html", {"request": request})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 148, in TemplateResponse
+    template = self.get_template(name)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/starlette/templating.py", line 115, in get_template
+    return self.env.get_template(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/environment.py", line 964, in _load_template
+    template = self.cache.get(cache_key)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 477, in get
+    return self[key]
+           ~~~~^^^^^
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/jinja2/utils.py", line 515, in __getitem__
+    rv = self._mapping[key]
+         ~~~~~~~~~~~~~^^^^^
+TypeError: unhashable type: 'dict'
+[2026-05-10 04:05:57 +0900] [88213] [INFO] Handling signal: term
+[2026-05-10 04:05:57 +0900] [88261] [INFO] Shutting down
+[2026-05-10 04:05:57 +0900] [88261] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-10 04:05:57 +0900] [88259] [INFO] Shutting down
+[2026-05-10 04:05:57 +0900] [88259] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-10 04:05:57 +0900] [88261] [INFO] Waiting for application shutdown.
+[2026-05-10 04:05:57 +0900] [88261] [INFO] Application shutdown complete.
+[2026-05-10 04:05:57 +0900] [88261] [INFO] Finished server process [88261]
+[2026-05-10 04:05:57 +0900] [88259] [INFO] Waiting for application shutdown.
+[2026-05-10 04:05:57 +0900] [88259] [INFO] Application shutdown complete.
+[2026-05-10 04:05:57 +0900] [88259] [INFO] Finished server process [88259]
+[2026-05-10 04:05:57 +0900] [88213] [ERROR] Worker (pid:88261) was sent SIGTERM!
+[2026-05-10 04:05:57 +0900] [88213] [ERROR] Worker (pid:88259) was sent SIGTERM!
+[2026-05-10 04:05:57 +0900] [88213] [INFO] Shutting down: Master
+[2026-05-10 04:05:58 +0900] [88326] [INFO] Starting gunicorn 23.0.0
+[2026-05-10 04:05:58 +0900] [88326] [INFO] Listening at: http://0.0.0.0:9900 (88326)
+[2026-05-10 04:05:58 +0900] [88326] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-10 04:05:58 +0900] [88372] [INFO] Booting worker with pid: 88372
+[2026-05-10 04:05:58 +0900] [88374] [INFO] Booting worker with pid: 88374
+[2026-05-10 04:05:59 +0900] [88372] [INFO] Started server process [88372]
+[2026-05-10 04:05:59 +0900] [88372] [INFO] Waiting for application startup.
+[2026-05-10 04:05:59 +0900] [88372] [INFO] Application startup complete.
+[2026-05-10 04:05:59 +0900] [88374] [INFO] Started server process [88374]
+[2026-05-10 04:05:59 +0900] [88374] [INFO] Waiting for application startup.
+[2026-05-10 04:05:59 +0900] [88374] [INFO] Application startup complete.
