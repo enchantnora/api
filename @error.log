@@ -891,3 +891,111 @@ TypeError: unhashable type: 'dict'
 [2026-05-10 04:05:59 +0900] [88374] [INFO] Started server process [88374]
 [2026-05-10 04:05:59 +0900] [88374] [INFO] Waiting for application startup.
 [2026-05-10 04:05:59 +0900] [88374] [INFO] Application startup complete.
+[2026-05-10 14:55:32 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-10 14:55:39 +0900] [88372] [WARNING] Invalid HTTP request received.
+[2026-05-10 14:56:49 +0900] [88372] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+[2026-05-11 16:15:11 +0900] [88372] [WARNING] Invalid HTTP request received.
+[2026-05-11 16:15:24 +0900] [88372] [WARNING] Invalid HTTP request received.
+[2026-05-11 16:15:56 +0900] [88372] [WARNING] Invalid HTTP request received.
+[2026-05-11 18:57:16 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-11 18:57:24 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-11 18:57:25 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-11 18:57:32 +0900] [88374] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+[2026-05-12 15:48:21 +0900] [88372] [WARNING] Invalid HTTP request received.
+[2026-05-12 15:48:33 +0900] [88372] [WARNING] Invalid HTTP request received.
+[2026-05-12 15:48:34 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-12 15:48:40 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-13 16:05:30 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-13 16:05:39 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-13 16:05:41 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-13 16:05:46 +0900] [88372] [WARNING] Invalid HTTP request received.
+[2026-05-13 16:47:37 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-13 16:47:45 +0900] [88374] [WARNING] Invalid HTTP request received.
+[2026-05-13 16:47:58 +0900] [88374] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
