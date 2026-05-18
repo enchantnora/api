@@ -19694,3 +19694,4 @@
 [2026/05/18 22:39:08] 2001:268:7746:d066:746e:9f14:4528:16a9 "GET /shift/20260530" 200 "Mozilla/5.0 (iPhone; CPU iPhone OS 26_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1"
 [2026/05/18 22:39:09] 2001:268:7746:d066:746e:9f14:4528:16a9 "GET /shift/20260531" 200 "Mozilla/5.0 (iPhone; CPU iPhone OS 26_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1"
 [2026/05/18 23:07:46] 2001:268:7746:d066:746e:9f14:4528:16a9 "GET /item/700371" 200 "BackgroundShortcutRunner/4407 CFNetwork/3860.400.51 Darwin/25.3.0"
+[2026/05/18 23:23:45] 192.71.2.99 "GET /" 200 "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123"
