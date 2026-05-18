@@ -166,6 +166,23 @@ def write_csv_sync(filepath: str, headers: list, rows: list):
         writer.writerow(headers)
         writer.writerows(rows)
 
+# ------------------------------------
+
+def name_set(name: str, ope: dict) -> str:
+    if name not in ope:
+        return name
+    
+    if ope[name] > 0:
+        diff = f'{name} ({ope[name]:+})'
+        ope[name] -= 1
+        return diff
+    elif ope[name] < 0:
+        diff = f'{name} ({ope[name]:+})'
+        ope[name] = 0
+        return diff
+    else:
+        return name
+
 def write_and_process(sheets_data: dict, decision_csv_path: str):
     data_list = []
     for sheet_name, sheet_values in sheets_data.items():
@@ -177,32 +194,66 @@ def write_and_process(sheets_data: dict, decision_csv_path: str):
 def work_process(data_list: list, decision_csv_path: str):
     if not data_list or len(data_list) < 3:
         return
+    
     sheets_dict = {}
     for row in data_list:
         sheet_name = row[0]
         if sheet_name not in sheets_dict:
             sheets_dict[sheet_name] = []
         sheets_dict[sheet_name].append(row)
+        
     result_dict = {}
     exclude_shifts = {'☓', 'X', 'x', '×', '停'}
     base_date = datetime.date(2001, 1, 1)
+    
     for sheet_name, sheet_data in sheets_dict.items():
         if len(sheet_data) < 3:
             continue
+            
         first_row = sheet_data[0]
         second_row = sheet_data[1]
         parts = sheet_name.split('-')
         if len(parts) < 2:
             continue
+            
         start_year = 2000 + int(parts[0])
         start_month = int(parts[1])
+        
+        target_work_days = None
+        if len(first_row) > 2:
+            b1_value = first_row[2].strip()
+            if b1_value and b1_value.isdigit():
+                target_work_days = int(b1_value)
+        
+        ope = {}
+        if target_work_days is not None:
+            for row_idx in range(2, len(sheet_data)):
+                row = sheet_data[row_idx]
+                if len(row) > 1:
+                    name = row[1].strip()
+                    name = name.replace(' ', '　')
+                    while '　　' in name:
+                        name = name.replace('　　', '　')
+                        
+                    work_count = 0
+                    for col_idx in range(3, len(first_row)):
+                        if len(row) > col_idx:
+                            shift = row[col_idx].strip()
+                            if shift and shift not in exclude_shifts:
+                                work_count += 1
+                    
+                    ope[name] = work_count - target_work_days
+
         current_year = start_year
         current_month = start_month
         prev_day = 0
+        sheet_days_keys = []
+        
         for col_idx in range(3, len(first_row)):
             day_str = first_row[col_idx].strip()
             if not day_str or not day_str.isdigit():
                 continue
+                
             day = int(day_str)
             if day < prev_day:
                 current_month += 1
@@ -210,19 +261,23 @@ def work_process(data_list: list, decision_csv_path: str):
                     current_month = 1
                     current_year += 1
             prev_day = day
+            
             try:
                 current_date = datetime.date(current_year, current_month, day)
             except ValueError:
                 continue
+                
             index_day = int(f"{current_year}{current_month:02d}{day:02d}")
             weekday_str = second_row[col_idx].strip() if len(second_row) > col_idx else ""
             delta = current_date - base_date
             days_str = f'<span class="blur">{current_year}年</span><br>{current_month}月 {day}日（{weekday_str}）'
+            
             if delta.days % 14 > 6:
                 color = '　<span id="b_hakui">【青】</span>'
             else:
                 color = '　<span id="w_hakui">【白】</span>'
-            member_dict = {}
+                
+            member_dict_raw = {}
             for row_idx in range(2, len(sheet_data)):
                 row = sheet_data[row_idx]
                 if len(row) > col_idx:
@@ -231,17 +286,35 @@ def work_process(data_list: list, decision_csv_path: str):
                     while '　　' in name:
                         name = name.replace('　　', '　')
                     shift = row[col_idx].strip()
+                    
                     if name and shift and shift not in exclude_shifts:
-                        if shift not in member_dict:
-                            member_dict[shift] = []
-                        member_dict[shift].append(name)
-            member_json = json.dumps(member_dict, ensure_ascii=False)
-            result_dict[index_day] = [index_day, days_str, color, member_json]
+                        if shift not in member_dict_raw:
+                            member_dict_raw[shift] = []
+                        member_dict_raw[shift].append(name)
+                        
+            result_dict[index_day] = [index_day, days_str, color, member_dict_raw]
+            sheet_days_keys.append(index_day)
+            
+        sheet_days_keys.sort(reverse=True)
+        for idx_day in sheet_days_keys:
+            daily_member_dict = result_dict[idx_day][3]
+            new_member_dict = {}
+            for shift, names in daily_member_dict.items():
+                new_member_dict[shift] = []
+                for name in names:
+                    new_name = name_set(name, ope)
+                    new_member_dict[shift].append(new_name)
+            result_dict[idx_day][3] = json.dumps(new_member_dict, ensure_ascii=False)
+
     result_data = sorted(result_dict.values(), key=lambda x: x[0])
     result_data.insert(0, ["index_day", "days", "color", "member"])
+    
     with open(decision_csv_path, mode='w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerows(result_data)
+
+
+# ------------------------------------
 
 def get_val(item_dict: dict, key: str) -> str:
     val = item_dict.get(key)
