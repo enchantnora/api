@@ -450,16 +450,28 @@ async def user_id(request: Request, selection: str, db: aiosqlite.Connection = D
 
 @app.get("/backup/{table_name}", name="backup_table")
 async def backup_table(table_name: str, db: aiosqlite.Connection = Depends(get_db)):
-    allowed_tables = [config['name'] for config in TABLE_CONFIGS]
-    if table_name not in allowed_tables:
-        raise HTTPException(status_code=400, detail="Invalid table name")
-
     csv_path = Path(f"./csv/{table_name}.csv")
+    allowed_tables_main = [config['name'] for config in TABLE_CONFIGS]
 
     try:
-        async with db.execute(f"SELECT * FROM {table_name}") as cursor:
-            rows = await cursor.fetchall()
-            
+        if table_name in allowed_tables_main:
+            async with db.execute(f"SELECT * FROM {table_name}") as cursor:
+                rows = await cursor.fetchall()
+        else:
+            async with aiosqlite.connect("filer.db") as filer_db:
+                filer_db.row_factory = aiosqlite.Row
+                
+                async with filer_db.execute("SELECT name FROM sqlite_master WHERE type='table'") as cursor:
+                    tables = await cursor.fetchall()
+                    allowed_tables_filer = [table["name"] for table in tables]
+                    
+                if table_name not in allowed_tables_filer:
+                    error_detail = f"Invalid table name. '{table_name}' not found in TABLE_CONFIGS nor filer.db."
+                    raise HTTPException(status_code=400, detail=error_detail)
+                
+                async with filer_db.execute(f"SELECT * FROM {table_name}") as cursor:
+                    rows = await cursor.fetchall()
+
         if not rows:
             return {"result": False, "msg": "テーブルにデータが存在しません"}
             
@@ -470,6 +482,8 @@ async def backup_table(table_name: str, db: aiosqlite.Connection = Depends(get_d
         
         return {"result": True, "msg": f"{table_name}.csv のバックアップが完了しました"}
         
+    except HTTPException:
+        raise
     except aiosqlite.Error as e:
         raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
