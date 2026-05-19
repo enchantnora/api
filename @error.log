@@ -4064,3 +4064,38 @@ IndentationError: unexpected indent
 [2026-05-19 11:54:09 +0900] [109224] [INFO] Application startup complete.
 Could not determine dtype for column 16, falling back to string
 Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+[2026-05-19 14:09:20 +0900] [109176] [INFO] Handling signal: term
+[2026-05-19 14:09:20 +0900] [109224] [INFO] Shutting down
+[2026-05-19 14:09:20 +0900] [109224] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-19 14:09:20 +0900] [109222] [INFO] Shutting down
+[2026-05-19 14:09:20 +0900] [109222] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-19 14:09:20 +0900] [109224] [INFO] Waiting for application shutdown.
+[2026-05-19 14:09:20 +0900] [109224] [INFO] Application shutdown complete.
+[2026-05-19 14:09:20 +0900] [109224] [INFO] Finished server process [109224]
+[2026-05-19 14:09:20 +0900] [109176] [ERROR] Worker (pid:109224) was sent SIGTERM!
+[2026-05-19 14:09:20 +0900] [109222] [INFO] Waiting for application shutdown.
+[2026-05-19 14:09:20 +0900] [109222] [INFO] Application shutdown complete.
+[2026-05-19 14:09:20 +0900] [109222] [INFO] Finished server process [109222]
+[2026-05-19 14:09:20 +0900] [109176] [ERROR] Worker (pid:109222) was sent SIGTERM!
+[2026-05-19 14:09:20 +0900] [109176] [INFO] Shutting down: Master
+[2026-05-19 14:09:21 +0900] [109588] [INFO] Starting gunicorn 23.0.0
+[2026-05-19 14:09:21 +0900] [109588] [INFO] Listening at: http://0.0.0.0:9900 (109588)
+[2026-05-19 14:09:21 +0900] [109588] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-19 14:09:21 +0900] [109634] [INFO] Booting worker with pid: 109634
+[2026-05-19 14:09:21 +0900] [109636] [INFO] Booting worker with pid: 109636
+[2026-05-19 14:09:22 +0900] [109634] [INFO] Started server process [109634]
+[2026-05-19 14:09:22 +0900] [109634] [INFO] Waiting for application startup.
+[2026-05-19 14:09:22 +0900] [109634] [INFO] Application startup complete.
+[2026-05-19 14:09:22 +0900] [109636] [INFO] Started server process [109636]
+[2026-05-19 14:09:22 +0900] [109636] [INFO] Waiting for application startup.
+[2026-05-19 14:09:22 +0900] [109636] [INFO] Application startup complete.

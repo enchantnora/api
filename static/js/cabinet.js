@@ -1,27 +1,15 @@
-// ボタン処理
-async function executeAdminTask(url, taskName) {
-    if (!url || !APP.isAdmin) return addMessage('<span style="color: #ff0055;">管理者のみ実行可能</span>');
-    if (APP.isProcessing) return;
-    APP.isProcessing = true;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        addMessage(`<span style="color: #70c65b;">${taskName}: ${data.status}</span>`);
-    } catch (error) {
-        addMessage(`<span style="color: #ff0055;">エラーが発生しました。${error}</span>`);
-    } finally {
-        APP.isProcessing = false;
-    }
-}
+// ---- メッセージ色付きHTML生成ヘルパー ----------------------------------------
+const MSG = {
+    error:   text => `<span style="color:#ff0055;">${text}</span>`,
+    success: text => `<span style="color:#70c65b;">${text}</span>`,
+    info:    text => `<span style="color:#0000cd;">${text}</span>`,
+    warn:    text => `<span style="color:#ff8282;">${text}</span>`,
+};
 
-const btn1 = () => executeAdminTask(APP.endpoints.dataFormatting, "Data解析");
-const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
-const btn3 = () => APP.endpoints.docs ? window.open(APP.endpoints.docs, '_blank') : addMessage('<span style="color: #ff0055;">管理者のみ実行可能</span>');
-const btn4 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
-const btn5 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
-const btn6 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+const previewError = err =>
+    `<div style="padding:20px;color:red;">エラーが発生しました: ${err.message}</div>`;
 
-// ユーティリティ関数
+// ---- ユーティリティ ----------------------------------------
 const Utils = {
     formatBytes: (bytes, decimals = 2) => {
         if (!+bytes) return '0 Bytes';
@@ -49,12 +37,38 @@ const Utils = {
         };
         return icons[ext] || '📄';
     },
-    escapeHtml: (unsafe) => {
-        return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
+    escapeHtml: (() => {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return s => s.replace(/[&<>"']/g, c => map[c]);
+    })(),
 };
 
-// メッセージ表示機能
+// ---- ボタン処理 ----------------------------------------
+async function executeAdminTask(url, taskName) {
+    if (!url || !APP.isAdmin) return addMessage(MSG.error('管理者のみ実行可能'));
+    if (APP.isProcessing) return;
+    APP.isProcessing = true;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        addMessage(MSG.success(`${taskName}: ${data.status}`));
+    } catch (error) {
+        addMessage(MSG.error(`エラーが発生しました。${error}`));
+    } finally {
+        APP.isProcessing = false;
+    }
+}
+
+const btn1 = () => executeAdminTask(APP.endpoints.dataFormatting, "Data解析");
+const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+const btn3 = () => APP.endpoints.docs
+    ? window.open(APP.endpoints.docs, '_blank')
+    : addMessage(MSG.error('管理者のみ実行可能'));
+const btn4 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+const btn5 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+const btn6 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+
+// ---- メッセージ表示 ----------------------------------------
 function addMessage(htmlContent) {
     const path_div = document.getElementById('on_path');
     if (!path_div) return;
@@ -64,12 +78,9 @@ function addMessage(htmlContent) {
     } else {
         APP.originalContent = path_div.innerHTML;
     }
-
-    if (window.innerWidth < 700) {
-        path_div.innerHTML = `<div class="message-scroll-wrap"><div class="message-scroll-text">${htmlContent}</div></div>`;
-    } else {
-        path_div.innerHTML = htmlContent;
-    }
+    path_div.innerHTML = window.innerWidth < 700
+        ? `<div class="message-scroll-wrap"><div class="message-scroll-text">${htmlContent}</div></div>`
+        : htmlContent;
 
     APP.messageTimer = setTimeout(() => {
         path_div.innerHTML = APP.originalContent;
@@ -77,34 +88,38 @@ function addMessage(htmlContent) {
     }, 3500);
 }
 
-// ドラッグ＆ドロップ関連の処理を共通化
+// ---- ドラッグ＆ドロップ ----------------------------------------
+const clearFolderHighlights = () =>
+    document.querySelectorAll('.folder.drag-over').forEach(el => el.classList.remove('drag-over'));
+
 function setupDropZone(element, targetPathResolver) {
     if (!element) return;
     const preventDefaults = e => { e.preventDefault(); e.stopPropagation(); };
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => element.addEventListener(evt, preventDefaults, false));
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt =>
+        element.addEventListener(evt, preventDefaults, false));
 
     element.addEventListener('dragover', (e) => {
         const folder = e.target.closest('.folder');
         if (folder) {
             element.classList.remove('drag-over');
+            clearFolderHighlights();
             folder.classList.add('drag-over');
-            document.querySelectorAll('.folder.drag-over').forEach(el => { if (el !== folder) el.classList.remove('drag-over'); });
         } else {
             element.classList.add('drag-over');
-            document.querySelectorAll('.folder.drag-over').forEach(el => el.classList.remove('drag-over'));
+            clearFolderHighlights();
         }
     });
 
     element.addEventListener('dragleave', (e) => {
         if (!e.relatedTarget || !element.contains(e.relatedTarget)) {
             element.classList.remove('drag-over');
-            document.querySelectorAll('.folder.drag-over').forEach(el => el.classList.remove('drag-over'));
+            clearFolderHighlights();
         }
     });
 
     element.addEventListener('drop', (e) => {
         element.classList.remove('drag-over');
-        document.querySelectorAll('.folder.drag-over').forEach(el => el.classList.remove('drag-over'));
+        clearFolderHighlights();
 
         const targetPath = targetPathResolver(e);
 
@@ -114,7 +129,7 @@ function setupDropZone(element, targetPathResolver) {
                 const dragData = JSON.parse(dragDataStr);
                 if (dragData.type === 'internal_file') {
                     if (targetPath !== APP.currentPath) executeMove(dragData.uuid, dragData.name, targetPath);
-                    return; 
+                    return;
                 }
             }
         } catch(err) {}
@@ -132,7 +147,7 @@ function setupDropZone(element, targetPathResolver) {
     });
 }
 
-// 初期化処理
+// ---- 初期化 ----------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const capacityLabel = document.getElementById('capacity-label');
     const fillBar = document.getElementById('capacity-bar-fill');
@@ -146,14 +161,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    document.querySelectorAll('.file-size').forEach(el => el.textContent = `Size: ${Utils.formatBytes(parseInt(el.dataset.size, 10))}`);
-    document.querySelectorAll('.file-icon').forEach(el => { if (el.dataset.filename) el.textContent = Utils.getFileIcon(el.dataset.filename); });
+    document.querySelectorAll('.file-size').forEach(el =>
+        el.textContent = `Size: ${Utils.formatBytes(parseInt(el.dataset.size, 10))}`);
+    document.querySelectorAll('.file-icon').forEach(el => {
+        if (el.dataset.filename) el.textContent = Utils.getFileIcon(el.dataset.filename);
+    });
 
     setupDropZone(document.getElementById('detail'), e => {
         const folder = e.target.closest('.folder');
         return folder ? folder.getAttribute('data-path') : APP.currentPath;
     });
-    setupDropZone(document.querySelector('.up-btn[data-path]'), e => e.currentTarget.getAttribute('data-path'));
+    setupDropZone(document.querySelector('.up-btn[data-path]'), e =>
+        e.currentTarget.getAttribute('data-path'));
 
     const fileList = document.getElementById('file-list');
     if (fileList) {
@@ -167,14 +186,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: li.querySelector('.item-title')?.textContent || 'ファイル'
                 }));
             } else {
-                e.preventDefault(); 
+                e.preventDefault();
             }
         });
 
         let clickCount = 0;
         let clickTimer = null;
         let lastTarget = null;
-        
+
         fileList.addEventListener('click', (e) => {
             if (['BUTTON', 'A'].includes(e.target.tagName) || e.target.closest('.item-actions')) return;
             const li = e.target.closest('li.bulletin_board2:not(.upload-item)');
@@ -205,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (path) navigate(path);
                 } else if (count === 2 && !li.classList.contains('folder')) {
                     if (li.dataset.protected === 'true' && !APP.isAdmin) {
-                        addMessage('<span style="color: #ff0055;">このファイルは保護されているため、リンクをコピーできません。</span>');
+                        addMessage(MSG.error('このファイルは保護されているため、リンクをコピーできません。'));
                         return;
                     }
                     const uuid = li.dataset.uuid;
@@ -217,38 +236,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const previewModal = document.getElementById('preview-modal');
     if (previewModal) {
-        previewModal.addEventListener('click', function(e) {
-            if (e.target === this) {
+        ['click', 'touchend'].forEach(evt => {
+            previewModal.addEventListener(evt, function(e) {
+                if (e.target !== this) return;
+                if (evt === 'touchend') e.preventDefault();
                 const saveBtn = document.getElementById('save-txt-btn');
                 if (saveBtn && saveBtn.style.display !== 'none') return;
                 closeModal();
-            }
-        });
-        previewModal.addEventListener('touchend', function(e) {
-            if (e.target === this) {
-                e.preventDefault();
-                const saveBtn = document.getElementById('save-txt-btn');
-                if (saveBtn && saveBtn.style.display !== 'none') return;
-                closeModal();
-            }
+            });
         });
     }
 
-    const onPathDiv = document.getElementById('on_path');
-    const searchInput = document.getElementById('search_input');
+    const onPathDiv    = document.getElementById('on_path');
+    const searchInput  = document.getElementById('search_input');
     const searchButton = document.getElementById('search_button');
 
     if (onPathDiv && searchInput) {
         const activateSearch = () => {
             if (APP.messageTimer) return;
-            onPathDiv.style.display = 'none';
+            onPathDiv.style.display   = 'none';
             searchInput.style.display = 'block';
             searchInput.focus();
         };
 
         onPathDiv.addEventListener('focus', activateSearch);
-        
-        // パンくずのクリックでは発火させないよう調整
         onPathDiv.addEventListener('click', (e) => {
             if (e.target.classList.contains('breadcrumb-item')) return;
             activateSearch();
@@ -257,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('blur', () => {
             if (searchInput.value.trim() === '') {
                 searchInput.style.display = 'none';
-                onPathDiv.style.display = 'flex';
+                onPathDiv.style.display   = 'flex';
             }
         });
 
@@ -274,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (searchInput && searchInput.style.display === 'block' && searchInput.value.trim() !== '') {
                 executeSearch();
             } else if (onPathDiv && searchInput) {
-                onPathDiv.style.display = 'none';
+                onPathDiv.style.display   = 'none';
                 searchInput.style.display = 'block';
                 searchInput.focus();
             }
@@ -287,19 +298,22 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = `${APP.basePath}/?query=${encodeURIComponent(query)}`;
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const previewUuid = urlParams.get('preview');
+    const urlParams    = new URLSearchParams(window.location.search);
+    const previewUuid  = urlParams.get('preview');
     if (previewUuid) {
         const targetBtn = document.querySelector(`li[data-uuid="${previewUuid}"] .preview-btn`);
         if (targetBtn) {
             setTimeout(() => targetBtn.click(), 35);
         } else {
-            addMessage('<span style="color: #ff0055;">指定されたファイルが見つかりません。</span>');
+            addMessage(MSG.error('指定されたファイルが見つかりません。'));
         }
     }
 });
 
-function navigate(path) { window.location.href = `${APP.basePath}/?path=${encodeURIComponent(path)}`; }
+// ---- ナビゲーション・フォルダ操作 ----------------------------------------
+function navigate(path) {
+    window.location.href = `${APP.basePath}/?path=${encodeURIComponent(path)}`;
+}
 
 async function createFolder() {
     const folderName = prompt("新規フォルダ名を入力してください:");
@@ -309,12 +323,15 @@ async function createFolder() {
     formData.append("folder_name", folderName);
     try {
         const res = await fetch(`${APP.basePath}/mkdir/`, { method: "POST", body: formData });
-        res.ok ? location.reload() : addMessage(`<span style="color: #ff0055;">フォルダの作成に失敗しました。</span>`);
+        res.ok
+            ? location.reload()
+            : addMessage(MSG.error('フォルダの作成に失敗しました。'));
     } catch (error) {
-        addMessage(`<span style="color: #ff0055;">エラーが発生しました。${error}</span>`);
+        addMessage(MSG.error(`エラーが発生しました。${error}`));
     }
 }
 
+// ---- アップロード ----------------------------------------
 function uploadFile() {
     const fileInput = document.getElementById('fileInput');
     if (!fileInput.files.length) return;
@@ -349,12 +366,14 @@ async function executeUpload(file, targetPath = APP.currentPath) {
     APP.currentRemainingCapacity -= file.size;
     APP.activeUploads++;
 
-    const fileList = document.getElementById('file-list');
-    const uploadLi = document.createElement('li');
+    const fileList   = document.getElementById('file-list');
+    const uploadLi   = document.createElement('li');
     uploadLi.className = 'bulletin_board2 upload-item none_selection';
-    
-    const displayPath = targetPath !== APP.currentPath ? targetPath.replace(APP.currentPath, "").replace(/^\//, "") + "/" : "";
-    
+
+    const displayPath = targetPath !== APP.currentPath
+        ? targetPath.replace(APP.currentPath, "").replace(/^\//, "") + "/"
+        : "";
+
     uploadLi.innerHTML = `
         <div class="upload-progress-bg"></div>
         <div class="item-icon">${Utils.getFileIcon(file.name)}</div>
@@ -369,60 +388,59 @@ async function executeUpload(file, targetPath = APP.currentPath) {
     const statusMsg = fileList.querySelector('.status-message');
     if (statusMsg) statusMsg.style.display = 'none';
     fileList.insertBefore(uploadLi, fileList.firstChild);
-    
-    const progressBg = uploadLi.querySelector('.upload-progress-bg');
+
+    const progressBg   = uploadLi.querySelector('.upload-progress-bg');
     const progressText = uploadLi.querySelector('.upload-percent');
-    
+
+    const abortUpload = (msg) => {
+        APP.activeUploads--;
+        APP.currentRemainingCapacity += file.size;
+        uploadLi.remove();
+        addMessage(msg);
+        if (APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg)
+            statusMsg.style.display = 'block';
+    };
+
     let isCancelled = false;
-    const cancelBtn = uploadLi.querySelector('.cancel-upload-btn');
-    cancelBtn.addEventListener('click', (e) => {
+    uploadLi.querySelector('.cancel-upload-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         isCancelled = true;
     });
 
-    const chunkSize = 50 * 1024 * 1024;
+    const chunkSize   = 50 * 1024 * 1024;
     const totalChunks = Math.ceil(file.size / chunkSize) || 1;
-    const uploadId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+    const uploadId    = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
         if (isCancelled) {
-            APP.activeUploads--;
-            APP.currentRemainingCapacity += file.size;
-            uploadLi.remove();
-            addMessage(`<span style="color: #ff8282;">アップロードを中止しました: ${Utils.escapeHtml(file.name)}</span>`);
-            if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
+            abortUpload(MSG.warn(`アップロードを中止しました: ${Utils.escapeHtml(file.name)}`));
             return;
         }
 
         const start = chunkIndex * chunkSize;
-        const end = Math.min(start + chunkSize, file.size);
+        const end   = Math.min(start + chunkSize, file.size);
         const chunk = file.slice(start, end);
 
         const formData = new FormData();
-        formData.append("path", targetPath);
-        formData.append("filename", file.name);
-        formData.append("total_size", file.size);
-        formData.append("chunk_index", chunkIndex);
+        formData.append("path",         targetPath);
+        formData.append("filename",     file.name);
+        formData.append("total_size",   file.size);
+        formData.append("chunk_index",  chunkIndex);
         formData.append("total_chunks", totalChunks);
-        formData.append("upload_id", uploadId);
-        formData.append("file", chunk);
+        formData.append("upload_id",    uploadId);
+        formData.append("file",         chunk);
 
         try {
-            const response = await fetch(`${APP.basePath}/upload/`, {
-                method: 'POST',
-                body: formData
-            });
-
+            const response = await fetch(`${APP.basePath}/upload/`, { method: 'POST', body: formData });
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
                 throw new Error(errorData.detail || "Upload failed");
             }
 
-            const data = await response.json();
-            
+            const data    = await response.json();
             const percent = ((chunkIndex + 1) / totalChunks) * 100;
-            progressBg.style.width = `${percent}%`;
-            progressText.textContent = `${Math.floor(percent)}%`;
+            progressBg.style.width    = `${percent}%`;
+            progressText.textContent  = `${Math.floor(percent)}%`;
 
             if (data.completed) {
                 APP.activeUploads--;
@@ -430,22 +448,19 @@ async function executeUpload(file, targetPath = APP.currentPath) {
                 return;
             }
         } catch (error) {
-            APP.activeUploads--;
-            APP.currentRemainingCapacity += file.size;
-            uploadLi.remove();
-            addMessage(`<span style="color: #ff0055;">アップロードエラー: ${error.message}</span>`);
-            if(APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg) statusMsg.style.display = 'block';
+            abortUpload(MSG.error(`アップロードエラー: ${error.message}`));
             return;
         }
     }
 }
 
+// ---- ファイル操作 ----------------------------------------
 async function executeMove(uuid, filename, targetPath) {
     const formData = new FormData();
-    formData.append("uuid", uuid);
-    formData.append("filename", filename);
+    formData.append("uuid",         uuid);
+    formData.append("filename",     filename);
     formData.append("current_path", APP.currentPath);
-    formData.append("target_path", targetPath);
+    formData.append("target_path",  targetPath);
 
     try {
         const res = await fetch(`${APP.basePath}/move/`, { method: "POST", body: formData });
@@ -457,10 +472,10 @@ async function executeMove(uuid, filename, targetPath) {
                 const errRes = await res.json();
                 if (errRes.detail) errorMsg = errRes.detail;
             } catch(e) {}
-            addMessage(`<span style="color: #ff0055;">移動に失敗しました。理由: ${errorMsg}</span>`);
+            addMessage(MSG.error(`移動に失敗しました。理由: ${errorMsg}`));
         }
     } catch (error) {
-        addMessage(`<span style="color: #ff0055;">通信エラーが発生しました。</span>`);
+        addMessage(MSG.error('通信エラーが発生しました。'));
     }
 }
 
@@ -472,7 +487,7 @@ function showDeleteConfirm(buttonElement, path, name, isDir = false, itemCount =
 
     const overlay = document.createElement('div');
     overlay.className = 'delete-confirm-overlay none_selection';
-    
+
     let message = "削除しますか？";
     if (isDir && itemCount > 0) {
         message = `中身(${itemCount})あり。削除しますか？`;
@@ -485,17 +500,18 @@ function showDeleteConfirm(buttonElement, path, name, isDir = false, itemCount =
             <button class="confirm-btn">削除</button>
             <button class="cancel-btn">キャンセル</button>
         </div>`;
-    
+
     overlay.querySelector('.cancel-btn').onclick = (e) => { e.stopPropagation(); overlay.remove(); };
     overlay.querySelector('.confirm-btn').onclick = (e) => {
         e.stopPropagation();
-        if (isDir && itemCount > 0 && !confirm(`フォルダ「${name}」には ${itemCount} 個のアイテムが含まれています。\n完全に削除してよろしいですか？`)) {
+        if (isDir && itemCount > 0 &&
+            !confirm(`フォルダ「${name}」には ${itemCount} 個のアイテムが含まれています。\n完全に削除してよろしいですか？`)) {
             overlay.remove();
             return;
         }
         executeDelete(path);
     };
-    
+
     overlay.onclick = (e) => e.stopPropagation();
     liElement.appendChild(overlay);
 }
@@ -513,7 +529,7 @@ async function downloadFile(uuid, filename) {
     const url = `${APP.basePath}/f/${uuid}`;
     if (window.showSaveFilePicker) {
         try {
-            const handle = await window.showSaveFilePicker({ suggestedName: filename });
+            const handle   = await window.showSaveFilePicker({ suggestedName: filename });
             const response = await fetch(url);
             if (!response.ok) throw new Error('Network response was not ok');
             const writable = await handle.createWritable();
@@ -525,8 +541,8 @@ async function downloadFile(uuid, filename) {
         }
     }
     const a = document.createElement('a');
-    a.href = url;
-    a.download = filename; 
+    a.href     = url;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -535,10 +551,11 @@ async function downloadFile(uuid, filename) {
 function copyLinkToClipboard(uuid, filename) {
     const link = window.location.origin + APP.basePath + '/f/' + uuid;
     navigator.clipboard.writeText(link)
-        .then(() => addMessage(`<span style="color: #0000cd;">${filename}のリンクをコピーしました</span>`))
-        .catch(() => addMessage(`<span style="color: #ff0055;">${filename}のコピーに失敗しました</span>`));
+        .then(()  => addMessage(MSG.info(`${filename}のリンクをコピーしました`)))
+        .catch(() => addMessage(MSG.error(`${filename}のコピーに失敗しました`)));
 }
 
+// ---- 名前編集モーダル ----------------------------------------
 let currentEditingItem = null;
 let currentExt = '';
 
@@ -551,20 +568,19 @@ function closeEditModal() {
 function executeRenamePrompt(li) {
     if (li.dataset.protected === 'true' && !APP.isAdmin) {
         const typeStr = li.classList.contains('folder') ? 'フォルダ' : 'ファイル';
-        return addMessage(`<span style="color: #ff0055;">この${typeStr}は保護されています。</span>`);
+        return addMessage(MSG.error(`この${typeStr}は保護されています。`));
     }
 
     const fullDisplayName = li.querySelector('.item-title').textContent;
-    const isFolder = li.classList.contains('folder');
-    
+    const isFolder        = li.classList.contains('folder');
+
     let baseName = fullDisplayName;
     currentExt = '';
 
     if (!isFolder) {
         const lastDot = fullDisplayName.lastIndexOf('.');
-        // .gitignoreなどの先頭ドットのみのケースを除外
         if (lastDot > 0) {
-            baseName = fullDisplayName.substring(0, lastDot);
+            baseName   = fullDisplayName.substring(0, lastDot);
             currentExt = fullDisplayName.substring(lastDot);
         }
     }
@@ -575,27 +591,25 @@ function executeRenamePrompt(li) {
         .join(', ');
 
     currentEditingItem = {
-        path: li.dataset.path,
-        name: fullDisplayName,
+        path:     li.dataset.path,
+        name:     fullDisplayName,
         isFolder: isFolder
     };
 
     const modalTitle = document.getElementById('edit-modal-title');
-    if (modalTitle) {
-        modalTitle.textContent = fullDisplayName;
-    }
+    if (modalTitle) modalTitle.textContent = fullDisplayName;
 
-    const nameInput = document.getElementById('edit-name-input');
+    const nameInput  = document.getElementById('edit-name-input');
     const extDisplay = document.getElementById('edit-ext-display');
 
-    nameInput.value = baseName;
-    extDisplay.textContent = currentExt;
+    nameInput.value         = baseName;
+    extDisplay.textContent  = currentExt;
     extDisplay.style.display = isFolder ? 'none' : 'inline';
 
-    document.getElementById('edit-tags-input').value = tags;
-    document.getElementById('edit-tags-group').style.display = isFolder ? 'none' : 'block';
-    document.getElementById('edit-modal').style.display = 'flex';
-    
+    document.getElementById('edit-tags-input').value          = tags;
+    document.getElementById('edit-tags-group').style.display  = isFolder ? 'none' : 'block';
+    document.getElementById('edit-modal').style.display       = 'flex';
+
     setTimeout(() => nameInput.focus(), 100);
 }
 
@@ -603,17 +617,15 @@ async function saveItemChanges() {
     if (!currentEditingItem) return;
 
     const newBaseName = document.getElementById('edit-name-input').value.trim();
-    const tags = document.getElementById('edit-tags-input').value.trim();
+    const tags        = document.getElementById('edit-tags-input').value.trim();
 
     if (!newBaseName) return alert("名前を入力してください。");
 
-    // 本体名と保持していた拡張子を結合
     const finalName = newBaseName + currentExt;
-
-    const formData = new FormData();
-    formData.append("path", currentEditingItem.path);
+    const formData  = new FormData();
+    formData.append("path",     currentEditingItem.path);
     formData.append("new_name", finalName);
-    formData.append("tags", tags);
+    formData.append("tags",     tags);
 
     try {
         const res = await fetch(`${APP.basePath}/update_metadata/`, { method: "POST", body: formData });
@@ -621,89 +633,82 @@ async function saveItemChanges() {
             location.reload();
         } else {
             const data = await res.json();
-            addMessage(`<span style="color: #ff0055;">${data.detail || "エラーが発生しました"}</span>`);
+            addMessage(MSG.error(data.detail || "エラーが発生しました"));
         }
     } catch (error) {
-        addMessage('<span style="color: #ff0055;">通信エラーが発生しました。</span>');
+        addMessage(MSG.error('通信エラーが発生しました。'));
     }
 }
 
-// 属性編集モーダル外クリックで閉じる
 window.addEventListener('click', (e) => {
     const modal = document.getElementById('edit-modal');
     if (e.target === modal) closeEditModal();
 });
 
-// ここからopenPreview
+// ---- プレビュー ----------------------------------------
 function openPreview(filename, uuid, size, dateStr) {
-    const ext = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
+    const ext     = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
     const typeMap = {
         'png': 'image', 'jpg': 'image', 'jpeg': 'image', 'gif': 'image', 'bmp': 'image', 'webp': 'image',
         'svg': 'svg', 'mp4': 'video', 'webm': 'video', 'mov': 'video',
         'mp3': 'audio', 'wav': 'audio', 'm4a': 'audio', 'aac': 'audio', 'flac': 'audio', 'ogg': 'audio',
         'pdf': 'pdf', 'csv': 'csv', 'xlsx': 'excel', 'xls': 'excel', 'xlsm': 'excel', 'docx': 'word',
-        'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text', 'json': 'text', 'log': 'text', 
-        'md': 'markdown',
+        'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text',
+        'json': 'text', 'log': 'text', 'md': 'markdown',
         'stl': '3d', 'obj': '3d', 'glb': '3d', 'gltf': '3d'
     };
 
     const type = typeMap[ext] || 'unsupported';
-    if (type === 'unsupported') return addMessage(`<span style="color: #ff0055;">${Utils.escapeHtml(filename)} はプレビュー非対応です。[DL]から確認してください。</span>`);
+    if (type === 'unsupported')
+        return addMessage(MSG.error(`${Utils.escapeHtml(filename)} はプレビュー非対応です。[DL]から確認してください。`));
 
-    const modal = document.getElementById('preview-modal');
-    const content = document.getElementById('modal-content');
+    const modal       = document.getElementById('preview-modal');
+    const content     = document.getElementById('modal-content');
     const landscapeBtn = document.getElementById('landscape-btn');
-    const url = `${APP.basePath}/f/${uuid}?inline=true`;
+    const url         = `${APP.basePath}/f/${uuid}?inline=true`;
 
     document.getElementById('modal-title').textContent = filename;
-    document.getElementById('modal-size').textContent = `Size: ${Utils.formatBytes(size)}`;
+    document.getElementById('modal-size').textContent  = `Size: ${Utils.formatBytes(size)}`;
     if (document.getElementById('modal-date')) document.getElementById('modal-date').textContent = dateStr || '';
     if (landscapeBtn) landscapeBtn.style.display = 'none';
-    
+
     content.innerHTML = '<div style="padding: 20px; color: #fff;">Loading...</div>';
     modal.classList.add('active');
 
     const handlers = {
         'image': () => `<img src="${url}" class="preview-image" alt="preview">`,
+
         'video': () => {
             if (landscapeBtn) landscapeBtn.style.display = 'block';
-            return `<video id="preview-video-el" class="preview-video" playsinline autoplay loop onclick="this.setAttribute('controls', 'controls'); this.onclick=null;"><source src="${url}"></video>`;
+            return `<video id="preview-video-el" class="preview-video" playsinline autoplay loop onclick="this.setAttribute('controls','controls');this.onclick=null;"><source src="${url}"></video>`;
         },
+
         'audio': async () => {
-            let metaHtml = '';
+            let metaHtml    = '';
             let displayTitle = Utils.escapeHtml(filename);
-            let coverHtml = `<div class="preview-audio-icon">🎵</div>`;
-            
+            let coverHtml   = `<div class="preview-audio-icon">🎵</div>`;
+
             try {
                 const res = await fetch(`${APP.basePath}/audio/meta/${uuid}`);
                 if (res.ok) {
                     const meta = await res.json();
-                    if (meta.title && meta.title !== 'Unknown' && meta.title !== filename) {
+                    if (meta.title && meta.title !== 'Unknown' && meta.title !== filename)
                         displayTitle = Utils.escapeHtml(meta.title);
-                    }
-                    
-                    if (meta.has_cover) {
+                    if (meta.has_cover)
                         coverHtml = `<img src="${APP.basePath}/audio/cover/${uuid}" class="audio-cover-img" alt="cover">`;
-                    }
-                    
                     metaHtml = `
                         <div class="audio-artist">${Utils.escapeHtml(meta.artist)}</div>
                         <div class="audio-album">${Utils.escapeHtml(meta.album)}</div>
                         <div class="audio-tech">
                             <span>${Utils.escapeHtml(meta.duration)}</span>
                             ${meta.bitrate !== 'Unknown' ? `<span class="audio-dot">•</span><span>${Utils.escapeHtml(meta.bitrate)}</span>` : ''}
-                        </div>
-                    `;
+                        </div>`;
                 }
-            } catch(e) {
-                console.error('Failed to fetch audio metadata', e);
-            }
+            } catch(e) { console.error('Failed to fetch audio metadata', e); }
 
             content.innerHTML = `
-                <div class="preview-audio-wrapper" onclick="const a=this.querySelector('audio'); if(a){a.muted=false;}">
-                    <div class="audio-cover-container">
-                        ${coverHtml}
-                    </div>
+                <div class="preview-audio-wrapper" onclick="const a=this.querySelector('audio');if(a){a.muted=false;}">
+                    <div class="audio-cover-container">${coverHtml}</div>
                     <div class="audio-details">
                         <div class="audio-title">${displayTitle}</div>
                         ${metaHtml}
@@ -711,83 +716,86 @@ function openPreview(filename, uuid, size, dateStr) {
                     <audio class="modern-audio-player" controls autoplay muted loop><source src="${url}">お使いのブラウザはaudio要素をサポートしていません。</audio>
                 </div>`;
         },
-        'pdf': () => `<iframe src="${url}" style="width:100%; height:100%; border:none; background-color: #fff;"></iframe>`,
+
+        'pdf': () => `<iframe src="${url}" style="width:100%;height:100%;border:none;background-color:#fff;"></iframe>`,
+
         'svg': async () => {
             content.innerHTML = '<div style="padding: 20px;">SVGを最適化しています...</div>';
             try {
                 const response = await fetch(url);
-                const svgText = await response.text();
-                const svgEl = new DOMParser().parseFromString(svgText, "image/svg+xml").documentElement;
+                const svgText  = await response.text();
+                const svgEl    = new DOMParser().parseFromString(svgText, "image/svg+xml").documentElement;
                 if (svgEl && svgEl.tagName.toLowerCase() === 'svg') {
                     if (!svgEl.getAttribute('viewBox')) {
                         const w = svgEl.getAttribute('width'), h = svgEl.getAttribute('height');
-                        if (w && h && !w.includes('%') && !h.includes('%')) svgEl.setAttribute('viewBox', `0 0 ${parseFloat(w)} ${parseFloat(h)}`);
+                        if (w && h && !w.includes('%') && !h.includes('%'))
+                            svgEl.setAttribute('viewBox', `0 0 ${parseFloat(w)} ${parseFloat(h)}`);
                     }
                     svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
                     Object.assign(svgEl.style, { width: '100%', height: '100%', maxHeight: '100%', display: 'block', margin: 'auto' });
-                    
+
                     const containerId = 'svg-container-' + Date.now();
-                    content.innerHTML = `<div id="${containerId}" style="width: 100%; height: 100%; background-color: #fff; overflow: auto; display: grid; place-items: center; box-sizing: border-box; padding: 15px; opacity: 0; transition: opacity 0.2s ease;">${svgEl.outerHTML}</div>`;
-                    
+                    content.innerHTML = `<div id="${containerId}" style="width:100%;height:100%;background-color:#fff;overflow:auto;display:grid;place-items:center;box-sizing:border-box;padding:15px;opacity:0;transition:opacity 0.2s ease;">${svgEl.outerHTML}</div>`;
                     setTimeout(() => {
                         const container = document.getElementById(containerId);
                         if (container) container.style.opacity = '1';
                     }, 50);
                 } else throw new Error("SVG parse failed");
             } catch (err) {
-                content.innerHTML = `<div style="width: 100%; height: 100%; background-color: #fff; display: grid; place-items: center; overflow: auto;"><img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;"></div>`;
+                content.innerHTML = `<div style="width:100%;height:100%;background-color:#fff;display:grid;place-items:center;overflow:auto;"><img src="${url}" style="max-width:100%;max-height:100%;object-fit:contain;"></div>`;
             }
         },
+
         'word': async () => {
             try {
-                const response = await fetch(url);
+                const response    = await fetch(url);
                 const arrayBuffer = await response.arrayBuffer();
-                const result = await mammoth.convertToHtml({arrayBuffer});
-                content.innerHTML = `<div style="padding: 20px; background: #fff; width: 100%; height: 100%; overflow-y: auto; box-sizing: border-box; text-align: left; color: #333; line-height: 1.6;">${result.value}</div>`;
-            } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
+                const result      = await mammoth.convertToHtml({ arrayBuffer });
+                content.innerHTML = `<div style="padding:20px;background:#fff;width:100%;height:100%;overflow-y:auto;box-sizing:border-box;text-align:left;color:#333;line-height:1.6;">${result.value}</div>`;
+            } catch (err) { content.innerHTML = previewError(err); }
         },
+
         'text': async () => {
             try {
-                const response = await fetch(url, { cache: 'no-store' });
+                const response    = await fetch(url, { cache: 'no-store' });
                 const textContent = await response.text();
-                
                 if (ext === 'txt') {
-                    content.innerHTML = `<textarea id="edit-text-area" class="preview-text" style="resize: none; outline: none;">${Utils.escapeHtml(textContent)}</textarea>`;
-                    
+                    content.innerHTML = `<textarea id="edit-text-area" class="preview-text" style="resize:none;outline:none;">${Utils.escapeHtml(textContent)}</textarea>`;
                     const saveBtn = document.getElementById('save-txt-btn');
                     if (saveBtn) {
                         saveBtn.style.display = 'block';
-                        saveBtn.dataset.uuid = uuid;
+                        saveBtn.dataset.uuid  = uuid;
                     }
                 } else {
                     content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(textContent)}</pre>`;
                 }
-            } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
+            } catch (err) { content.innerHTML = previewError(err); }
         },
+
         'markdown': async () => {
             try {
                 const response = await fetch(url);
-                const text = await response.text();
-                const rawHtml = marked.parse(text);
-                const cleanHtml = DOMPurify.sanitize(rawHtml);
-                content.innerHTML = `<div class="preview-markdown">${cleanHtml}</div>`;
-            } catch (err) { 
-                content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; 
-            }
+                const text     = await response.text();
+                content.innerHTML = `<div class="preview-markdown">${DOMPurify.sanitize(marked.parse(text))}</div>`;
+            } catch (err) { content.innerHTML = previewError(err); }
         },
+
         'csv': async () => {
             try {
                 const response = await fetch(url);
-                const rows = (await response.text()).split('\n');
-                let html = '<div class="preview-csv-container" style="overflow: auto; width: 100%; height: 100%; box-sizing: border-box;"><table class="preview-csv">';
+                const rows     = (await response.text()).split('\n');
+                let html = '<div class="preview-csv-container" style="overflow:auto;width:100%;height:100%;box-sizing:border-box;"><table class="preview-csv">';
                 rows.forEach((row, index) => {
                     if (!row.trim() && index === rows.length - 1) return;
-                    html += '<tr>' + row.split(',').map(col => `<${index === 0 ? 'th' : 'td'}>${Utils.escapeHtml(col.trim())}</${index === 0 ? 'th' : 'td'}>`).join('') + '</tr>';
+                    const tag = index === 0 ? 'th' : 'td';
+                    html += '<tr>' + row.split(',').map(col => `<${tag}>${Utils.escapeHtml(col.trim())}</${tag}>`).join('') + '</tr>';
                 });
                 content.innerHTML = html + '</table></div>';
-            } catch (err) { content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${err.message}</div>`; }
+            } catch (err) { content.innerHTML = previewError(err); }
         },
+
         'excel': () => renderExcelPreview(uuid, content),
+
         '3d': () => {
             setTimeout(() => {
                 const container = document.getElementById('preview-3d-container');
@@ -796,56 +804,45 @@ function openPreview(filename, uuid, size, dateStr) {
                 container.innerHTML = '';
                 const scene = new THREE.Scene();
                 scene.background = new THREE.Color(0xf0f0f0);
+                scene.add(new THREE.GridHelper(100, 50, 0xaaaaaa, 0xdddddd));
 
-                const gridHelper = new THREE.GridHelper(100, 50, 0xaaaaaa, 0xdddddd);
-                scene.add(gridHelper);
-
-                const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-
+                const camera   = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
                 const renderer = new THREE.WebGLRenderer({ antialias: true });
                 renderer.setSize(container.clientWidth, container.clientHeight);
                 renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.outputEncoding = THREE.sRGBEncoding;
-                renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                
+                renderer.outputEncoding   = THREE.sRGBEncoding;
+                renderer.toneMapping      = THREE.ACESFilmicToneMapping;
+
                 const isPBR = (ext === 'glb' || ext === 'gltf');
                 renderer.toneMappingExposure = isPBR ? 1.0 : 0.8;
-                
                 container.appendChild(renderer.domElement);
 
                 const controls = new THREE.OrbitControls(camera, renderer.domElement);
                 controls.enableDamping = true;
 
                 if (isPBR) {
-                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-                    scene.add(ambientLight);
-
-                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
-                    hemiLight.position.set(0, 20, 0);
-                    scene.add(hemiLight);
-
-                    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
-                    sunLight.position.set(10, 20, 10);
-                    scene.add(sunLight);
-
-                    const fillLight = new THREE.DirectionalLight(0x90b0d0, 0.5);
-                    fillLight.position.set(-10, 0, -10);
-                    scene.add(fillLight);
+                    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+                    const hemi = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+                    hemi.position.set(0, 20, 0);
+                    scene.add(hemi);
+                    const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+                    sun.position.set(10, 20, 10);
+                    scene.add(sun);
+                    const fill = new THREE.DirectionalLight(0x90b0d0, 0.5);
+                    fill.position.set(-10, 0, -10);
+                    scene.add(fill);
                 } else {
-                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
-                    scene.add(ambientLight);
-
-                    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.2);
-                    hemiLight.position.set(0, 20, 0);
-                    scene.add(hemiLight);
-
-                    const sunLight = new THREE.DirectionalLight(0xffffff, 0.4);
-                    sunLight.position.set(10, 20, 10);
-                    scene.add(sunLight);
+                    scene.add(new THREE.AmbientLight(0xffffff, 0.15));
+                    const hemi = new THREE.HemisphereLight(0xffffff, 0x444444, 0.2);
+                    hemi.position.set(0, 20, 0);
+                    scene.add(hemi);
+                    const sun = new THREE.DirectionalLight(0xffffff, 0.4);
+                    sun.position.set(10, 20, 10);
+                    scene.add(sun);
                 }
 
                 let animationId;
-                const animate = function () {
+                const animate = () => {
                     if (!document.getElementById('preview-3d-container')) {
                         cancelAnimationFrame(animationId);
                         return;
@@ -855,8 +852,7 @@ function openPreview(filename, uuid, size, dateStr) {
                     renderer.render(scene, camera);
                 };
 
-                window.addEventListener('resize', onWindowResize, false);
-                function onWindowResize() {
+                const onWindowResize = () => {
                     if (!document.getElementById('preview-3d-container')) {
                         window.removeEventListener('resize', onWindowResize);
                         return;
@@ -864,14 +860,14 @@ function openPreview(filename, uuid, size, dateStr) {
                     camera.aspect = container.clientWidth / container.clientHeight;
                     camera.updateProjectionMatrix();
                     renderer.setSize(container.clientWidth, container.clientHeight);
-                }
+                };
+                window.addEventListener('resize', onWindowResize, false);
 
                 const centerAndScaleModel = (object) => {
-                    const box = new THREE.Box3().setFromObject(object);
+                    const box    = new THREE.Box3().setFromObject(object);
                     const center = new THREE.Vector3();
                     box.getCenter(center);
-                    
-                    const size = new THREE.Vector3();
+                    const size   = new THREE.Vector3();
                     box.getSize(size);
                     const maxDim = Math.max(size.x, size.y, size.z);
 
@@ -880,11 +876,10 @@ function openPreview(filename, uuid, size, dateStr) {
                     object.position.z -= center.z;
 
                     camera.near = maxDim / 100 || 0.1;
-                    camera.far = maxDim * 100 || 1000;
+                    camera.far  = maxDim * 100 || 1000;
                     camera.updateProjectionMatrix();
-
                     camera.position.set(0, maxDim * 0.4, maxDim * 2.0);
-                    
+
                     controls.target.set(0, 0, 0);
                     controls.maxDistance = maxDim * 10;
                     controls.update();
@@ -892,14 +887,11 @@ function openPreview(filename, uuid, size, dateStr) {
 
                 if (ext === 'stl') {
                     const loader = new THREE.STLLoader();
-                    loader.load(url, function (geometry) {
-                        const material = new THREE.MeshPhongMaterial({
+                    loader.load(url, (geometry) => {
+                        const mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
                             color: geometry.hasColors ? 0xffffff : 0x999999,
-                            specular: 0x111111,
-                            shininess: 30,
-                            vertexColors: geometry.hasColors
-                        });
-                        const mesh = new THREE.Mesh(geometry, material);
+                            specular: 0x111111, shininess: 30, vertexColors: geometry.hasColors
+                        }));
                         scene.add(mesh);
                         centerAndScaleModel(mesh);
                     });
@@ -908,28 +900,22 @@ function openPreview(filename, uuid, size, dateStr) {
                         const mtlMatch = text.match(/^mtllib\s+(.+)$/m);
 
                         const loadObjFallback = () => {
-                            const objLoader = new THREE.OBJLoader();
-                            const object = objLoader.parse(text);
-                            object.traverse(function (child) {
-                                if (child instanceof THREE.Mesh && (!child.material || !child.material.name)) {
+                            const object = new THREE.OBJLoader().parse(text);
+                            object.traverse(child => {
+                                if (child instanceof THREE.Mesh && (!child.material || !child.material.name))
                                     child.material = new THREE.MeshPhongMaterial({ color: 0x999999 });
-                                }
                             });
                             scene.add(object);
                             centerAndScaleModel(object);
                         };
 
                         if (mtlMatch) {
-                            const mtlFilename = mtlMatch[1].trim();
-                            const mtlUrl = `${APP.basePath}/f_rel/${uuid}/${mtlFilename}`;
-
+                            const mtlUrl = `${APP.basePath}/f_rel/${uuid}/${mtlMatch[1].trim()}`;
                             const manager = new THREE.LoadingManager();
                             manager.setURLModifier((assetUrl) => {
                                 if (assetUrl.startsWith('blob:') || assetUrl.startsWith('data:')) return assetUrl;
-                                const assetName = assetUrl.split('/').pop();
-                                return `${APP.basePath}/f_rel/${uuid}/${assetName}`;
+                                return `${APP.basePath}/f_rel/${uuid}/${assetUrl.split('/').pop()}`;
                             });
-
                             const mtlLoader = new THREE.MTLLoader(manager);
                             mtlLoader.load(mtlUrl, (materials) => {
                                 materials.preload();
@@ -938,31 +924,28 @@ function openPreview(filename, uuid, size, dateStr) {
                                 const object = objLoader.parse(text);
                                 scene.add(object);
                                 centerAndScaleModel(object);
-                            }, undefined, () => {
-                                loadObjFallback();
-                            });
+                            }, undefined, loadObjFallback);
                         } else {
                             loadObjFallback();
                         }
                     }).catch(() => {
-                        container.innerHTML = `<div style="color: red; padding: 20px;">モデルの読み込みに失敗しました</div>`;
+                        container.innerHTML = `<div style="color:red;padding:20px;">モデルの読み込みに失敗しました</div>`;
                     });
                 } else if (ext === 'glb' || ext === 'gltf') {
                     const loader = new THREE.GLTFLoader();
-                    loader.load(url, function (gltf) {
-                        const object = gltf.scene;
-                        scene.add(object);
-                        centerAndScaleModel(object);
-                    }, undefined, function (error) {
+                    loader.load(url, (gltf) => {
+                        scene.add(gltf.scene);
+                        centerAndScaleModel(gltf.scene);
+                    }, undefined, (error) => {
                         console.error(error);
-                        container.innerHTML = `<div style="color: red; padding: 20px;">モデルの読み込みに失敗しました</div>`;
+                        container.innerHTML = `<div style="color:red;padding:20px;">モデルの読み込みに失敗しました</div>`;
                     });
                 }
-                
+
                 animate();
             }, 50);
-            
-            return '<div id="preview-3d-container" style="width: 100%; height: 100%; background: #f0f0f0; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: #333;">モデルデータを構築中...</div>';
+
+            return '<div id="preview-3d-container" style="width:100%;height:100%;background:#f0f0f0;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#333;">モデルデータを構築中...</div>';
         }
     };
 
@@ -978,18 +961,17 @@ function openPreview(filename, uuid, size, dateStr) {
         }
     }
 }
-// ここまでopenPreview
 
 function closeModal() {
     document.getElementById('preview-modal').classList.remove('active');
-    document.getElementById('modal-content').innerHTML = ''; 
+    document.getElementById('modal-content').innerHTML = '';
     const landscapeBtn = document.getElementById('landscape-btn');
     if (landscapeBtn) landscapeBtn.style.display = 'none';
 
     const saveBtn = document.getElementById('save-txt-btn');
     if (saveBtn) {
         saveBtn.style.display = 'none';
-        saveBtn.dataset.uuid = '';
+        saveBtn.dataset.uuid  = '';
     }
 
     const currentUrl = new URL(window.location.href);
@@ -1000,34 +982,27 @@ function closeModal() {
 }
 
 async function saveTextFile() {
-    const saveBtn = document.getElementById('save-txt-btn');
-    const uuid = saveBtn.dataset.uuid;
+    const saveBtn  = document.getElementById('save-txt-btn');
+    const uuid     = saveBtn.dataset.uuid;
     const textarea = document.getElementById('edit-text-area');
-    
     if (!uuid || !textarea) return;
-    
+
     const formData = new FormData();
     formData.append("uuid", uuid);
-    
-    const fileBlob = new Blob([textarea.value], { type: 'text/plain' });
-    formData.append("file", fileBlob);
-    
+    formData.append("file", new Blob([textarea.value], { type: 'text/plain' }));
+
     try {
-        const res = await fetch(`${APP.basePath}/update_file/`, { 
-            method: 'POST', 
-            body: formData 
-        });
-        
+        const res = await fetch(`${APP.basePath}/update_file/`, { method: 'POST', body: formData });
         if (res.ok) {
-            addMessage('<span style="color: #70c65b;">ファイルを保存しました。</span>');
+            addMessage(MSG.success('ファイルを保存しました。'));
             closeModal();
-            setTimeout(() => { location.reload(); }, 500); 
+            setTimeout(() => location.reload(), 500);
         } else {
             const errorData = await res.json().catch(() => ({}));
-            addMessage(`<span style="color: #ff0055;">保存に失敗しました: ${errorData.detail || ""}</span>`);
+            addMessage(MSG.error(`保存に失敗しました: ${errorData.detail || ""}`));
         }
     } catch (err) {
-        addMessage('<span style="color: #ff0055;">通信エラーが発生しました。</span>');
+        addMessage(MSG.error('通信エラーが発生しました。'));
     }
 }
 
@@ -1036,31 +1011,34 @@ function toggleLandscape() {
     if (videoEl) videoEl.classList.toggle('landscape-mode');
 }
 
+// ---- Excel プレビュー ----------------------------------------
 async function renderExcelPreview(uuid, content) {
     try {
         const infoRes = await fetch(`${APP.basePath}/excel/info/${uuid}`);
         if (!infoRes.ok) throw new Error('シート情報の取得に失敗しました');
         const sheets = (await infoRes.json()).sheets || [];
+        if (sheets.length === 0)
+            return content.innerHTML = '<div style="padding:20px;">表示できるシートがありません。</div>';
 
-        if (sheets.length === 0) return content.innerHTML = '<div style="padding: 20px;">表示できるシートがありません。</div>';
-
-        const displaySheets = sheets.slice(0, 3);
+        const displaySheets  = sheets.slice(0, 3);
         const remainingCount = sheets.length - displaySheets.length;
 
         content.innerHTML = `
-        <div class="excel-preview-wrapper" style="display: flex; flex-direction: column; width: 100%; height: 100%; box-sizing: border-box;">
+        <div class="excel-preview-wrapper" style="display:flex;flex-direction:column;width:100%;height:100%;box-sizing:border-box;">
             <div class="excel-tabs">
-                ${displaySheets.map((s, i) => `<div class="excel-tab ${i === 0 ? 'active' : ''}" onclick="switchExcelSheet(this, '${uuid}', '${Utils.escapeHtml(s)}')">${Utils.escapeHtml(s)}</div>`).join('')}
-                ${remainingCount > 0 ? `<div class="excel-tab disabled-tab" title="すべてのシートを確認するにはダウンロードしてください">...他${remainingCount}シート</div>` : ''}
+                ${displaySheets.map((s, i) =>
+                    `<div class="excel-tab ${i === 0 ? 'active' : ''}" onclick="switchExcelSheet(this,'${uuid}','${Utils.escapeHtml(s)}')">${Utils.escapeHtml(s)}</div>`
+                ).join('')}
+                ${remainingCount > 0
+                    ? `<div class="excel-tab disabled-tab" title="すべてのシートを確認するにはダウンロードしてください">...他${remainingCount}シート</div>`
+                    : ''}
             </div>
-            <div class="excel-sheet-container preview-csv-container" style="border: none; overflow: auto; flex-grow: 1;" id="excel-sheet-container">
-                <div style="padding: 20px;">シートを読み込み中...</div>
+            <div class="excel-sheet-container preview-csv-container" style="border:none;overflow:auto;flex-grow:1;" id="excel-sheet-container">
+                <div style="padding:20px;">シートを読み込み中...</div>
             </div>
         </div>`;
         await loadExcelSheet(uuid, displaySheets[0]);
-    } catch (e) {
-        content.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${e.message}</div>`;
-    }
+    } catch (e) { content.innerHTML = previewError(e); }
 }
 
 async function switchExcelSheet(tabElement, uuid, sheetName) {
@@ -1072,15 +1050,17 @@ async function switchExcelSheet(tabElement, uuid, sheetName) {
 
 async function loadExcelSheet(uuid, sheetName) {
     const container = document.getElementById('excel-sheet-container');
-    container.innerHTML = '<div style="padding: 20px;">シートを読み込み中...</div>';
+    container.innerHTML = '<div style="padding:20px;">シートを読み込み中...</div>';
     try {
         const res = await fetch(`${APP.basePath}/excel/arrow/${uuid}?sheet=${encodeURIComponent(sheetName)}`);
         if (!res.ok) throw new Error('シートデータの取得に失敗しました');
-        
-        const table = Arrow.tableFromIPC(await res.arrayBuffer());
+
+        const table  = Arrow.tableFromIPC(await res.arrayBuffer());
         const fields = table.schema.fields.map(f => f.name);
-        
-        let html = '<table class="preview-csv"><thead><tr>' + fields.map(name => `<th>${Utils.escapeHtml(name)}</th>`).join('') + '</tr></thead><tbody>';
+
+        let html = '<table class="preview-csv"><thead><tr>' +
+            fields.map(name => `<th>${Utils.escapeHtml(name)}</th>`).join('') +
+            '</tr></thead><tbody>';
         for (let i = 0; i < table.numRows; i++) {
             const row = table.get(i);
             html += '<tr>' + fields.map(name => {
@@ -1089,7 +1069,5 @@ async function loadExcelSheet(uuid, sheetName) {
             }).join('') + '</tr>';
         }
         container.innerHTML = html + '</tbody></table>';
-    } catch (e) {
-        container.innerHTML = `<div style="padding: 20px; color: red;">エラーが発生しました: ${e.message}</div>`;
-    }
+    } catch (e) { container.innerHTML = previewError(e); }
 }
