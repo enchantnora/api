@@ -20,7 +20,7 @@ import anyio
 # --- Constants & Settings ---
 TABLE_CONFIGS = [
     {'name': 'product', 'file': str(Path('csv') / 'data.csv')},
-    {'name': 'stopcode', 'file': str(Path('csv') / 'stop_code.csv')},
+    {'name': 'stopcode', 'file': str(Path('csv') / 'stopcode.csv')},
     {'name': 'shift', 'file': str(Path('shift') / 'shift.csv')},
     {'name': 'memo', 'file': str(Path('csv') / 'memo.csv')},
     {'name': 'dialogue', 'file': str(Path('csv') / 'dialogue.csv')},
