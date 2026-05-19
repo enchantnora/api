@@ -448,45 +448,45 @@ async def user_id(request: Request, selection: str, db: aiosqlite.Connection = D
         
     return {"result": False, "msg": "c or l"}
 
+ALLOWED_TABLES_MAIN = frozenset(config['name'] for config in TABLE_CONFIGS)
+
+async def _fetch_rows(conn: aiosqlite.Connection, table_name: str) -> list:
+    async with conn.execute(f"SELECT * FROM {table_name}") as cursor:
+        return await cursor.fetchall()
+
 @app.get("/backup/{table_name}", name="backup_table")
 async def backup_table(table_name: str, db: aiosqlite.Connection = Depends(get_db)):
-    csv_path = Path(f"./csv/{table_name}.csv")
-    allowed_tables_main = [config['name'] for config in TABLE_CONFIGS]
-
     try:
-        if table_name in allowed_tables_main:
-            async with db.execute(f"SELECT * FROM {table_name}") as cursor:
-                rows = await cursor.fetchall()
+        if table_name in ALLOWED_TABLES_MAIN:
+            rows = await _fetch_rows(db, table_name)
         else:
             async with aiosqlite.connect("filer.db") as filer_db:
                 filer_db.row_factory = aiosqlite.Row
-                
-                async with filer_db.execute("SELECT name FROM sqlite_master WHERE type='table'") as cursor:
-                    tables = await cursor.fetchall()
-                    allowed_tables_filer = [table["name"] for table in tables]
-                    
-                if table_name not in allowed_tables_filer:
-                    error_detail = f"Invalid table name. '{table_name}' not found in TABLE_CONFIGS nor filer.db."
-                    raise HTTPException(status_code=400, detail=error_detail)
-                
-                async with filer_db.execute(f"SELECT * FROM {table_name}") as cursor:
-                    rows = await cursor.fetchall()
+
+                async with filer_db.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                    (table_name,)
+                ) as cursor:
+                    if not await cursor.fetchone():
+                        raise HTTPException(
+                            status_code=400,
+                            detail=f"Invalid table name. '{table_name}' not found in TABLE_CONFIGS nor filer.db."
+                        )
+
+                rows = await _fetch_rows(filer_db, table_name)
 
         if not rows:
             return {"result": False, "msg": "テーブルにデータが存在しません"}
-            
+
         headers = list(rows[0].keys())
         data = [tuple(row) for row in rows]
-        
-        await run_in_threadpool(write_csv_sync, str(csv_path), headers, data)
-        
+        await run_in_threadpool(write_csv_sync, str(Path(f"./csv/{table_name}.csv")), headers, data)
+
         return {"result": True, "msg": f"{table_name}.csv のバックアップが完了しました"}
-        
+
     except HTTPException:
         raise
-    except aiosqlite.Error as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    except Exception as e:
+    except (aiosqlite.Error, Exception) as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/save_table", name="save_table")
@@ -629,62 +629,45 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
     slug = _normalize_param(slug)
     q = _normalize_param(q)
     status = 2 if q else (1 if slug else 0)
-    
     result = {}
 
-    if status == 1:
-        if len(slug) > 5:
-            if "." in slug:
+    try:
+        if status == 1:
+            if len(slug) > 5:
                 search_slug = slug.replace(".", "_")
-                async with db.execute("SELECT * FROM product WHERE code LIKE ? ORDER BY rowid DESC LIMIT 1", (f"%{search_slug}%",)) as cursor:
-                    rows = await cursor.fetchall()
+                query = "SELECT * FROM product WHERE code LIKE ? ORDER BY rowid DESC LIMIT 1"
+                params = (f"%{search_slug}%",)
             else:
-                async with db.execute("SELECT * FROM product WHERE code LIKE ? ORDER BY rowid DESC LIMIT 1", (f"%{slug}%",)) as cursor:
-                    rows = await cursor.fetchall()
-        else:
-            async with db.execute("SELECT * FROM product WHERE slug = ? ORDER BY rowid DESC", (slug,)) as cursor:
-                rows = await cursor.fetchall()
+                query = "SELECT * FROM product WHERE slug = ? ORDER BY rowid DESC"
+                params = (slug,)
 
-        if not rows:
-            return {
-                "slug": slug or "0",
-                "q": q,
-                "status": status,
-                "result": "見つかりませんでした。"
-            }
-
-        mobile_parts = [generate_mobile_html_block(dict(row)) for row in rows]
-        result = "".join(mobile_parts)
-        if len(rows) > 1:
-            result = f'{len(rows)}種類Hit\n\n' + result
-
-    elif status == 2:
-        keys = normalize_text(q).split()
-        try:
-            base_query = "SELECT sk, name, code, slug FROM product"
-            query, params = build_search_query(keys, base_query, q)
-            query += " ORDER BY rowid DESC LIMIT 50"
-            
             async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()
-                
-            if not rows:
-                result = {}
-            else:
-                result = {
-                    f"{row['sk'] or ''} {row['name'] or ''}".strip(): (urllib.parse.quote(row['code']) or row['slug'] or "")
-                    for row in rows
-                }
-                
-        except aiosqlite.Error as e:
-            raise HTTPException(status_code=500, detail=str(e))
 
-    return {
-        "slug": slug or "0",
-        "q": q,
-        "status": status,
-        "result": result
-    }
+            if not rows:
+                return {"slug": slug or "0", "q": q, "status": status, "result": "見つかりませんでした。"}
+
+            result = "".join(generate_mobile_html_block(dict(row)) for row in rows)
+            if len(rows) > 1:
+                result = f"{len(rows)}種類Hit\n\n" + result
+
+        elif status == 2:
+            keys = normalize_text(q).split()
+            query, params = build_search_query(keys, "SELECT sk, name, code, slug FROM product", q)
+            query += " ORDER BY rowid DESC LIMIT 50"
+
+            async with db.execute(query, params) as cursor:
+                rows = await cursor.fetchall()
+
+            result = {
+                f"{row['sk'] or ''} {row['name'] or ''}".strip(): urllib.parse.quote(row['code']) or row['slug'] or ""
+                for row in rows
+            }
+
+    except aiosqlite.Error as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"slug": slug or "0", "q": q, "status": status, "result": result}
 
 # ------------------------------------
 
