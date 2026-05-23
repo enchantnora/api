@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>{{title}}</title>
@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="icon" type="image/png" sizes="400x400" href="/icon_ms.png">
     <link rel="manifest" href="/ms/manifest.json">
-    <meta name="theme-color" content="rgb(0 0 0)">
-    <style type="text/css">@charset "UTF-8";
+    <meta name="theme-color" content="#000000">
+    <style type="text/css">
         body, html {
             padding: 0;
             margin: 0;
@@ -19,9 +19,7 @@
             touch-action: manipulation;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            inset: 0px;
+            inset: 0;
             font-size: 10px;
         }
         #scrollframe {
@@ -35,10 +33,11 @@
             width: 100%;
             text-align: center;
             overflow-y: auto;
+            will-change: transform;
         }
         #dateData {
             font-size: 1.3em;
-            line-height: .8;
+            line-height: 0.8;
         }
         #shiftData {
             display: inline-block;
@@ -50,27 +49,23 @@
             margin-top: 8px;
         }
         .blur {
-            font-size: .6em;
+            font-size: 0.6em;
         }
         .pickup {
             color: #FF7D81;
             font-weight: bold;
             font-size: 1.1em;
         }
-        #w_hakui {
-            color: #FFFFFF;
-        }
-        #b_hakui {
-            color: #64C0FA;
-        }
+        #w_hakui { color: #FFFFFF; }
+        #b_hakui { color: #64C0FA; }
         #button {
             z-index: 5;
             position: fixed;
-            position: -webkit-fixed;
             top: 70vh;
             left: 50%;
             height: 100vh;
             transform: translate(-50%, -50%);
+            display: none;
         }
         .circle {
             position: absolute;
@@ -128,124 +123,99 @@
         <div class="circle l_b"><span>-7日</span></div>
     </div>
     <div id="scrollframe">
-        <div id="content"><div id="dateData"></div><div id="shiftData"></div></div>
+        <div id="content">
+            <div id="dateData"></div>
+            <div id="shiftData"></div>
+        </div>
     </div>
 
     <script>
     const cache = new Map();
     const maxCacheSize = 30;
-
-    let lastViewTime = Date.now();
     const CACHE_EXPIRE_MS = 60 * 60 * 1000;
+    
+    let lastViewTime = Date.now();
+    let G_current = 0;
+    let OK_current = 0;
 
-    function fetchShift(address) {
-        if (cache.has(address)) {
-            return Promise.resolve(cache.get(address));
+    async function fetchShift(address) {
+        if (cache.has(address)) return cache.get(address);
+
+        try {
+            const response = await fetch(`../shift/${address}`);
+            if (!response.ok) throw new Error(`Network response was not ok ${response.statusText}`);
+            
+            const data = await response.json();
+            if (data.shift) {
+                cache.set(address, data.shift);
+                maintainCacheSize();
+                return data.shift;
+            }
+            return 'shift not found';
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
-        return fetch('../shift/' + address)
-            .then(function(response) {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(function(data) {
-                if (data.shift) {
-                    cache.set(address, data.shift);
-                    maintainCacheSize();
-                    return data.shift;
-                } else {
-                    return 'shift not found';
-                }
-            })
-            .catch(function(error) {
-                throw error;
-            });
     }
 
     function maintainCacheSize() {
-        const keys = Array.from(cache.keys()).sort();
         if (cache.size > maxCacheSize) {
-            cache.delete(keys[0]);
+            cache.delete(cache.keys().next().value);
         }
     }
 
     function removeOldestOrNewest(isPast) {
-        const keys = Array.from(cache.keys()).sort();
         if (cache.size >= maxCacheSize) {
-            if (isPast) {
-                cache.delete(keys[keys.length - 1]);
-            } else {
-                cache.delete(keys[0]);
-            }
+            const keys = Array.from(cache.keys()).sort();
+            cache.delete(isPast ? keys[keys.length - 1] : keys[0]);
         }
     }
 
     function getPresent(dayPlus, t = 0) {
-        let today = new Date();
+        const today = new Date();
         today.setDate(today.getDate() + dayPlus);
         const hour = today.getHours();
-        const minute = ('0' + today.getMinutes()).slice(-2);
+        const minute = String(today.getMinutes()).padStart(2, '0');
+        
         today.setHours(today.getHours() - 8);
         const year = today.getFullYear();
-        const month = ('0' + (today.getMonth() + 1)).slice(-2);
-        const day = ('0' + today.getDate()).slice(-2);
-        if (t == 0) {
-            return year + month + day;
-        } else {
-            return hour + minute;
-        }
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        
+        return t === 0 ? `${year}${month}${day}` : `${hour}${minute}`;
     }
 
-    function shiftWork(currentTime, pageTodayStr, pageYesterdayStr) {
-        let activeShifts = {};
+    function shiftWork(currentTimeNum, pageTodayStr, pageYesterdayStr) {
+        const activeShifts = {};
         
-        if (900 <= currentTime && currentTime < 2100) {
-            activeShifts['A'] = pageTodayStr;
-        }
-        if (2100 <= currentTime && currentTime < 2400) {
-            activeShifts['C'] = pageTodayStr;
-        }
-        if (0 <= currentTime && currentTime < 800) {
-            activeShifts['C'] = pageTodayStr;
-        }
-        if (800 <= currentTime && currentTime < 900) {
-            activeShifts['C'] = pageYesterdayStr;
-        }
-        if (1450 <= currentTime && currentTime < 2400) {
+        if (currentTimeNum >= 900 && currentTimeNum < 2100) activeShifts['A'] = pageTodayStr;
+        if (currentTimeNum >= 2100 || currentTimeNum < 800) activeShifts['C'] = pageTodayStr;
+        if (currentTimeNum >= 800 && currentTimeNum < 900) activeShifts['C'] = pageYesterdayStr;
+        
+        if (currentTimeNum >= 1450) {
             activeShifts['2'] = pageTodayStr;
             activeShifts['-2'] = pageTodayStr;
         }
-        if (2350 <= currentTime && currentTime < 2400) {
+        if (currentTimeNum >= 2350 || currentTimeNum < 800) {
             activeShifts['3'] = pageTodayStr;
             activeShifts['-3'] = pageTodayStr;
         }
-        if (0 <= currentTime && currentTime < 800) {
-            activeShifts['3'] = pageTodayStr;
-            activeShifts['-3'] = pageTodayStr;
-        }
-        if (800 <= currentTime && currentTime < 900) {
+        if (currentTimeNum >= 800 && currentTimeNum < 900) {
             activeShifts['3'] = pageYesterdayStr;
             activeShifts['-3'] = pageYesterdayStr;
         }
-        if (800 <= currentTime && currentTime < 1710) {
-            activeShifts['1'] = pageTodayStr;
-        }
-        if (1150 <= currentTime && currentTime < 2100) {
-            activeShifts['A2'] = pageTodayStr;
-        }
+        
+        if (currentTimeNum >= 800 && currentTimeNum < 1710) activeShifts['1'] = pageTodayStr;
+        if (currentTimeNum >= 1150 && currentTimeNum < 2100) activeShifts['A2'] = pageTodayStr;
         
         return activeShifts;
     }
 
     async function mainWrite(current = 0) {
         const now = Date.now();
-        if (now - lastViewTime >= CACHE_EXPIRE_MS) {
-            cache.clear();
-        }
+        if (now - lastViewTime >= CACHE_EXPIRE_MS) cache.clear();
         lastViewTime = now;
 
-        let shiftArray;
         const date_area = document.getElementById('dateData');
         const content_area = document.getElementById('shiftData');
         const content_scroll_area = document.getElementById('content');
@@ -254,84 +224,61 @@
         const savedWindowScrollY = window.scrollY || window.pageYOffset;
         
         try {
-            shiftArray = await fetchShift(getPresent(current));
-            if (shiftArray == 'shift not found') {
+            const shiftArray = await fetchShift(getPresent(current));
+            if (shiftArray === 'shift not found') {
                 date_area.textContent = '';
                 content_area.textContent = 'データがありません';
                 G_current = OK_current + 1;
                 return;
-            } else {
-                OK_current = G_current;
             }
+            OK_current = G_current;
 
             date_area.innerHTML = '';
             const parser = new DOMParser();
+            const dateFragment = document.createDocumentFragment();
 
-            if (getPresent(0) == shiftArray.index_day) {
+            if (getPresent(0) === shiftArray.index_day) {
                 const span = document.createElement('span');
                 span.className = 'pickup';
                 if (shiftArray.days) {
                     const daysDoc = parser.parseFromString(shiftArray.days, 'text/html');
-                    Array.from(daysDoc.body.childNodes).forEach(node => {
-                        span.appendChild(node.cloneNode(true));
-                    });
+                    Array.from(daysDoc.body.childNodes).forEach(node => span.appendChild(node.cloneNode(true)));
                 }
-                date_area.appendChild(span);
-            } else {
-                if (shiftArray.days) {
-                    const daysDoc = parser.parseFromString(shiftArray.days, 'text/html');
-                    Array.from(daysDoc.body.childNodes).forEach(node => {
-                        date_area.appendChild(node.cloneNode(true));
-                    });
-                }
+                dateFragment.appendChild(span);
+            } else if (shiftArray.days) {
+                const daysDoc = parser.parseFromString(shiftArray.days, 'text/html');
+                Array.from(daysDoc.body.childNodes).forEach(node => dateFragment.appendChild(node.cloneNode(true)));
             }
 
             if (shiftArray.color) {
                 const colorDoc = parser.parseFromString(shiftArray.color, 'text/html');
-                Array.from(colorDoc.body.childNodes).forEach(node => {
-                    date_area.appendChild(node.cloneNode(true));
-                });
+                Array.from(colorDoc.body.childNodes).forEach(node => dateFragment.appendChild(node.cloneNode(true)));
             }
+            date_area.appendChild(dateFragment);
 
-            content_area.innerHTML = '';
+            const shiftFragment = document.createDocumentFragment();
             const data = JSON.parse(shiftArray.member);
             const order = ["有", "A", "B", "C", "2", "3", "1"];
             const keyNames = {
-                "A": "A勤務",
-                "A2": "A2",
-                "B": "B勤務",
-                "C": "C勤務",
-                "1": "早番",
-                "2": "中番",
-                "-2": "中番応援",
-                "3": "夜勤",
-                "-3": "夜勤応援",
+                "A": "A勤務", "A2": "A2", "B": "B勤務", "C": "C勤務",
+                "1": "早番", "2": "中番", "-2": "中番応援", "3": "夜勤", "-3": "夜勤応援",
             };
 
             const currentTimeNum = parseInt(getPresent(0, 1), 10);
-            const pageTodayStr = getPresent(0);
-            const pageYesterdayStr = getPresent(-1);
-            
-            const activeShifts = shiftWork(currentTimeNum, pageTodayStr, pageYesterdayStr);
+            const activeShifts = shiftWork(currentTimeNum, getPresent(0), getPresent(-1));
             const dataDateStr = String(shiftArray.index_day);
 
             const unassignedKeys = Object.keys(data).filter(key => !order.includes(key));
             const assignedKeys = order.filter(key => data[key]);
             const displayKeys = [...unassignedKeys, ...assignedKeys];
 
-            let hasNamedShift = false;
-            for (const key of Object.keys(data)) {
-                if (key in keyNames && Array.isArray(data[key]) && data[key].length > 0) {
-                    hasNamedShift = true;
-                    break;
-                }
-            }
+            const hasNamedShift = Object.keys(data).some(key => key in keyNames && Array.isArray(data[key]) && data[key].length > 0);
 
             if (!hasNamedShift) {
                 const yasumiDiv = document.createElement('div');
                 yasumiDiv.className = "group";
                 yasumiDiv.innerHTML = "★★★休み★★★<br>";
-                content_area.appendChild(yasumiDiv);
+                shiftFragment.appendChild(yasumiDiv);
             }
 
             for (const key of displayKeys) {
@@ -339,27 +286,21 @@
                 const displayKey = isNamed ? keyNames[key] : key;
                 const mark = isNamed ? "■■■" : "□□□";
                 
-                const isPickup = (activeShifts[key] === dataDateStr);
-                const groupClass = isPickup ? "group pickup" : "group";
-                
                 const groupDiv = document.createElement('div');
-                groupDiv.className = groupClass;
-                
+                groupDiv.className = (activeShifts[key] === dataDateStr) ? "group pickup" : "group";
                 groupDiv.innerHTML = `${mark}[ ${displayKey} ]${mark}<br>`;
                 
                 if (Array.isArray(data[key])) {
                     data[key].forEach(member => {
-                        const prefix = document.createTextNode("　");
-                        const memberText = document.createTextNode(member);
-                        const br = document.createElement('br');
-                        groupDiv.appendChild(prefix);
-                        groupDiv.appendChild(memberText);
-                        groupDiv.appendChild(br);
+                        groupDiv.appendChild(document.createTextNode(`　${member}`));
+                        groupDiv.appendChild(document.createElement('br'));
                     });
                 }
-                
-                content_area.appendChild(groupDiv);
+                shiftFragment.appendChild(groupDiv);
             }
+            
+            content_area.innerHTML = '';
+            content_area.appendChild(shiftFragment);
             
             window.scrollTo(0, savedWindowScrollY);
             content_scroll_area.scrollTo(0, savedScrollTop);
@@ -369,292 +310,159 @@
         }
 
         const stock = 9;
-        for (let i = current + (stock * -1); i <= current + stock; i++) {
+        for (let i = current - stock; i <= current + stock; i++) {
             if (i !== current) {
-                const date = getPresent(i);
-                if (!cache.has(date)) {
-                    try {
-                        shiftArray = await fetchShift(date);
-                        if (shiftArray !== 'shift not found') {
-                            cache.set(date, shiftArray);
-                            maintainCacheSize();
-                        }
-                    } catch (error) {
-                        break;
-                    }
+                const dateStr = getPresent(i);
+                if (!cache.has(dateStr)) {
+                    fetchShift(dateStr).catch(() => {});
                 }
             }
         }
     }
 
-    function button() {
+    function initButtons() {
         const btn = document.getElementById('button');
-
-        const touchstartHandler = function(event) {
-            this.touchMoved = false;
-        };
-
-        const touchmoveHandler = function(event) {
-            this.touchMoved = true;
-        };
-
-        const touchendClickHandler = function(event) {
-            if (event.type === 'touchend' && this.touchMoved) return;
+        
+        const touchendClickHandler = (event) => {
             event.preventDefault();
-
             const target = event.target.closest('.circle');
             if (!target) return;
 
             document.body.scrollIntoView(true);
-            switch (true) {
-                case target.classList.contains('now'):
-                    G_current = 0;
-                    mainWrite();
-                    break;
-
-                case target.classList.contains('r_b'):
-                    G_current = G_current + 7;
-                    mainWrite(G_current);
-                    break;
-
-                case target.classList.contains('l_b'):
-                    G_current = G_current - 7;
-                    mainWrite(G_current);
-                    break;
+            if (target.classList.contains('now')) G_current = 0;
+            else if (target.classList.contains('r_b')) G_current += 7;
+            else if (target.classList.contains('l_b')) G_current -= 7;
+            
+            if (target.classList.contains('now') || target.classList.contains('r_b') || target.classList.contains('l_b')) {
+                mainWrite(G_current);
             }
         };
 
-        btn.removeEventListener('click', touchendClickHandler);
-        btn.removeEventListener('touchstart', touchstartHandler);
-        btn.removeEventListener('touchmove', touchmoveHandler);
-        btn.removeEventListener('touchend', touchendClickHandler);
-
-        btn.addEventListener('touchstart', touchstartHandler);
-        btn.addEventListener('touchmove', touchmoveHandler);
         btn.addEventListener('touchend', touchendClickHandler);
         btn.addEventListener('click', touchendClickHandler);
     }
 
-    let err_F = false;
-    let G_current = 0;
-    let OK_current = 0;
-
     (function() {
-        let isSwiping = false;
-        let startX, currentX;
-        let longPressTimer = null;
-        let isLongPress = false;
-        let hasMoved = false;
-        let startTime = 0;
-        let tappedElement = null;
-        const threshold = 50;
-        const LONG_PRESS_DURATION = 1000;
-        const MOVE_THRESHOLD = 10;
-        const TAP_TIME_THRESHOLD = 400;
+        let isSwiping = false, startX, currentX, longPressTimer = null, hasMoved = false, startTime = 0, tappedElement = null, isLongPress = false;
+        const threshold = 50, LONG_PRESS_DURATION = 1000, MOVE_THRESHOLD = 10, TAP_TIME_THRESHOLD = 400;
+        const inPresent = document.getElementById('content');
+        const scrollFrame = document.getElementById('scrollframe');
+        const buttonLayer = document.getElementById('button');
         
         mainWrite();
-        document.getElementById('button').style.display = 'none';
-        button();
+        initButtons();
 
-        function smoothScrollTo(targetPosition, duration, element) {
-            const start = parseFloat(element.style.transform.replace(/[^\d.-]/g, '')) || 0;
-            const change = targetPosition - start;
-            const increment = 20;
-            let currentTime = 0;
+        function animateSwipe(direction) {
+            const width = window.innerWidth;
+            inPresent.style.transition = 'transform 0.15s ease-in';
+            inPresent.style.transform = `translateX(${direction * width}px)`;
+            
+            setTimeout(() => {
+                mainWrite(G_current);
+                inPresent.style.transition = 'none';
+                inPresent.style.transform = `translateX(${-direction * width}px)`;
 
-            const animateScroll = function () {
-                currentTime += increment;
-                const val = easeInOutQuad(currentTime, start, change, duration);
-                element.style.transform = `translateX(${val}px)`;
-
-                if (currentTime < duration) {
-                    requestAnimationFrame(animateScroll);
-                } else {
-                    element.dispatchEvent(new Event('transitionEnd'));
-                }
-            };
-
-            animateScroll();
-        }
-
-        function easeInOutQuad(t, b, c, d) {
-            t /= d / 2;
-            if (t < 1) return c / 2 * t * t + b;
-            t--;
-            return -c / 2 * (t * (t - 2) - 1) + b;
+                inPresent.offsetHeight;
+                
+                inPresent.style.transition = 'transform 0.15s cubic-bezier(0, 1.17, 0.86, 0.99)';
+                inPresent.style.transform = 'translateX(0px)';
+            }, 150);
         }
 
         function handleTap(element) {
-            if ((!element.classList.contains('circle')) && (!element.parentElement.classList.contains('circle'))) {
-                document.getElementById('scrollframe').style.height = '100%';
-                document.getElementById('button').style.display = 'none';
+            if (!element.closest('.circle')) {
+                scrollFrame.style.height = '100%';
+                buttonLayer.style.display = 'none';
             }
         }
 
-        function handleLongPress(element) {
-            document.getElementById('scrollframe').style.height = '100vh';
-            document.getElementById('button').style.display = 'block';
+        function handleLongPress() {
+            scrollFrame.style.height = '100vh';
+            buttonLayer.style.display = 'block';
         }
 
-        function handleSwipe() {
-            const distance = currentX - startX;
-            const inPresent = document.getElementById('content');
-            document.getElementById('scrollframe').style.height = '100%';
-            document.getElementById('button').style.display = 'none';
-            if (distance > threshold) {
-                G_current--;
-                removeOldestOrNewest(true);
-                smoothScrollTo(window.innerWidth, 100, inPresent);
-                setTimeout(() => {
-                    mainWrite(G_current);
-                    inPresent.style.transition = 'none';
-                    inPresent.style.transform = `translateX(${-window.innerWidth}px)`;
-                    setTimeout(() => {
-                        inPresent.style.transition = 'transform 0.1s cubic-bezier(0,1.17,.86,.99)';
-                        smoothScrollTo(0, 100, inPresent);
-                    }, 50);
-                }, 100);
-            } else if (distance < -threshold) {
-                G_current++;
-                removeOldestOrNewest(false);
-                smoothScrollTo(-window.innerWidth, 100, inPresent);
-                setTimeout(() => {
-                    mainWrite(G_current);
-                    inPresent.style.transition = 'none';
-                    inPresent.style.transform = `translateX(${window.innerWidth}px)`;
-                    setTimeout(() => {
-                        inPresent.style.transition = 'transform 0.1s cubic-bezier(0,1.17,.86,.99)';
-                        smoothScrollTo(0, 100, inPresent);
-                    }, 50);
-                }, 100);
-            } else {
-                smoothScrollTo(0, 100, inPresent);
-            }
-        }
-
-        document.addEventListener('touchstart', function(e) {
-            startX = e.changedTouches[0].screenX;
+        function handlePointerStart(e) {
+            startX = e.changedTouches ? e.changedTouches[0].screenX : e.screenX;
             currentX = startX;
             startTime = Date.now();
             isSwiping = true;
-            isLongPress = false;
             hasMoved = false;
+            isLongPress = false;
             tappedElement = e.target;
-            document.getElementById('content').style.transition = 'none';
+            inPresent.style.transition = 'none';
             
-            longPressTimer = setTimeout(function() {
+            longPressTimer = setTimeout(() => {
                 if (!hasMoved) {
                     isLongPress = true;
-                    handleLongPress(tappedElement);
+                    handleLongPress();
                 }
             }, LONG_PRESS_DURATION);
-        }, { passive: true });
-        
-        document.addEventListener('touchmove', function(e) {
-            if (isSwiping) {
-                currentX = e.changedTouches[0].screenX;
-                const distance = Math.abs(currentX - startX);
-                
-                if (distance > MOVE_THRESHOLD && !hasMoved) {
-                    hasMoved = true;
-                    if (longPressTimer) {
-                        clearTimeout(longPressTimer);
-                        longPressTimer = null;
-                    }
+        }
+
+        function handlePointerMove(e) {
+            if (!isSwiping) return;
+            currentX = e.changedTouches ? e.changedTouches[0].screenX : e.screenX;
+            const distance = Math.abs(currentX - startX);
+            
+            if (distance > MOVE_THRESHOLD && !hasMoved) {
+                hasMoved = true;
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
                 }
-                
-                document.getElementById('content').style.transform = `translateX(${currentX - startX}px)`;
             }
-        }, { passive: true });
-        
-        document.addEventListener('touchend', function(e) {
+            inPresent.style.transform = `translateX(${currentX - startX}px)`;
+        }
+
+        function handlePointerEnd(e) {
             if (longPressTimer) {
                 clearTimeout(longPressTimer);
                 longPressTimer = null;
             }
+            if (!isSwiping) return;
             
-            if (isSwiping) {
-                isSwiping = false;
-                currentX = e.changedTouches[0].screenX;
-                const distance = Math.abs(currentX - startX);
-                const duration = Date.now() - startTime;
-                document.getElementById('content').style.transition = 'transform 0.1s cubic-bezier(0,1.17,.86,.99)';
-                
-                if (distance < MOVE_THRESHOLD && duration < TAP_TIME_THRESHOLD && !isLongPress) {
-                    smoothScrollTo(0, 100, document.getElementById('content'));
-                    handleTap(tappedElement);
-                }
-                else if (isLongPress) {
-                    smoothScrollTo(0, 100, document.getElementById('content'));
-                }
-                else {
-                    handleSwipe();
-                }
-            }
-        }, { passive: true });
-        
-        document.addEventListener('mousedown', function(e) {
-            startX = e.screenX;
-            currentX = startX;
-            startTime = Date.now();
-            isSwiping = true;
-            isLongPress = false;
-            hasMoved = false;
-            tappedElement = e.target;
-            document.getElementById('content').style.transition = 'none';
-            
-            longPressTimer = setTimeout(function() {
-                if (!hasMoved) {
-                    isLongPress = true;
-                    handleLongPress(tappedElement);
-                }
-            }, LONG_PRESS_DURATION);
-        }, { passive: true });
-        
-        document.addEventListener('mousemove', function(e) {
-            if (isSwiping) {
-                currentX = e.screenX;
-                const distance = Math.abs(currentX - startX);
-                
-                if (distance > MOVE_THRESHOLD && !hasMoved) {
-                    hasMoved = true;
-                    if (longPressTimer) {
-                        clearTimeout(longPressTimer);
-                        longPressTimer = null;
-                    }
-                }
-                
-                document.getElementById('content').style.transform = `translateX(${currentX - startX}px)`;
-            }
-        }, { passive: true });
-        
-        document.addEventListener('mouseup', function(e) {
-            if (longPressTimer) {
-                clearTimeout(longPressTimer);
-                longPressTimer = null;
-            }
-            
-            if (isSwiping) {
-                isSwiping = false;
-                currentX = e.screenX;
-                const distance = Math.abs(currentX - startX);
-                const duration = Date.now() - startTime;
-                document.getElementById('content').style.transition = 'transform 0.1s cubic-bezier(0,1.17,.86,.99)';
-                
-                if (distance < MOVE_THRESHOLD && duration < TAP_TIME_THRESHOLD && !isLongPress) {
-                    smoothScrollTo(0, 100, document.getElementById('content'));
-                    handleTap(tappedElement);
-                }
-                else if (isLongPress) {
-                    smoothScrollTo(0, 100, document.getElementById('content'));
-                }
-                else {
-                    handleSwipe();
-                }
-            }
-        }, { passive: true });
+            isSwiping = false;
+            currentX = e.changedTouches ? e.changedTouches[0].screenX : e.screenX;
+            const distance = Math.abs(currentX - startX);
+            const duration = Date.now() - startTime;
 
-    }());
+            if (distance < MOVE_THRESHOLD && duration < TAP_TIME_THRESHOLD && !isLongPress) {
+                inPresent.style.transition = 'transform 0.1s ease';
+                inPresent.style.transform = 'translateX(0px)';
+                handleTap(tappedElement);
+            } 
+            else if (isLongPress) {
+                inPresent.style.transition = 'transform 0.1s ease';
+                inPresent.style.transform = 'translateX(0px)';
+            } 
+            else {
+                scrollFrame.style.height = '100%';
+                buttonLayer.style.display = 'none';
+                
+                const realDistance = currentX - startX;
+                if (realDistance > threshold) {
+                    G_current--;
+                    removeOldestOrNewest(true);
+                    animateSwipe(1);
+                } else if (realDistance < -threshold) {
+                    G_current++;
+                    removeOldestOrNewest(false);
+                    animateSwipe(-1);
+                } else {
+                    inPresent.style.transition = 'transform 0.2s cubic-bezier(0, 1.17, 0.86, 0.99)';
+                    inPresent.style.transform = 'translateX(0px)';
+                }
+            }
+        }
+
+        document.addEventListener('touchstart', handlePointerStart, { passive: true });
+        document.addEventListener('touchmove', handlePointerMove, { passive: true });
+        document.addEventListener('touchend', handlePointerEnd, { passive: true });
+        
+        document.addEventListener('mousedown', handlePointerStart, { passive: true });
+        document.addEventListener('mousemove', handlePointerMove, { passive: true });
+        document.addEventListener('mouseup', handlePointerEnd, { passive: true });
+    })();
     </script>
 </body>
 </html>
