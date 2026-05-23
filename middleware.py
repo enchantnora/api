@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime
 from fastapi import Request, Response
+import anyio
 
-# --- カスタムアクセスロガーのセットアップ ---
 log_format = logging.Formatter('%(message)s')
 file_handler = logging.FileHandler("./@access.log", encoding="utf-8")
 file_handler.setFormatter(log_format)
@@ -31,6 +31,9 @@ BLOCKED_KEYWORDS = (
     "wlwmanifest.xml"
 )
 
+def write_log(message: str):
+    access_logger.info(message)
+
 async def requests_control(request: Request, call_next):
     client_ip = request.headers.get("cf-connecting-ip")
     if not client_ip and request.client:
@@ -43,20 +46,17 @@ async def requests_control(request: Request, call_next):
     user_agent = request.headers.get("user-agent", "-")
 
     if client_ip in BLOCKED_IPS:
-        response = Response(status_code=403)
-        status = 403
+        return Response(status_code=403)
     elif any(keyword in path for keyword in BLOCKED_KEYWORDS):
-        response = Response(status_code=404)
-        status = 404
-    else:
-        # 正常なリクエストの実行
-        response = await call_next(request)
-        status = response.status_code
+        return Response(status_code=404)
 
-    # --- アクセスログの出力  ---
+    response = await call_next(request)
+    status = response.status_code
+
     if client_ip not in ADMIN_IPS:
         now = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         log_message = f'[{now}] {client_ip} "{method} {path}" {status} "{user_agent}"'
-        access_logger.info(log_message)
+        # 同期的なI/O処理を別スレッドで実行し、イベントループをブロックしないように修正
+        await anyio.to_thread.run_sync(write_log, log_message)
 
     return response

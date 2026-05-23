@@ -4201,3 +4201,28 @@ Could not determine dtype for column 7, falling back to string
 [2026-05-23 14:10:09 +0900] [110844] [WARNING] Invalid HTTP request received.
 [2026-05-23 14:10:09 +0900] [110844] [WARNING] Invalid HTTP request received.
 [2026-05-23 14:10:14 +0900] [110846] [WARNING] Invalid HTTP request received.
+[2026-05-23 19:14:17 +0900] [110780] [INFO] Handling signal: term
+[2026-05-23 19:14:17 +0900] [110844] [INFO] Shutting down
+[2026-05-23 19:14:17 +0900] [110844] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-23 19:14:17 +0900] [110846] [INFO] Shutting down
+[2026-05-23 19:14:17 +0900] [110846] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-23 19:14:18 +0900] [110844] [INFO] Waiting for application shutdown.
+[2026-05-23 19:14:18 +0900] [110844] [INFO] Application shutdown complete.
+[2026-05-23 19:14:18 +0900] [110844] [INFO] Finished server process [110844]
+[2026-05-23 19:14:18 +0900] [110780] [ERROR] Worker (pid:110844) was sent SIGTERM!
+[2026-05-23 19:14:18 +0900] [110846] [INFO] Waiting for application shutdown.
+[2026-05-23 19:14:18 +0900] [110846] [INFO] Application shutdown complete.
+[2026-05-23 19:14:18 +0900] [110846] [INFO] Finished server process [110846]
+[2026-05-23 19:14:18 +0900] [110780] [ERROR] Worker (pid:110846) was sent SIGTERM!
+[2026-05-23 19:14:18 +0900] [110780] [INFO] Shutting down: Master
+[2026-05-23 19:14:18 +0900] [117521] [INFO] Starting gunicorn 23.0.0
+[2026-05-23 19:14:18 +0900] [117521] [INFO] Listening at: http://0.0.0.0:9900 (117521)
+[2026-05-23 19:14:18 +0900] [117521] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-23 19:14:18 +0900] [117567] [INFO] Booting worker with pid: 117567
+[2026-05-23 19:14:18 +0900] [117569] [INFO] Booting worker with pid: 117569
+[2026-05-23 19:14:20 +0900] [117567] [INFO] Started server process [117567]
+[2026-05-23 19:14:20 +0900] [117567] [INFO] Waiting for application startup.
+[2026-05-23 19:14:20 +0900] [117567] [INFO] Application startup complete.
+[2026-05-23 19:14:20 +0900] [117569] [INFO] Started server process [117569]
+[2026-05-23 19:14:20 +0900] [117569] [INFO] Waiting for application startup.
+[2026-05-23 19:14:20 +0900] [117569] [INFO] Application startup complete.

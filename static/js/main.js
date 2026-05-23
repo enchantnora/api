@@ -133,93 +133,153 @@ const UrlManager = {
 };
 
 const MenuController = {
+    currentPosition: 0,
+    runPosition: 0,
+    scrollTimer: null,
+    isLocked: false,
+    isJumping: false,
+    _prefetched: null,
+
     init: function() {
-        let isScroll = false;
-        let currentPosition = 0;
-        let runPosition = 0;
+        $('#ms').css('pointer-events', 'none');
 
         if (AppState.isFirstLoad) {
             const pin = UrlManager.getParam('m', 'search');
             const pinIndex = Math.max(0, AppConfig.menus.indexOf(pin));
-            this.switchingHub(pinIndex);
+            this.syncState(pinIndex);
             this.scrollToIndex(pinIndex);
         }
-        
-        $('.radio_menu').on('change', (e) => {
+
+        $('.radio_menu').on('change click', (e) => {
             const selectedIndex = $('.radio_menu').index(e.currentTarget);
-            runPosition = selectedIndex;
-            if (!isScroll) {
+            if (this.runPosition !== selectedIndex) {
+                this.isJumping = true;
+                this.syncState(selectedIndex);
                 this.scrollToIndex(selectedIndex);
-                this.switchingHub(selectedIndex);
             }
         });
-        
-        $('#items').on('scroll', function () {
-            isScroll = true;
-            const mathItem = this.scrollLeft / this.clientWidth;
-            const threshold = 0.05;
-            const direction = this.scrollLeft < currentPosition 
-                ? Math.floor(mathItem + threshold) : Math.ceil(mathItem - threshold);
-            
-            currentPosition = this.scrollLeft;
-            $('#items').css({'overflow-x': ''});
-            $('#shiftFrame').css({'box-shadow': ''});
-            
-            if (isScroll) {
-                if (runPosition !== direction) {
-                    MenuController.switchingHub(direction);
-                    runPosition = direction;
-                    $('.radio_menu').prop('checked', false).eq(direction).prop('checked', true).trigger('change');
-                }
-                isScroll = false;
+
+        let isTicking = false;
+        $('#items').on('scroll', (e) => {
+            const container = e.currentTarget;
+
+            if (this.isLocked) {
+                $('#items').css('overflow-x', '');
+                $('#shiftFrame').css('box-shadow', '');
+                $('#ms').css('pointer-events', 'none');
+                this.isLocked = false;
+            }
+
+            if (!isTicking && !this.isJumping) {
+                window.requestAnimationFrame(() => {
+                    const mathItem = container.scrollLeft / container.clientWidth;
+                    const threshold = 0.05;
+                    const direction = container.scrollLeft < this.currentPosition
+                        ? Math.floor(mathItem + threshold)
+                        : Math.ceil(mathItem - threshold);
+
+                    this.currentPosition = container.scrollLeft;
+
+                    if (this.runPosition !== direction && direction >= 0 && direction < AppConfig.menus.length) {
+                        this.syncState(direction);
+                    }
+                    isTicking = false;
+                });
+                isTicking = true;
             }
 
             clearTimeout(this.scrollTimer);
             this.scrollTimer = setTimeout(() => {
+                this.isJumping = false;
+                this.currentPosition = container.scrollLeft;
+
+                const mathItem = Math.round(container.scrollLeft / container.clientWidth);
                 if (mathItem === 4) {
-                    $('#items').css({'overflow-x': 'hidden'});
-                    $('#shiftFrame').css({'box-shadow': '0px 0px 20px rgba(255, 0, 0, 1)'});
+                    $('#items').css('overflow-x', 'hidden');
+                    $('#shiftFrame').css('box-shadow', '0px 0px 20px rgba(255, 0, 0, 1)');
+                    $('#ms').css('pointer-events', 'auto');
+                    this.isLocked = true;
                 }
-            }, 50);
+            }, 100);
         });
 
         Utils.addTouchClickListener($('.content-box'), '', () => {
-            $('#items').css({'overflow-x': ''});
-            $('#shiftFrame').css({'box-shadow': ''});
+            if (this.isLocked) {
+                $('#items').css('overflow-x', '');
+                $('#shiftFrame').css('box-shadow', '');
+                $('#ms').css('pointer-events', 'none');
+                this.isLocked = false;
+            }
         });
 
-        $(".glink").on("click", function() {
+        $(".glink").on("click", (e) => {
             $("#burger_btn").prop("checked", false);
             const actionMap = { 'nengetsu': 5, 'stop': 6, 'article': 7, 'no_register': 8 };
-            const id = $(this).attr("id");
-            if (actionMap[id] !== undefined) MenuController.scrollToIndex(actionMap[id]);
+            const id = $(e.currentTarget).attr("id");
+            const targetIndex = actionMap[id];
+            if (targetIndex !== undefined && this.runPosition !== targetIndex) {
+                this.isJumping = true;
+                this.syncState(targetIndex);
+                this.scrollToIndex(targetIndex);
+            }
+        });
+    },
+
+    syncState: function(index) {
+        this.runPosition = index;
+        this.switchingHub(index);
+
+        if (index < 5) {
+            $('.radio_menu').prop('checked', false).eq(index).prop('checked', true);
+        } else {
+            $('.radio_menu').prop('checked', false);
+        }
+
+        this._prefetchAdjacent(index);
+    },
+
+    _prefetchAdjacent: function(index) {
+        this._prefetched ??= new Set();
+        this._prefetched.add(index);
+
+        [index - 1, index + 1].forEach(i => {
+            if (i >= 0 && i < AppConfig.menus.length && !this._prefetched.has(i)) {
+                this._prefetched.add(i);
+                this.switchingHub(i, true);
+            }
         });
     },
 
     scrollToIndex: function(index) {
         let delay = AppState.isFirstLoad ? 0 : 350;
         const $items = $('#items');
+
+        if (this.runPosition !== index) {
+            this.isJumping = true;
+            this.syncState(index);
+        }
+
         $items.animateScroll($items[0].offsetWidth * index, delay, Easing.custom, null);
     },
 
-    switchingHub: function(index) {
-        if (!AppState.isFirstLoad) UrlManager.setMenuIndex(index);
+    switchingHub: function(index, isPrefetch = false) {
+        if (!AppState.isFirstLoad && !isPrefetch) UrlManager.setMenuIndex(index);
 
         const actions = [
-            { title: "(●ω●){ 製品検索 )", act: () => SearchController.initView() },
+            { title: "(●ω●){ 製品検索 )",       act: () => SearchController.initView() },
             { title: UrlManager.getParam('sk') ? `(●ω●){ ${UrlManager.getParam('sk')}番の製品情報 )` : "(●ω●){ 製品情報 )", act: () => ProductController.initView() },
             { title: "(●ω●){ 履歴・お気に入り )", act: () => UserDataController.initFavoriteView() },
-            { title: "(●ω●){ 電卓 )", act: () => {} },
-            { title: "(●ω●){ シフト )", act: () => {} },
-            { title: "(●ω●){ 年月マーク )", act: () => {} },
-            { title: "(●ω●){ 停台コード )", act: () => ToolsController.fetchStopcode(1) },
-            { title: "(●ω●){ 不良現象項目 )", act: () => ToolsController.initArticleView() },
-            { title: "(●ω●){ 人工 未登録製品 )", act: () => ToolsController.initNoRegisterView() },
-            { title: "(●ω●){ レコード )", act: () => {} },
+            { title: "(●ω●){ 電卓 )",            act: () => {} },
+            { title: "(●ω●){ シフト )",           act: () => {} },
+            { title: "(●ω●){ 年月マーク )",       act: () => {} },
+            { title: "(●ω●){ 停台コード )",       act: () => ToolsController.fetchStopcode(1) },
+            { title: "(●ω●){ 不良現象項目 )",     act: () => ToolsController.initArticleView() },
+            { title: "(●ω●){ 人工 未登録製品 )",  act: () => ToolsController.initNoRegisterView() },
+            { title: "(●ω●){ レコード )",          act: () => {} },
         ];
 
         if (actions[index]) {
-            document.title = actions[index].title;
+            if (!isPrefetch) document.title = actions[index].title;
             actions[index].act();
         }
     }
