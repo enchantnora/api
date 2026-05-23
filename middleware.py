@@ -56,7 +56,6 @@ async def requests_control(request: Request, call_next):
     if client_ip not in ADMIN_IPS:
         now = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         log_message = f'[{now}] {client_ip} "{method} {path}" {status} "{user_agent}"'
-        # 同期的なI/O処理を別スレッドで実行し、イベントループをブロックしないように修正
         await anyio.to_thread.run_sync(write_log, log_message)
 
     return response
