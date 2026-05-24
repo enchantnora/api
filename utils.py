@@ -181,11 +181,6 @@ def _normalize_param(val: str | None) -> str | None:
 def _safe_float(val, default: float = 0.0) -> float:
     return float(val) if is_numeric(val) else default
 
-def _strip_dot_zero(val: str) -> str:
-    if val.endswith('.0') and val[:-2].lstrip('-').isdigit():
-        return val[:-2]
-    return val
-
 def generate_mobile_html_block(item: dict) -> str:
     parts = []
     if sk   := item.get("sk"):   parts.append(f"■■{sk}■■")
@@ -238,13 +233,27 @@ def format_number(num):
 def resources(stack_chart, cycle, tori, s_cycle):
     if not isinstance(stack_chart, dict):
         return {'finish': '未登録', 'unit': '未登録', 'resource': '未登録', 'abnormal': '未登録'}
+
     c = RE_CYCLE.search(str(s_cycle))
-    s_cycle_val = c.group() if c else 0
+    s_cycle_val = c.group() if c else None
+
+    cycle_val = (float(cycle)        if is_numeric(cycle) else
+                 float(s_cycle_val)  if is_numeric(s_cycle_val) else
+                 None)
+
+    finish   = _safe_float(stack_chart.get(5))
+    unit     = _safe_float(stack_chart.get(6))
+    abnormal = _safe_float(stack_chart.get(9))
+
+    if cycle_val is None or cycle_val == 0:
+        return {'finish': format_number(finish), 'unit': format_number(unit),
+                'resource': '不詳(ｻｲｸﾙ未設定)', 'abnormal': format_number(abnormal)}
+
+    if unit == 0:
+        return {'finish': format_number(finish), 'unit': '不詳(単位0)',
+                'resource': '不詳(単位0)', 'abnormal': format_number(abnormal)}
+
     try:
-        cycle_val = float(cycle) if is_numeric(cycle) else float(s_cycle_val)
-        finish   = _safe_float(stack_chart.get(5))
-        unit     = _safe_float(stack_chart.get(6))
-        abnormal = _safe_float(stack_chart.get(9))
         result = round((3600 / cycle_val) * float(tori) / unit * finish / 3600, 2)
         return {
             'finish':   format_number(finish),
@@ -252,77 +261,102 @@ def resources(stack_chart, cycle, tori, s_cycle):
             'resource': format_number(result),
             'abnormal': format_number(abnormal),
         }
-    except Exception:
+    except Exception as e:
+        import logging
+        logging.warning(f"resources(): unexpected error {type(e).__name__}: {e} "
+                        f"cycle_val={cycle_val}, tori={tori}, finish={finish}, unit={unit}")
         return {'finish': '不詳', 'unit': '不詳', 'resource': '不詳', 'abnormal': '不詳'}
 
 
-def read_excel_to_dict_list(filepath, sheet_name=None):
+def _read_excel_as_dict_list(filepath, sheet_name=None) -> list[dict]:
     if not filepath.exists():
         return []
-    df = (pl.read_excel(filepath, sheet_name=sheet_name, has_header=False, engine="calamine")
-          if sheet_name else
-          pl.read_excel(filepath, has_header=False, engine="calamine"))
-    df = df.cast(pl.String).fill_null("")
-    dict_list = []
-    for row in df.iter_rows():
-        d = {j: "" for j in range(1, 25)}
-        for j, val in enumerate(row[1:], start=1):
-            d[j] = _strip_dot_zero(val).strip()
-        dict_list.append(d)
-    return dict_list
+    kwargs = {"has_header": False, "engine": "calamine"}
+    if sheet_name:
+        kwargs["sheet_name"] = sheet_name
+
+    df = (
+        pl.read_excel(filepath, **kwargs)
+          [:, 1:]
+          .cast(pl.String)
+          .fill_null("")
+          .with_columns(
+              pl.all()
+                .str.replace(r'^(-?\d+)\.0$', '$1')
+                .str.strip_chars()
+          )
+    )
+
+    return [{j: v for j, v in enumerate(row, 1)} for row in df.rows()]
 
 
 def process_data_sync(latest_file):
     file_path = CABINET_DIR / 'data.xlsx'
-    data      = read_excel_to_dict_list(file_path, sheet_name='データ')[1:]
-    chart     = read_excel_to_dict_list(latest_file) if latest_file else []
-    chart_dict = {f"{d.get(2)}-{d.get(3)}": d for d in chart if 2 in d}
+    data       = _read_excel_as_dict_list(file_path, sheet_name='データ')[1:]
+    chart      = _read_excel_as_dict_list(latest_file) if latest_file else []
+
+    chart_dict = {f"{d[2]}-{d[3]}": d for d in chart if d.get(2)}
 
     mfr_files = [f for f in CABINET_DIR.iterdir() if f.is_file() and RE_MFR_FILE.search(f.name)]
-    mfr       = read_excel_to_dict_list(mfr_files[0]) if mfr_files else []
-    mfr_dict  = {}
+    mfr = _read_excel_as_dict_list(mfr_files[0]) if mfr_files else []
+
+    mfr_dict: dict[str, dict] = {}
+    key_col: int | None = None
     for d in mfr:
-        key_col = next((j for j in range(1, 6) if RE_MFR_KEY.match(str(d.get(j, '')).strip())), None)
-        if key_col:
-            shift = key_col - 2
-            d['raw_val']     = d.get(5 + shift, "")
-            d['raw_mfr_val'] = d.get(6 + shift, "")
-            mfr_dict[str(d.get(key_col)).replace('-', '').strip()] = d
+        if key_col is None:
+            key_col = next(
+                (j for j in range(1, 6) if RE_MFR_KEY.match(d.get(j, ''))), None
+            )
+        if key_col is None:
+            continue
+        shift = key_col - 2
+        mfr_dict[d.get(key_col, '').replace('-', '')] = {
+            'raw_val':     d.get(5 + shift, ''),
+            'raw_mfr_val': d.get(6 + shift, ''),
+        }
 
     products = []
     for i in data:
-        tori = 1 if i.get(13) == '' else int(i.get(13))
-        keys         = [item if '-' in item else f"{item}-00" for item in str(i.get(2, '')).split()]
-        chart_result = next((chart_dict[k] for k in keys if k in chart_dict), None)
-        stack        = resources(chart_result, i.get(12, ''), tori, i.get(6, ''))
+        sk_n = i.get(1, '').replace('.', '')
+        if not sk_n:
+            continue
 
-        sk_n = str(i.get(1, '')).replace('.', '')
-        sk   = f'SK{sk_n}' if i.get(7) == '' else f'{str(i.get(7)).upper()}{sk_n}'
-        code = str(i.get(2, '')).replace('\n', ' ')
-        name = str(i.get(4, '')).replace('\n', '・')
+        col2 = i.get(2, '')
+        col4 = i.get(4, '')
+        col6 = i.get(6, '')
+        col7 = i.get(7, '')
+
+        tori = int(i.get(13) or 1)
+        keys = [item if '-' in item else f"{item}-00" for item in col2.split()]
+        chart_result = next((chart_dict[k] for k in keys if k in chart_dict), None)
+        stack = resources(chart_result, i.get(12, ''), tori, col6)
+
+        sk   = f'SK{sk_n}' if col7 == '' else f'{col7.upper()}{sk_n}'
+        code = col2.replace('\n', ' ')
+        name = col4.replace('\n', '・')
         gw   = i.get(18, '')
-        grossWeight = f'{gw}ｇ' if gw else ''
-        wgt  = str(i.get(17, '')).replace('±', ' ±')
+        wgt  = i.get(17, '').replace('±', ' ±')
 
         mfr_entry = mfr_dict.get(sk, {})
-        raw     = RE_NEWLINE.sub(' / ', str(mfr_entry.get('raw_val', "")))
-        raw_mfr = RE_NEWLINE.sub(' / ', str(mfr_entry.get('raw_mfr_val', "")))
-        _etc    = [str(i.get(k, "")).strip() for k in (19, 20) if i.get(k)]
-        keyword = generate_keyword(name, stack["resource"], sk, str(i.get(2, '')), str(i.get(4, '')))
+        raw     = RE_NEWLINE.sub(' / ', mfr_entry.get('raw_val', ''))
+        raw_mfr = RE_NEWLINE.sub(' / ', mfr_entry.get('raw_mfr_val', ''))
+
+        _etc = [v for k in (19, 20) if (v := i.get(k, '').strip())]
+
+        keyword = generate_keyword(name, stack["resource"], sk, col2, col4)
 
         products.append([
             sk_n, sk, code, name,
             stack["finish"], stack["unit"], stack["resource"], stack["abnormal"],
-            grossWeight, wgt,
-            str(i.get(13, '')), str(i.get(12, '')),
-            i.get(6) if i.get(6) != "" else "",
-            str(i.get(11, '')), raw, raw_mfr,
-            str(i.get(14, '')), str(i.get(15, '')),
-            str(i.get(21, '')), str(i.get(22, '')), str(i.get(23, '')),
+            f'{gw}ｇ' if gw else '', wgt,
+            i.get(13, ''), i.get(12, ''),
+            col6,
+            i.get(11, ''), raw, raw_mfr,
+            i.get(14, ''), i.get(15, ''),
+            i.get(21, ''), i.get(22, ''), i.get(23, ''),
             "\n".join(_etc), keyword,
         ])
 
-    products = [p for p in products if p[0] != ""]
     products.sort(key=lambda x: int(x[0].replace("SK", "").replace("ZZ", "")))
     for idx, row in enumerate(products, start=1):
         row.insert(0, idx)
