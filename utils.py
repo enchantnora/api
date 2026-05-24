@@ -203,7 +203,7 @@ def generate_mobile_html_block(item: dict) -> str:
         f"【袋】{get_val(item, 'bag')}",
     ]
     if etc_val := get_val(item, 'etc'): parts.append(f"【備考】{etc_val}")
-    parts.append("____________________")
+    parts.append("__________________")
     return "\n".join(parts) + "\n"
 
 

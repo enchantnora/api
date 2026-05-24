@@ -4251,3 +4251,28 @@ Could not determine dtype for column 7, falling back to string
 [2026-05-23 23:42:28 +0900] [118182] [INFO] Started server process [118182]
 [2026-05-23 23:42:28 +0900] [118182] [INFO] Waiting for application startup.
 [2026-05-23 23:42:28 +0900] [118182] [INFO] Application startup complete.
+[2026-05-24 09:54:27 +0900] [118113] [INFO] Handling signal: term
+[2026-05-24 09:54:27 +0900] [118182] [INFO] Shutting down
+[2026-05-24 09:54:27 +0900] [118180] [INFO] Shutting down
+[2026-05-24 09:54:27 +0900] [118182] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-24 09:54:27 +0900] [118180] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-24 09:54:27 +0900] [118182] [INFO] Waiting for application shutdown.
+[2026-05-24 09:54:27 +0900] [118180] [INFO] Waiting for application shutdown.
+[2026-05-24 09:54:27 +0900] [118182] [INFO] Application shutdown complete.
+[2026-05-24 09:54:27 +0900] [118182] [INFO] Finished server process [118182]
+[2026-05-24 09:54:27 +0900] [118180] [INFO] Application shutdown complete.
+[2026-05-24 09:54:27 +0900] [118180] [INFO] Finished server process [118180]
+[2026-05-24 09:54:27 +0900] [118113] [ERROR] Worker (pid:118180) was sent SIGTERM!
+[2026-05-24 09:54:27 +0900] [118113] [ERROR] Worker (pid:118182) was sent SIGTERM!
+[2026-05-24 09:54:27 +0900] [118113] [INFO] Shutting down: Master
+[2026-05-24 09:54:27 +0900] [119183] [INFO] Starting gunicorn 23.0.0
+[2026-05-24 09:54:27 +0900] [119183] [INFO] Listening at: http://0.0.0.0:9900 (119183)
+[2026-05-24 09:54:27 +0900] [119183] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-24 09:54:27 +0900] [119249] [INFO] Booting worker with pid: 119249
+[2026-05-24 09:54:28 +0900] [119251] [INFO] Booting worker with pid: 119251
+[2026-05-24 09:54:29 +0900] [119251] [INFO] Started server process [119251]
+[2026-05-24 09:54:29 +0900] [119251] [INFO] Waiting for application startup.
+[2026-05-24 09:54:29 +0900] [119249] [INFO] Started server process [119249]
+[2026-05-24 09:54:29 +0900] [119249] [INFO] Waiting for application startup.
+[2026-05-24 09:54:29 +0900] [119251] [INFO] Application startup complete.
+[2026-05-24 09:54:29 +0900] [119249] [INFO] Application startup complete.

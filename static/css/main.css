@@ -526,6 +526,7 @@ li[data-slug] {
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    will-change: scroll-position;
 }
 #items::-webkit-scrollbar{
     display:none;
@@ -538,6 +539,7 @@ li[data-slug] {
     box-sizing: border-box;
     max-width: 100%;
     min-width: 0;
+    transform: translateZ(0);
 }
 #items .content-box {
     width: 100%;

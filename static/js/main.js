@@ -1,5 +1,5 @@
 const AppConfig = {
-    menus: ['search', 'info', 'favorite', 'calc', 'shift', 'nengetsu', 'stop', 'article', 'no_register'],
+    menus: ['search', 'info', 'favorite', 'calc', 'shift', 'nengetsu', 'stop', 'article', 'no_register', ''],
     api: {
         search: '/search/',
         product: (slug) => `/db/${slug}`,
@@ -274,7 +274,7 @@ const MenuController = {
             { title: "(●ω●){ 年月マーク )",       act: () => {} },
             { title: "(●ω●){ 停台コード )",       act: () => ToolsController.fetchStopcode(1) },
             { title: "(●ω●){ 不良現象項目 )",     act: () => ToolsController.initArticleView() },
-            { title: "(●ω●){ 人工 未登録製品 )",  act: () => ToolsController.initNoRegisterView() },
+            { title: "(●ω●){ 人工 未登録リスト )",  act: () => ToolsController.initNoRegisterView() },
             { title: "(●ω●){ レコード )",          act: () => {} },
         ];
 
