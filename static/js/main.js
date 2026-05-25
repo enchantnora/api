@@ -1,5 +1,19 @@
 const AppConfig = {
-    menus: ['search', 'info', 'favorite', 'calc', 'shift', 'nengetsu', 'stop', 'article', 'no_register', ''],
+    menus: ['search', 'info', 'favorite', 'calc', 'shift', 'nengetsu', 'stop', 'article', 'no_register', '',],
+    action_map: {'nengetsu': 5, 'stop': 6, 'article': 7, 'no_register': 8,},
+    menus_action :[
+        { title: "(●ω●){ 製品検索 )",          act: () => SearchController.initView() },
+        { title: () => UrlManager.getParam('sk') ? `(●ω●){ ${UrlManager.getParam('sk')}番の製品情報 )` : "(●ω●){ 製品情報 )", act: () => ProductController.initView() }, // 動的なタイトルに対応
+        { title: "(●ω●){ 履歴・お気に入り )", act: () => UserDataController.initFavoriteView() },
+        { title: "(●ω●){ 電卓 )",            act: () => {} },
+        { title: "(●ω●){ シフト )",           act: () => {} },
+        { title: "(●ω●){ 年月マーク )",       act: () => {} },
+        { title: "(●ω●){ 停台コード )",       act: () => ToolsController.fetchStopcode(1) },
+        { title: "(●ω●){ 不良現象項目 )",     act: () => ToolsController.initArticleView() },
+        { title: "(●ω●){ 人工 未登録リスト )",  act: () => ToolsController.initNoRegisterView() },
+        { title: "(●ω●){  )",           act: () => {} },
+        { title: "(●ω●){ レコード )",          act: () => {} },
+    ],
     api: {
         search: '/search/',
         product: (slug) => `/db/${slug}`,
@@ -214,9 +228,9 @@ const MenuController = {
 
         $(".glink").on("click", (e) => {
             $("#burger_btn").prop("checked", false);
-            const actionMap = { 'nengetsu': 5, 'stop': 6, 'article': 7, 'no_register': 8 };
             const id = $(e.currentTarget).attr("id");
-            const targetIndex = actionMap[id];
+            const targetIndex = AppConfig.action_map[id];
+            
             if (targetIndex !== undefined && this.runPosition !== targetIndex) {
                 this.isJumping = true;
                 this.syncState(targetIndex);
@@ -264,23 +278,13 @@ const MenuController = {
 
     switchingHub: function(index, isPrefetch = false) {
         if (!AppState.isFirstLoad && !isPrefetch) UrlManager.setMenuIndex(index);
+        const action = AppConfig.menus_action[index];
 
-        const actions = [
-            { title: "(●ω●){ 製品検索 )",       act: () => SearchController.initView() },
-            { title: UrlManager.getParam('sk') ? `(●ω●){ ${UrlManager.getParam('sk')}番の製品情報 )` : "(●ω●){ 製品情報 )", act: () => ProductController.initView() },
-            { title: "(●ω●){ 履歴・お気に入り )", act: () => UserDataController.initFavoriteView() },
-            { title: "(●ω●){ 電卓 )",            act: () => {} },
-            { title: "(●ω●){ シフト )",           act: () => {} },
-            { title: "(●ω●){ 年月マーク )",       act: () => {} },
-            { title: "(●ω●){ 停台コード )",       act: () => ToolsController.fetchStopcode(1) },
-            { title: "(●ω●){ 不良現象項目 )",     act: () => ToolsController.initArticleView() },
-            { title: "(●ω●){ 人工 未登録リスト )",  act: () => ToolsController.initNoRegisterView() },
-            { title: "(●ω●){ レコード )",          act: () => {} },
-        ];
-
-        if (actions[index]) {
-            if (!isPrefetch) document.title = actions[index].title;
-            actions[index].act();
+        if (action) {
+            if (!isPrefetch) {
+                document.title = typeof action.title === 'function' ? action.title() : action.title;
+            }
+            action.act();
         }
     }
 };
