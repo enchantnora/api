@@ -3,7 +3,7 @@ const AppConfig = {
     action_map: {'nengetsu': 5, 'stop': 6, 'article': 7, 'no_register': 8,},
     menus_action :[
         { title: "(●ω●){ 製品検索 )",          act: () => SearchController.initView() },
-        { title: () => UrlManager.getParam('sk') ? `(●ω●){ ${UrlManager.getParam('sk')}番の製品情報 )` : "(●ω●){ 製品情報 )", act: () => ProductController.initView() }, // 動的なタイトルに対応
+        { title: () => UrlManager.getParam('sk') ? `(●ω●){ ${UrlManager.getParam('sk')}番の製品情報 )` : "(●ω●){ 製品情報 )", act: () => ProductController.initView() },
         { title: "(●ω●){ 履歴・お気に入り )", act: () => UserDataController.initFavoriteView() },
         { title: "(●ω●){ 電卓 )",            act: () => {} },
         { title: "(●ω●){ シフト )",           act: () => {} },
