@@ -4484,3 +4484,87 @@ Could not determine dtype for column 10, falling back to string
 [2026-05-25 10:48:02 +0900] [122510] [INFO] Started server process [122510]
 [2026-05-25 10:48:02 +0900] [122510] [INFO] Waiting for application startup.
 [2026-05-25 10:48:02 +0900] [122510] [INFO] Application startup complete.
+[2026-05-25 14:05:30 +0900] [122508] [WARNING] Invalid HTTP request received.
+[2026-05-25 14:05:37 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-25 14:05:38 +0900] [122508] [WARNING] Invalid HTTP request received.
+[2026-05-25 14:05:44 +0900] [122510] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+[2026-05-26 14:07:25 +0900] [122508] [WARNING] Invalid HTTP request received.
+[2026-05-26 14:07:34 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-26 14:07:35 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-26 14:07:39 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-26 14:45:32 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-26 14:45:33 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-26 14:45:38 +0900] [122510] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+[2026-05-27 16:03:48 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-27 16:03:55 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-27 16:04:22 +0900] [122510] [WARNING] Invalid HTTP request received.
+[2026-05-27 18:43:49 +0900] [122508] [WARNING] Invalid HTTP request received.
+[2026-05-27 18:43:57 +0900] [122508] [WARNING] Invalid HTTP request received.
+[2026-05-27 18:43:58 +0900] [122508] [WARNING] Invalid HTTP request received.
+[2026-05-27 18:44:02 +0900] [122508] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+[2026-05-28 14:33:46 +0900] [122462] [INFO] Handling signal: term
+[2026-05-28 14:33:46 +0900] [122510] [INFO] Shutting down
+[2026-05-28 14:33:46 +0900] [122510] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-28 14:33:46 +0900] [122508] [INFO] Shutting down
+[2026-05-28 14:33:46 +0900] [122508] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-05-28 14:33:46 +0900] [122510] [INFO] Waiting for application shutdown.
+[2026-05-28 14:33:46 +0900] [122510] [INFO] Application shutdown complete.
+[2026-05-28 14:33:46 +0900] [122510] [INFO] Finished server process [122510]
+[2026-05-28 14:33:46 +0900] [122462] [ERROR] Worker (pid:122510) was sent SIGTERM!
+[2026-05-28 14:33:46 +0900] [122508] [INFO] Waiting for application shutdown.
+[2026-05-28 14:33:46 +0900] [122508] [INFO] Application shutdown complete.
+[2026-05-28 14:33:46 +0900] [122508] [INFO] Finished server process [122508]
+[2026-05-28 14:33:46 +0900] [122462] [ERROR] Worker (pid:122508) was sent SIGTERM!
+[2026-05-28 14:33:46 +0900] [122462] [INFO] Shutting down: Master
+[2026-05-28 14:33:47 +0900] [128362] [INFO] Starting gunicorn 23.0.0
+[2026-05-28 14:33:47 +0900] [128362] [INFO] Listening at: http://0.0.0.0:9900 (128362)
+[2026-05-28 14:33:47 +0900] [128362] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-05-28 14:33:47 +0900] [128426] [INFO] Booting worker with pid: 128426
+[2026-05-28 14:33:47 +0900] [128428] [INFO] Booting worker with pid: 128428
+[2026-05-28 14:33:49 +0900] [128426] [INFO] Started server process [128426]
+[2026-05-28 14:33:49 +0900] [128426] [INFO] Waiting for application startup.
+[2026-05-28 14:33:49 +0900] [128426] [INFO] Application startup complete.
+[2026-05-28 14:33:49 +0900] [128428] [INFO] Started server process [128428]
+[2026-05-28 14:33:49 +0900] [128428] [INFO] Waiting for application startup.
+[2026-05-28 14:33:49 +0900] [128428] [INFO] Application startup complete.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string

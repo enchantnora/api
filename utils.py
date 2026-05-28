@@ -31,6 +31,7 @@ replace_dict = {
     ' ': ' ', '　': ' ', '-': ' ', '.': ' ', '/': ' ', '／': ' ',
     '#': 'syaapu', '＃': 'syaapu', 'シャープ': 'syaapu', 'φ': 'phi',
     '中蓋': 'nakafuta', '型': 'gata',
+    '長側': 'chousoku', '短側': 'tansoku', r'(?<=\w)板': 'ban',
     'ぁ': 'a', 'ぃ': 'i', 'ぅ': 'u', 'ぇ': 'e', 'ぉ': 'o',
 }
 
@@ -53,6 +54,7 @@ KKS_PATTERNS = [
     (re.compile(r'#', re.I), 'しゃーぷ'),
     (re.compile(r'長側', re.I), 'ちょうそく'),
     (re.compile(r'短側', re.I), 'たんそく'),
+    (re.compile(r'(?<=\w)板', re.I), 'ばん'),
 ]
 
 ZEN = "".join(chr(0xff01 + idx) for idx in range(94))
