@@ -301,7 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams    = new URLSearchParams(window.location.search);
     const previewUuid  = urlParams.get('preview');
     if (previewUuid) {
-        const targetBtn = document.querySelector(`li[data-uuid="${previewUuid}"] .preview-btn`);
+        const targetBtn = document.querySelector(`li[data-uuid="${previewUuid}"] .preview-btn`) || 
+                          document.querySelector(`li[data-uuid="${previewUuid}"] .edit-btn`);
         if (targetBtn) {
             setTimeout(() => targetBtn.click(), 35);
         } else {
@@ -331,6 +332,38 @@ async function createFolder() {
     }
 }
 
+// ---- テキスト作成 ----------------------------------------
+
+async function createTxt() {
+    let fileName = prompt("新規テキストファイル名を入力してください:");
+    if (!fileName) return;
+
+    fileName = fileName.trim();
+    if (!fileName.toLowerCase().endsWith('.txt')) {
+        fileName += '.txt';
+    }
+
+    const file = new File([""], fileName, { 
+        type: "text/plain", 
+        lastModified: Date.now() 
+    });
+
+    await executeUpload(file, APP.currentPath, (data) => {
+        if (data && data.uuid) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('preview', data.uuid);
+
+            if (APP.activeUploads === 0) {
+                window.location.href = url.toString();
+            } else {
+                addMessage(MSG.success(`${fileName}を作成しました。[他のアップロード完了後に表示されます]`));
+            }
+        } else {
+            location.reload();
+        }
+    });
+}
+
 // ---- アップロード ----------------------------------------
 function uploadFile() {
     const fileInput = document.getElementById('fileInput');
@@ -357,7 +390,7 @@ function traverseFileTree(item, path = "") {
     }
 }
 
-async function executeUpload(file, targetPath = APP.currentPath) {
+async function executeUpload(file, targetPath = APP.currentPath, onSuccess = null) {
     if (file.size > APP.currentRemainingCapacity) {
         alert(`【容量超過】\nストレージの空き容量が不足しています。\n\nファイル名: ${file.name}\nサイズ: ${Utils.formatBytes(file.size)}`);
         return;
@@ -444,7 +477,11 @@ async function executeUpload(file, targetPath = APP.currentPath) {
 
             if (data.completed) {
                 APP.activeUploads--;
-                if (APP.activeUploads === 0) location.reload();
+                if (onSuccess) {
+                    onSuccess(data);
+                } else if (APP.activeUploads === 0) {
+                    location.reload();
+                }
                 return;
             }
         } catch (error) {

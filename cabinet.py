@@ -347,7 +347,8 @@ async def upload_file(
                 """, (file_uuid, rel_path, filename, now_str, tags_json))
                 await db.commit()
                 
-            return {"status": "success", "filename": filename, "completed": True}
+            # 変更点: "uuid": file_uuid をレスポンスに追加
+            return {"status": "success", "filename": filename, "completed": True, "uuid": file_uuid}
             
         return {"status": "success", "chunk_index": chunk_index, "completed": False}
         

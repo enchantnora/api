@@ -4568,3 +4568,154 @@ Could not determine dtype for column 46, falling back to string
 [2026-05-28 14:33:49 +0900] [128428] [INFO] Application startup complete.
 Could not determine dtype for column 16, falling back to string
 Could not determine dtype for column 7, falling back to string
+[2026-05-28 18:56:47 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-28 18:56:48 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-28 18:56:53 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-29 03:19:01 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-29 03:19:08 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-29 03:19:09 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-29 03:19:16 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-29 17:11:23 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-29 17:11:32 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-29 17:11:33 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-29 17:11:37 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-30 17:53:29 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-30 17:53:31 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-30 17:53:44 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-30 21:01:50 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-30 21:02:07 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-30 21:02:08 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-30 21:02:16 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-31 16:49:24 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-31 16:49:24 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-31 17:21:49 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-31 17:21:58 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-05-31 17:21:59 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-05-31 17:22:04 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-01 14:40:21 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-01 14:40:28 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-01 14:40:29 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-01 14:40:34 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-02 14:35:59 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-02 14:36:07 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-02 14:36:09 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-02 14:36:15 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-02 14:54:13 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-02 14:54:16 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-02 14:54:28 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-03 14:11:35 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-03 14:11:43 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-03 14:11:47 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-03 14:11:58 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-04 15:08:42 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-04 15:08:47 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-04 15:10:24 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-04 20:51:57 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-04 20:51:57 +0900] [128428] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 19, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 25, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 40, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+[2026-06-05 15:56:11 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-05 15:56:14 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-05 15:56:33 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-06 16:46:24 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-06 16:47:00 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-07 17:49:14 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-07 17:49:23 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-07 17:50:01 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-08 05:07:05 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-08 05:07:12 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-08 05:07:13 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-08 05:07:17 +0900] [128426] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+[2026-06-09 02:01:05 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-09 02:01:12 +0900] [128428] [WARNING] Invalid HTTP request received.
+[2026-06-09 02:01:13 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-09 02:01:18 +0900] [128426] [WARNING] Invalid HTTP request received.
+[2026-06-09 05:40:12 +0900] [128362] [INFO] Handling signal: term
+[2026-06-09 05:40:12 +0900] [128426] [INFO] Shutting down
+[2026-06-09 05:40:12 +0900] [128426] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-09 05:40:12 +0900] [128428] [INFO] Shutting down
+[2026-06-09 05:40:12 +0900] [128428] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-09 05:40:12 +0900] [128426] [INFO] Waiting for application shutdown.
+[2026-06-09 05:40:12 +0900] [128426] [INFO] Application shutdown complete.
+[2026-06-09 05:40:12 +0900] [128426] [INFO] Finished server process [128426]
+[2026-06-09 05:40:12 +0900] [128362] [ERROR] Worker (pid:128426) was sent SIGTERM!
+[2026-06-09 05:40:12 +0900] [128428] [INFO] Waiting for application shutdown.
+[2026-06-09 05:40:12 +0900] [128428] [INFO] Application shutdown complete.
+[2026-06-09 05:40:12 +0900] [128428] [INFO] Finished server process [128428]
+[2026-06-09 05:40:12 +0900] [128362] [ERROR] Worker (pid:128428) was sent SIGTERM!
+[2026-06-09 05:40:12 +0900] [128362] [INFO] Shutting down: Master
+[2026-06-09 05:40:12 +0900] [149546] [INFO] Starting gunicorn 23.0.0
+[2026-06-09 05:40:12 +0900] [149546] [INFO] Listening at: http://0.0.0.0:9900 (149546)
+[2026-06-09 05:40:12 +0900] [149546] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-06-09 05:40:12 +0900] [149592] [INFO] Booting worker with pid: 149592
+[2026-06-09 05:40:12 +0900] [149594] [INFO] Booting worker with pid: 149594
+[2026-06-09 05:40:14 +0900] [149592] [INFO] Started server process [149592]
+[2026-06-09 05:40:14 +0900] [149592] [INFO] Waiting for application startup.
+[2026-06-09 05:40:14 +0900] [149592] [INFO] Application startup complete.
+[2026-06-09 05:40:14 +0900] [149594] [INFO] Started server process [149594]
+[2026-06-09 05:40:14 +0900] [149594] [INFO] Waiting for application startup.
+[2026-06-09 05:40:14 +0900] [149594] [INFO] Application startup complete.
