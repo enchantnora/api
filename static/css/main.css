@@ -130,6 +130,24 @@ li[data-slug] {
     background-color: #7fffd4;
     color: #333;
 }
+.emphasis {
+    color: #4d9bc1;
+    line-height: 1.2;
+    -webkit-box-reflect: below -10px
+        -webkit-linear-gradient(top, 
+        rgba(0, 255, 0, 0), 
+        rgba(0, 255, 0, 0) 10%, 
+        rgba(170, 255, 170, 0.6));
+    margin: 0;
+    margin-bottom: calc(1em + 5px);
+    font-size: 26px;
+    text-align: center;
+}
+.mezzo {
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+}
 /* -------------------------------------------------------------------- */
 /* ヘッダー */
 #header {
@@ -1144,20 +1162,6 @@ h3 {
 }
 /* -------------------------------------------------------------------- */
 /* 不良現象項目 */
-
-.emphasis {
-    color: #4d9bc1;
-    line-height: 1.2;
-    -webkit-box-reflect: below -10px
-        -webkit-linear-gradient(top, 
-        rgba(0, 255, 0, 0), 
-        rgba(0, 255, 0, 0) 10%, 
-        rgba(170, 255, 170, 0.6));
-    margin: 0;
-    margin-bottom: calc(1em + 5px);
-    font-size: 26px;
-    text-align: center;
-}
 #defect_article, #defect_article2 {
     font-size: 15px;
     background: rgba(127, 227, 215, .6);
@@ -1384,6 +1388,37 @@ h3 {
     display: block;
 }
 /* -------------------------------------------------------------------- */
+/* ショートカット */
+.sho_t {
+    text-align: center;
+    font-size: 15px;
+    background: rgba(127, 227, 215, .6);
+    border-radius: 12px;
+    width: 90%;
+    margin: 0 auto 20px auto;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+.d {
+    display: flex;
+}
+.banner {
+    width: 80px;
+    height: 80px;
+    margin: 10px 10px 0 10px;
+    background-image: url("../image/shortcut.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+.dd {
+    flex-grow: 1;
+    padding: 0 20px;
+    text-align: left;
+}
 /* -------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------- */

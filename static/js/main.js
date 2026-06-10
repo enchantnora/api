@@ -1,6 +1,6 @@
 const AppConfig = {
-    menus: ['search', 'info', 'favorite', 'calc', 'shift', 'nengetsu', 'stop', 'article', 'no_register', '',],
-    action_map: {'nengetsu': 5, 'stop': 6, 'article': 7, 'no_register': 8,},
+    menus: ['search', 'info', 'favorite', 'calc', 'shift', 'nengetsu', 'stop', 'article', 'no_register', 'shortcut',],
+    action_map: {'nengetsu': 5, 'stop': 6, 'article': 7, 'no_register': 8, 'shortcut': 9,},
     menus_action :[
         { title: "(●ω●){ 製品検索 )",          act: () => SearchController.initView() },
         { title: () => UrlManager.getParam('sk') ? `(●ω●){ ${UrlManager.getParam('sk')}番の製品情報 )` : "(●ω●){ 製品情報 )", act: () => ProductController.initView() },
@@ -11,7 +11,7 @@ const AppConfig = {
         { title: "(●ω●){ 停台コード )",       act: () => ToolsController.fetchStopcode(1) },
         { title: "(●ω●){ 不良現象項目 )",     act: () => ToolsController.initArticleView() },
         { title: "(●ω●){ 人工 未登録リスト )",  act: () => ToolsController.initNoRegisterView() },
-        { title: "(●ω●){  )",           act: () => {} },
+        { title: "(●ω●){ iPhoneｼｮｰﾄｶｯﾄ )",     act: () => {} },
         { title: "(●ω●){ レコード )",          act: () => {} },
     ],
     api: {
