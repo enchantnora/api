@@ -737,7 +737,7 @@ const ToolsController = {
             let yIdx = (d.getFullYear() - 5) % yArr.length;
             if (yIdx < 0) yIdx += yArr.length;
             
-            let html = `<span class="y_arr">${yArr[yIdx]}年</span><span class="m_arr">${mArr[d.getMonth()]}月</span><br>` +
+            let html = `<b><span class="y_arr">${yArr[yIdx]}年</span><span class="m_arr">${mArr[d.getMonth()]}月</span></b><br>` +
                        `<span class="y_arr">${d.getFullYear()}年</span><span class="m_arr">${d.getMonth() + 1}月</span>` +
                        (currentY === d.getFullYear() && currentM === d.getMonth() ? '<span class="pick_up">（現在）</span>' : '');
             
