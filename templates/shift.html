@@ -19,25 +19,29 @@
             touch-action: manipulation;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
             inset: 0;
             font-size: 10px;
         }
         #scrollframe {
             display: flex;
             position: relative;
-            width: 100vw;
+            width: 100%;
             height: 100%;
         }
         #content {
             justify-content: center;
             width: 100%;
+            height: 100%;
             text-align: center;
             overflow-y: auto;
             will-change: transform;
+            -webkit-overflow-scrolling: touch;
         }
         #dateData {
-            font-size: 1.3em;
-            line-height: 0.8;
+            font-size: 1.8em;
+            line-height: 0.9;
         }
         #shiftData {
             display: inline-block;
@@ -49,7 +53,8 @@
             margin-top: 8px;
         }
         .blur {
-            font-size: 0.6em;
+            font-size: 0.7em;
+            color: #888;
         }
         .pickup {
             color: #FF7D81;
@@ -352,21 +357,21 @@
         mainWrite();
         initButtons();
 
-        function animateSwipe(direction) {
+        async function animateSwipe(direction) {
             const width = window.innerWidth;
             inPresent.style.transition = 'transform 0.15s ease-in';
             inPresent.style.transform = `translateX(${direction * width}px)`;
-            
-            setTimeout(() => {
-                mainWrite(G_current);
-                inPresent.style.transition = 'none';
-                inPresent.style.transform = `translateX(${-direction * width}px)`;
 
-                inPresent.offsetHeight;
-                
-                inPresent.style.transition = 'transform 0.15s cubic-bezier(0, 1.17, 0.86, 0.99)';
-                inPresent.style.transform = 'translateX(0px)';
-            }, 150);
+            await new Promise(resolve => setTimeout(resolve, 50));
+            await mainWrite(G_current);
+
+            inPresent.style.transition = 'none';
+            inPresent.style.transform = `translateX(${-direction * width}px)`;
+    
+            inPresent.offsetHeight;
+            
+            inPresent.style.transition = 'transform 0.15s cubic-bezier(0, 1.17, 0.86, 0.99)';
+            inPresent.style.transform = 'translateX(0px)';
         }
 
         function handleTap(element) {
