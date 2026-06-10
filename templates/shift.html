@@ -15,33 +15,30 @@
             background-color: #000;
             color: #fff;
             overflow-x: hidden;
+            overflow-y: visible;
+            touch-action: pan-y;
             user-select: none;
-            touch-action: manipulation;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
-            inset: 0;
             font-size: 10px;
         }
         #scrollframe {
-            display: flex;
-            position: relative;
+            display: block;
             width: 100%;
-            height: 100%;
         }
         #content {
-            justify-content: center;
+            display: block;
             width: 100%;
-            height: 100%;
             text-align: center;
-            overflow-y: auto;
             will-change: transform;
-            -webkit-overflow-scrolling: touch;
+            padding-bottom: 50px;
         }
         #dateData {
             font-size: 1.8em;
             line-height: 0.9;
+            padding-top: 20px;
         }
         #shiftData {
             display: inline-block;
@@ -223,10 +220,6 @@
 
         const date_area = document.getElementById('dateData');
         const content_area = document.getElementById('shiftData');
-        const content_scroll_area = document.getElementById('content');
-        
-        const savedScrollTop = content_scroll_area.scrollTop;
-        const savedWindowScrollY = window.scrollY || window.pageYOffset;
         
         try {
             const shiftArray = await fetchShift(getPresent(current));
@@ -297,7 +290,7 @@
                 
                 if (Array.isArray(data[key])) {
                     data[key].forEach(member => {
-                        groupDiv.appendChild(document.createTextNode(`　${member}`));
+                        groupDiv.appendChild(document.createTextNode(` ${member}`));
                         groupDiv.appendChild(document.createElement('br'));
                     });
                 }
@@ -306,9 +299,14 @@
             
             content_area.innerHTML = '';
             content_area.appendChild(shiftFragment);
-            
-            window.scrollTo(0, savedWindowScrollY);
-            content_scroll_area.scrollTo(0, savedScrollTop);
+
+            const f_area = document.getElementById('scrollframe');
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+                f_area.documentElement.scrollTop = 0;
+            }, 10);
             
         } catch (error) {
             content_area.textContent = 'Error loading shift data';
@@ -333,7 +331,6 @@
             const target = event.target.closest('.circle');
             if (!target) return;
 
-            document.body.scrollIntoView(true);
             if (target.classList.contains('now')) G_current = 0;
             else if (target.classList.contains('r_b')) G_current += 7;
             else if (target.classList.contains('l_b')) G_current -= 7;
@@ -351,7 +348,6 @@
         let isSwiping = false, startX, currentX, longPressTimer = null, hasMoved = false, startTime = 0, tappedElement = null, isLongPress = false;
         const threshold = 50, LONG_PRESS_DURATION = 1000, MOVE_THRESHOLD = 10, TAP_TIME_THRESHOLD = 400;
         const inPresent = document.getElementById('content');
-        const scrollFrame = document.getElementById('scrollframe');
         const buttonLayer = document.getElementById('button');
         
         mainWrite();
@@ -376,13 +372,11 @@
 
         function handleTap(element) {
             if (!element.closest('.circle')) {
-                scrollFrame.style.height = '100%';
                 buttonLayer.style.display = 'none';
             }
         }
 
         function handleLongPress() {
-            scrollFrame.style.height = '100vh';
             buttonLayer.style.display = 'block';
         }
 
@@ -441,7 +435,6 @@
                 inPresent.style.transform = 'translateX(0px)';
             } 
             else {
-                scrollFrame.style.height = '100%';
                 buttonLayer.style.display = 'none';
                 
                 const realDistance = currentX - startX;
