@@ -701,7 +701,13 @@ li[data-slug] {
 }
 /* -------------------------------------------------------------------- */
 /* フレーズ */
+#search_content .sub_content_R {
+    align-self: stretch;
+}
 #phrase {
+    position: sticky;
+    top: 5px;
+    z-index: 10;
     padding-bottom: 10px;
     line-height: 0px;
 }
