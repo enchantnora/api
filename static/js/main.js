@@ -69,14 +69,30 @@ const Utils = {
         const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
         return value ? value.split('=')[1] : null;
     },
+    lastTouchTime: 0,
     addTouchClickListener: ($element, selector, callback, preventDefault = false) => {
         $element.off('click touchstart touchend', selector)
             .on('touchstart', selector, function() { $(this).data('touchMoved', false); })
             .on('touchmove', selector, function() { $(this).data('touchMoved', true); })
             .on('touchend click', selector, function(event) {
-                if (event.type === 'touchend' && $(this).data('touchMoved')) return;
-                if (preventDefault) event.preventDefault();
-                callback.call(this, event);
+                if (event.type === 'touchend') {
+                    if ($(this).data('touchMoved')) return;
+
+                    Utils.lastTouchTime = Date.now();
+                    
+                    if (preventDefault) event.preventDefault();
+                    callback.call(this, event);
+                } else if (event.type === 'click') {
+
+                    if (Date.now() - Utils.lastTouchTime < 400) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
+                    
+                    if (preventDefault) event.preventDefault();
+                    callback.call(this, event);
+                }
             });
     }
 };

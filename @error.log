@@ -4949,3 +4949,9 @@ Could not determine dtype for column 7, falling back to string
 [2026-06-12 19:45:37 +0900] [5029] [INFO] Using worker: uvicorn.workers.UvicornWorker
 [2026-06-12 19:45:37 +0900] [5075] [INFO] Booting worker with pid: 5075
 [2026-06-12 19:45:37 +0900] [5077] [INFO] Booting worker with pid: 5077
+[2026-06-12 19:45:38 +0900] [5075] [INFO] Started server process [5075]
+[2026-06-12 19:45:38 +0900] [5075] [INFO] Waiting for application startup.
+[2026-06-12 19:45:38 +0900] [5075] [INFO] Application startup complete.
+[2026-06-12 19:45:38 +0900] [5077] [INFO] Started server process [5077]
+[2026-06-12 19:45:38 +0900] [5077] [INFO] Waiting for application startup.
+[2026-06-12 19:45:38 +0900] [5077] [INFO] Application startup complete.
