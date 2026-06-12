@@ -4926,3 +4926,7 @@ Could not determine dtype for column 7, falling back to string
 [2026-06-12 18:06:48 +0900] [4701] [INFO] Started server process [4701]
 [2026-06-12 18:06:48 +0900] [4701] [INFO] Waiting for application startup.
 [2026-06-12 18:06:48 +0900] [4701] [INFO] Application startup complete.
+[2026-06-12 18:58:39 +0900] [4699] [WARNING] Invalid HTTP request received.
+[2026-06-12 18:58:48 +0900] [4699] [WARNING] Invalid HTTP request received.
+[2026-06-12 18:58:49 +0900] [4699] [WARNING] Invalid HTTP request received.
+[2026-06-12 18:58:54 +0900] [4699] [WARNING] Invalid HTTP request received.

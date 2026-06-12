@@ -580,6 +580,8 @@ const UserDataController = {
                 type: 'POST', url: AppConfig.api.uuid(uuid, type),
                 contentType: 'application/json', data: JSON.stringify({ value: arr.join('@@') })
             });
+
+            this.renderList(type);
         } catch (err) { console.error(err); }
     },
 
