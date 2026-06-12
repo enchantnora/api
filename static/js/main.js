@@ -11,7 +11,7 @@ const AppConfig = {
         { title: "(●ω●){ 停台コード )",       act: () => ToolsController.fetchStopcode() },
         { title: "(●ω●){ 不良現象項目 )",     act: () => ToolsController.initArticleView() },
         { title: "(●ω●){ 人工 未登録リスト )",  act: () => ToolsController.initNoRegisterView() },
-        { title: "(●ω●){ iPhoneｼｮｰﾄｶｯﾄ )",     act: () => {} },
+        { title: "(●ω●){ iPhoneｼｮｰﾄｶｯﾄ )",     act: () => ToolsController.initShortcutView() },
         { title: "(●ω●){ レコード )",          act: () => {} },
     ],
     api: {
@@ -720,6 +720,10 @@ const ToolsController = {
         }).fail(err => console.error(err));
     },
 
+    initShortcutView: function() {
+        $.getScript('static/js/shortcut.js').fail(err => console.error(err));
+    },
+    
     initSlider: function() {
         let $slider = $('#slider'), $thumb = $('#slider .thumb');
         let sliderWidth, thumbWidth;

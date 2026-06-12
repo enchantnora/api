@@ -4895,3 +4895,34 @@ Could not determine dtype for column 7, falling back to string
 [2026-06-12 16:22:16 +0900] [4267] [INFO] Using worker: uvicorn.workers.UvicornWorker
 [2026-06-12 16:22:16 +0900] [4313] [INFO] Booting worker with pid: 4313
 [2026-06-12 16:22:16 +0900] [4314] [INFO] Booting worker with pid: 4314
+[2026-06-12 16:22:17 +0900] [4314] [INFO] Started server process [4314]
+[2026-06-12 16:22:17 +0900] [4314] [INFO] Waiting for application startup.
+[2026-06-12 16:22:17 +0900] [4314] [INFO] Application startup complete.
+[2026-06-12 16:22:17 +0900] [4313] [INFO] Started server process [4313]
+[2026-06-12 16:22:17 +0900] [4313] [INFO] Waiting for application startup.
+[2026-06-12 16:22:17 +0900] [4313] [INFO] Application startup complete.
+[2026-06-12 18:06:46 +0900] [4267] [INFO] Handling signal: term
+[2026-06-12 18:06:46 +0900] [4313] [INFO] Shutting down
+[2026-06-12 18:06:46 +0900] [4313] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-12 18:06:46 +0900] [4314] [INFO] Shutting down
+[2026-06-12 18:06:46 +0900] [4314] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-12 18:06:46 +0900] [4313] [INFO] Waiting for application shutdown.
+[2026-06-12 18:06:46 +0900] [4313] [INFO] Application shutdown complete.
+[2026-06-12 18:06:46 +0900] [4313] [INFO] Finished server process [4313]
+[2026-06-12 18:06:46 +0900] [4267] [ERROR] Worker (pid:4313) was sent SIGTERM!
+[2026-06-12 18:06:46 +0900] [4314] [INFO] Waiting for application shutdown.
+[2026-06-12 18:06:46 +0900] [4314] [INFO] Application shutdown complete.
+[2026-06-12 18:06:46 +0900] [4314] [INFO] Finished server process [4314]
+[2026-06-12 18:06:46 +0900] [4267] [ERROR] Worker (pid:4314) was sent SIGTERM!
+[2026-06-12 18:06:46 +0900] [4267] [INFO] Shutting down: Master
+[2026-06-12 18:06:47 +0900] [4653] [INFO] Starting gunicorn 23.0.0
+[2026-06-12 18:06:47 +0900] [4653] [INFO] Listening at: http://0.0.0.0:9900 (4653)
+[2026-06-12 18:06:47 +0900] [4653] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-06-12 18:06:47 +0900] [4699] [INFO] Booting worker with pid: 4699
+[2026-06-12 18:06:47 +0900] [4701] [INFO] Booting worker with pid: 4701
+[2026-06-12 18:06:48 +0900] [4699] [INFO] Started server process [4699]
+[2026-06-12 18:06:48 +0900] [4699] [INFO] Waiting for application startup.
+[2026-06-12 18:06:48 +0900] [4699] [INFO] Application startup complete.
+[2026-06-12 18:06:48 +0900] [4701] [INFO] Started server process [4701]
+[2026-06-12 18:06:48 +0900] [4701] [INFO] Waiting for application startup.
+[2026-06-12 18:06:48 +0900] [4701] [INFO] Application startup complete.
