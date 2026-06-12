@@ -4846,3 +4846,52 @@ Could not determine dtype for column 7, falling back to string
 [2026-06-11 04:03:57 +0900] [154711] [INFO] Started server process [154711]
 [2026-06-11 04:03:57 +0900] [154711] [INFO] Waiting for application startup.
 [2026-06-11 04:03:57 +0900] [154711] [INFO] Application startup complete.
+[2026-06-11 14:09:00 +0900] [154663] [INFO] Handling signal: term
+[2026-06-11 14:09:00 +0900] [154709] [INFO] Shutting down
+[2026-06-11 14:09:00 +0900] [154709] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-11 14:09:00 +0900] [154711] [INFO] Shutting down
+[2026-06-11 14:09:00 +0900] [154711] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-11 14:09:00 +0900] [154709] [INFO] Waiting for application shutdown.
+[2026-06-11 14:09:00 +0900] [154709] [INFO] Application shutdown complete.
+[2026-06-11 14:09:00 +0900] [154709] [INFO] Finished server process [154709]
+[2026-06-11 14:09:00 +0900] [154663] [ERROR] Worker (pid:154709) was sent SIGTERM!
+[2026-06-11 14:09:00 +0900] [154711] [INFO] Waiting for application shutdown.
+[2026-06-11 14:09:00 +0900] [154711] [INFO] Application shutdown complete.
+[2026-06-11 14:09:00 +0900] [154711] [INFO] Finished server process [154711]
+[2026-06-11 14:09:00 +0900] [154663] [ERROR] Worker (pid:154711) was sent SIGTERM!
+[2026-06-11 14:09:00 +0900] [154663] [INFO] Shutting down: Master
+[2026-06-11 14:09:16 +0900] [747] [INFO] Starting gunicorn 23.0.0
+[2026-06-11 14:09:16 +0900] [747] [INFO] Listening at: http://0.0.0.0:9900 (747)
+[2026-06-11 14:09:16 +0900] [747] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-06-11 14:09:16 +0900] [981] [INFO] Booting worker with pid: 981
+[2026-06-11 14:09:16 +0900] [985] [INFO] Booting worker with pid: 985
+[2026-06-11 14:09:21 +0900] [981] [INFO] Started server process [981]
+[2026-06-11 14:09:21 +0900] [985] [INFO] Started server process [985]
+[2026-06-11 14:09:21 +0900] [981] [INFO] Waiting for application startup.
+[2026-06-11 14:09:21 +0900] [985] [INFO] Waiting for application startup.
+[2026-06-11 14:09:21 +0900] [981] [INFO] Application startup complete.
+[2026-06-11 14:09:21 +0900] [985] [INFO] Application startup complete.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+[2026-06-11 20:33:05 +0900] [985] [WARNING] Invalid HTTP request received.
+[2026-06-11 20:33:07 +0900] [985] [WARNING] Invalid HTTP request received.
+[2026-06-11 20:37:17 +0900] [985] [WARNING] Invalid HTTP request received.
+[2026-06-12 16:22:15 +0900] [747] [INFO] Handling signal: term
+[2026-06-12 16:22:15 +0900] [985] [INFO] Shutting down
+[2026-06-12 16:22:15 +0900] [985] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-12 16:22:15 +0900] [981] [INFO] Shutting down
+[2026-06-12 16:22:15 +0900] [981] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-12 16:22:15 +0900] [985] [INFO] Waiting for application shutdown.
+[2026-06-12 16:22:15 +0900] [985] [INFO] Application shutdown complete.
+[2026-06-12 16:22:15 +0900] [985] [INFO] Finished server process [985]
+[2026-06-12 16:22:15 +0900] [981] [INFO] Waiting for application shutdown.
+[2026-06-12 16:22:15 +0900] [747] [ERROR] Worker (pid:985) was sent SIGTERM!
+[2026-06-12 16:22:15 +0900] [981] [INFO] Application shutdown complete.
+[2026-06-12 16:22:15 +0900] [981] [INFO] Finished server process [981]
+[2026-06-12 16:22:15 +0900] [747] [ERROR] Worker (pid:981) was sent SIGTERM!
+[2026-06-12 16:22:15 +0900] [747] [INFO] Shutting down: Master
+[2026-06-12 16:22:16 +0900] [4267] [INFO] Starting gunicorn 23.0.0
+[2026-06-12 16:22:16 +0900] [4267] [INFO] Listening at: http://0.0.0.0:9900 (4267)
+[2026-06-12 16:22:16 +0900] [4267] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-06-12 16:22:16 +0900] [4313] [INFO] Booting worker with pid: 4313
+[2026-06-12 16:22:16 +0900] [4314] [INFO] Booting worker with pid: 4314

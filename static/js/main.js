@@ -6,9 +6,9 @@ const AppConfig = {
         { title: () => UrlManager.getParam('sk') ? `(●ω●){ ${UrlManager.getParam('sk')}番の製品情報 )` : "(●ω●){ 製品情報 )", act: () => ProductController.initView() },
         { title: "(●ω●){ 履歴・お気に入り )", act: () => UserDataController.initFavoriteView() },
         { title: "(●ω●){ 電卓 )",            act: () => {} },
-        { title: "(●ω●){ シフト )",           act: () => {} },
+        { title: "(●ω●){ シフト )",           act: () => ShiftController.initView() },
         { title: "(●ω●){ 年月マーク )",       act: () => {} },
-        { title: "(●ω●){ 停台コード )",       act: () => ToolsController.fetchStopcode(1) },
+        { title: "(●ω●){ 停台コード )",       act: () => ToolsController.fetchStopcode() },
         { title: "(●ω●){ 不良現象項目 )",     act: () => ToolsController.initArticleView() },
         { title: "(●ω●){ 人工 未登録リスト )",  act: () => ToolsController.initNoRegisterView() },
         { title: "(●ω●){ iPhoneｼｮｰﾄｶｯﾄ )",     act: () => {} },
@@ -89,17 +89,25 @@ $.fn.animateScroll = function(distance, duration, easing, callback) {
     easing = typeof easing === 'function' ? easing : (t) => t;
     return this.each(function() {
         const element = this;
+
+        if (duration === 0) {
+            const currentBehavior = element.style.scrollBehavior;
+            element.style.scrollBehavior = 'auto';
+            
+            element.scrollLeft = distance;
+            
+            element.offsetHeight;
+            element.style.scrollBehavior = currentBehavior;
+            
+            if (typeof callback === 'function') callback.call(element);
+            return;
+        }
+
         $(element).css({ 'scroll-snap-type': 'none', 'scroll-behavior': 'auto' });
         
         setTimeout(() => {
             $('#items').css({ 'scroll-snap-type': 'x mandatory', 'scroll-behavior': 'smooth' });
         }, duration + 10);
-
-        if (duration === 0) {
-            $(element).scrollLeft(distance);
-            if (typeof callback === 'function') callback.call(element);
-            return;
-        }
 
         const startTime = performance.now();
         const startLeft = element.scrollLeft;
@@ -152,7 +160,6 @@ const MenuController = {
     scrollTimer: null,
     isLocked: false,
     isJumping: false,
-    _prefetched: null,
 
     init: function() {
         $('#ms').css('pointer-events', 'none');
@@ -253,12 +260,8 @@ const MenuController = {
     },
 
     _prefetchAdjacent: function(index) {
-        this._prefetched ??= new Set();
-        this._prefetched.add(index);
-
         [index - 1, index + 1].forEach(i => {
-            if (i >= 0 && i < AppConfig.menus.length && !this._prefetched.has(i)) {
-                this._prefetched.add(i);
+            if (i >= 0 && i < AppConfig.menus.length) {
                 this.switchingHub(i, true);
             }
         });
@@ -284,7 +287,12 @@ const MenuController = {
             if (!isPrefetch) {
                 document.title = typeof action.title === 'function' ? action.title() : action.title;
             }
-            action.act();
+
+            this._initialized ??= new Set();
+            if (!this._initialized.has(index)) {
+                this._initialized.add(index);
+                action.act();
+            }
         }
     }
 };
@@ -299,7 +307,6 @@ const SearchController = {
     },
 
     initView: async function() {
-        this.$input.focus();
         $('#phrase').html(AppConfig.searchPhrases.map(p => `<span>${p}</span>`).join(''));
         
         let memo = await UserDataController.fetchMemo('HOME');
@@ -646,8 +653,21 @@ const UserDataController = {
     }
 };
 
+const ShiftController = {
+    initView: function() {
+        const $ms = $('#ms');
+        if ($ms.length && !$ms.attr('src')) {
+            $ms.attr('src', $ms.data('src'));
+        }
+    }
+};
+
 const ToolsController = {
     fetchStopcode: function(page = 1) {
+        if (page === 1) {
+            $('#stop_code').html('');
+        }
+
         $.get(AppConfig.api.table('stopcode', page)).done(data => {
             let html = data.stopcode.map(v => {
                 let liabilityHtml = v.liability ? `<span class="annotation inline">責任 [${v.liability}]</span>` : '';
@@ -657,7 +677,11 @@ const ToolsController = {
                 return `<div class="wh_balloon kr l_b"><span class="pick_up">【${v.code}】${v.pattern}</span>${liabilityHtml}${reasonHtml}${detailsHtml}</div>`;
             }).join('');
             
-            $('#stop_code').html(html);
+            $('#stop_code').append(html);
+
+            if (data.page < data.total_pages) {
+                ToolsController.fetchStopcode(data.page + 1);
+            }
         }).fail(err => console.error(err));
     },
 

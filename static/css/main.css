@@ -527,7 +527,7 @@ li[data-slug] {
     position: relative;
     width: 100%;
     overflow: hidden;
-    height: -webkit-fill-available;
+    height: 100%;
 }
 #product_data {
     font-weight: 600;
