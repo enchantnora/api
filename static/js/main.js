@@ -324,17 +324,19 @@ const SearchController = {
 
     initView: async function() {
         $('#phrase').html(AppConfig.searchPhrases.map(p => `<span>${p}</span>`).join(''));
+        this.updateActivePhrases(); // 追加：描画直後に状態を同期
         
         let memo = await UserDataController.fetchMemo('HOME');
         $('#memo_HOME').text(memo);
         UserDataController.bindMemoSave('#memo_HOME', 'HOME');
     },
 
-bindEvents: function() {
+    bindEvents: function() {
         Utils.addTouchClickListener($('#clean'), '', () => {
             MenuController.scrollToIndex(0);
             this.$input.val('');
             this.$suggest.html('');
+            this.updateActivePhrases(); // 追加：クリア時にハイライトを解除
         });
 
         $('#search_form').on('submit', (e) => {
@@ -349,6 +351,7 @@ bindEvents: function() {
             MenuController.scrollToIndex(0);
             clearTimeout(this.debounceTimer);
             this.debounceTimer = setTimeout(() => this.fetchList(this.$input.val()), 150);
+            this.updateActivePhrases(); // 追加：キーボード入力時に同期
         });
 
         Utils.addTouchClickListener($('#phrase'), 'span', (e) => {
@@ -371,6 +374,7 @@ bindEvents: function() {
             
             this.$input.val(arr.join(' ') + ' ').blur();
             this.fetchList(this.$input.val());
+            this.updateActivePhrases(); // 追加：ボタン操作時に同期
         }, true);
 
         Utils.addTouchClickListener($('#suggest, #favorite_list, #history_list, #no_register_list'), 'li', (e) => {
@@ -391,6 +395,26 @@ bindEvents: function() {
             if ($(this).index() !== 0) {
                 $(this).siblings().removeClass("passive");
                 $(this).addClass("passive");
+            }
+        });
+    },
+
+    updateActivePhrases: function() {
+        const arr = this.$input.val().trim().split(/\s+/);
+        const last = arr[arr.length - 1] || '';
+        
+        $('#phrase span').each((i, el) => {
+            const $el = $(el);
+            const text = $el.text();
+            
+            if (text === '←|' || /^\d$/.test(text) || text === '#') {
+                $el.removeClass('active');
+            } else if (text === '型') {
+                if (last.endsWith('型')) $el.addClass('active');
+                else $el.removeClass('active');
+            } else {
+                if (arr.includes(text)) $el.addClass('active');
+                else $el.removeClass('active');
             }
         });
     },

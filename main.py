@@ -647,7 +647,16 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
             if not rows:
                 return {"slug": slug or "0", "q": q, "status": status, "result": "見つかりませんでした。"}
 
+            target_slug = rows[0]["slug"] if "slug" in rows[0].keys() else slug
+            async with db.execute("SELECT memo FROM memo WHERE slug = ?", (target_slug,)) as cursor:
+                memo_row = await cursor.fetchone()
+                memo_text = memo_row["memo"] if memo_row else ""
+
             result = "".join(generate_mobile_html_block(dict(row)) for row in rows)
+            
+            if memo_text:
+                result += f"【メモ】\n{memo_text}\n"
+
             if len(rows) > 1:
                 result = f"{len(rows)}種類Hit\n\n" + result
 
