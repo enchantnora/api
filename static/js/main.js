@@ -324,7 +324,7 @@ const SearchController = {
 
     initView: async function() {
         $('#phrase').html(AppConfig.searchPhrases.map(p => `<span>${p}</span>`).join(''));
-        this.updateActivePhrases(); // 追加：描画直後に状態を同期
+        this.updateActivePhrases();
         
         let memo = await UserDataController.fetchMemo('HOME');
         $('#memo_HOME').text(memo);
@@ -336,7 +336,7 @@ const SearchController = {
             MenuController.scrollToIndex(0);
             this.$input.val('');
             this.$suggest.html('');
-            this.updateActivePhrases(); // 追加：クリア時にハイライトを解除
+            this.updateActivePhrases();
         });
 
         $('#search_form').on('submit', (e) => {
@@ -351,7 +351,7 @@ const SearchController = {
             MenuController.scrollToIndex(0);
             clearTimeout(this.debounceTimer);
             this.debounceTimer = setTimeout(() => this.fetchList(this.$input.val()), 150);
-            this.updateActivePhrases(); // 追加：キーボード入力時に同期
+            this.updateActivePhrases();
         });
 
         Utils.addTouchClickListener($('#phrase'), 'span', (e) => {
@@ -374,7 +374,7 @@ const SearchController = {
             
             this.$input.val(arr.join(' ') + ' ').blur();
             this.fetchList(this.$input.val());
-            this.updateActivePhrases(); // 追加：ボタン操作時に同期
+            this.updateActivePhrases();
         }, true);
 
         Utils.addTouchClickListener($('#suggest, #favorite_list, #history_list, #no_register_list'), 'li', (e) => {

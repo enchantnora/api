@@ -5701,3 +5701,28 @@ Could not determine dtype for column 7, falling back to string
 [2026-06-15 04:16:46 +0900] [9887] [INFO] Started server process [9887]
 [2026-06-15 04:16:46 +0900] [9887] [INFO] Waiting for application startup.
 [2026-06-15 04:16:46 +0900] [9887] [INFO] Application startup complete.
+[2026-06-15 06:18:12 +0900] [9839] [INFO] Handling signal: term
+[2026-06-15 06:18:12 +0900] [9887] [INFO] Shutting down
+[2026-06-15 06:18:12 +0900] [9887] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-15 06:18:12 +0900] [9885] [INFO] Shutting down
+[2026-06-15 06:18:12 +0900] [9885] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-06-15 06:18:12 +0900] [9887] [INFO] Waiting for application shutdown.
+[2026-06-15 06:18:12 +0900] [9887] [INFO] Application shutdown complete.
+[2026-06-15 06:18:12 +0900] [9887] [INFO] Finished server process [9887]
+[2026-06-15 06:18:12 +0900] [9839] [ERROR] Worker (pid:9887) was sent SIGTERM!
+[2026-06-15 06:18:12 +0900] [9885] [INFO] Waiting for application shutdown.
+[2026-06-15 06:18:12 +0900] [9885] [INFO] Application shutdown complete.
+[2026-06-15 06:18:12 +0900] [9885] [INFO] Finished server process [9885]
+[2026-06-15 06:18:12 +0900] [9839] [ERROR] Worker (pid:9885) was sent SIGTERM!
+[2026-06-15 06:18:12 +0900] [9839] [INFO] Shutting down: Master
+[2026-06-15 06:18:13 +0900] [10260] [INFO] Starting gunicorn 23.0.0
+[2026-06-15 06:18:13 +0900] [10260] [INFO] Listening at: http://0.0.0.0:9900 (10260)
+[2026-06-15 06:18:13 +0900] [10260] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-06-15 06:18:13 +0900] [10324] [INFO] Booting worker with pid: 10324
+[2026-06-15 06:18:13 +0900] [10326] [INFO] Booting worker with pid: 10326
+[2026-06-15 06:18:14 +0900] [10324] [INFO] Started server process [10324]
+[2026-06-15 06:18:14 +0900] [10324] [INFO] Waiting for application startup.
+[2026-06-15 06:18:14 +0900] [10324] [INFO] Application startup complete.
+[2026-06-15 06:18:14 +0900] [10326] [INFO] Started server process [10326]
+[2026-06-15 06:18:14 +0900] [10326] [INFO] Waiting for application startup.
+[2026-06-15 06:18:14 +0900] [10326] [INFO] Application startup complete.

@@ -635,10 +635,10 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
         if status == 1:
             if len(slug) > 5:
                 search_slug = slug.replace(".", "_")
-                query = "SELECT * FROM product WHERE code LIKE ? ORDER BY rowid DESC LIMIT 1"
+                query = "SELECT * FROM product WHERE code LIKE ? ORDER BY rowid ASC LIMIT 1"
                 params = (f"%{search_slug}%",)
             else:
-                query = "SELECT * FROM product WHERE slug = ? ORDER BY rowid DESC"
+                query = "SELECT * FROM product WHERE slug = ? ORDER BY rowid ASC"
                 params = (slug,)
 
             async with db.execute(query, params) as cursor:
