@@ -741,6 +741,12 @@ async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
 
 # ------------------------------------
 
+@app.get('/mat', name="mat")
+async def material(request: Request):
+    return templates.TemplateResponse(request, 'code_artifact.html')
+
+# ------------------------------------
+
 @app.get('/test', name="test")
 async def test(request: Request):
     user_uuid = request.cookies.get("user_uuid")

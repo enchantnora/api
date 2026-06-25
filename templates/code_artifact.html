@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資材管理パネル</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b;
+            --ind-50: #eef2ff; --ind-100: #e0e7ff; --ind-200: #c7d2fe; --ind-400: #818cf8; --ind-500: #6366f1; --ind-600: #4f46e5; --ind-700: #4338ca;
+            --blu-50: #eff6ff; --blu-200: #bfdbfe; --blu-300: #93c5fd; --blu-400: #60a5fa; --blu-500: #3b82f6; --blu-600: #2563eb; --blu-700: #1d4ed8; --blu-800: #1e40af;
+            --eme-50: #ecfdf5; --eme-100: #d1fae5; --eme-200: #a7f3d0; --eme-300: #6ee7b7; --eme-400: #34d399; --eme-500: #10b981; --eme-600: #059669; --eme-700: #047857;
+            --ora-50: #fff7ed; --ora-100: #ffedd5; --ora-400: #fb923c; --ora-500: #f97316; --ora-600: #ea580c;
+            --ros-50: #fff1f2; --ros-100: #ffe4e6; --ros-200: #fecdd3; --ros-500: #f43f5e; --ros-600: #e11d48;
+            --amb-50: #fffbeb; --amb-500: #f59e0b; --amb-800: #92400e;
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--slate-50); color: var(--slate-800); font-size: 14px; line-height: 1.5; height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        h1, h2, h3, p, ul, li { margin: 0; padding: 0; list-style: none; }
+        button { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; outline: none; }
+        input, textarea, select { font: inherit; outline: none; }
+        i { width: 1rem; height: 1rem; display: inline-block; }
+        a { color: inherit; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .hide { display: none !important; }
+        .flex { display: flex; } .flex-col { flex-direction: column; }
+        .items-center { align-items: center; } .items-start { align-items: flex-start; }
+        .justify-center { justify-content: center; } .justify-between { justify-content: space-between; }
+        .flex-1 { flex: 1; } .shrink-0 { flex-shrink: 0; }
+        .min-w-0 { min-width: 0; }
+        .w-full { width: 100%; }
+        .gap-1 { gap: 0.25rem; } .gap-1-5 { gap: 0.375rem; } .gap-2 { gap: 0.5rem; } .gap-3 { gap: 0.75rem; } .gap-4 { gap: 1rem; }
+        .mt-1 { margin-top: 0.25rem; } .mt-2 { margin-top: 0.5rem; } .mt-4 { margin-top: 1rem; }
+        .mb-0 { margin-bottom: 0; } .mb-1 { margin-bottom: 0.25rem; } .mb-2 { margin-bottom: 0.5rem; } .mb-3 { margin-bottom: 0.75rem; } .mb-4 { margin-bottom: 1rem; } .mb-5 { margin-bottom: 1.25rem; }
+        .ml-1 { margin-left: 0.25rem; } .ml-2 { margin-left: 0.5rem; }
+        .pr-2 { padding-right: 0.5rem; } .p-5 { padding: 1.25rem; }
+        .font-medium { font-weight: 500; } .font-bold { font-weight: 700; } .font-black { font-weight: 900; } .font-mono { font-family: monospace; font-weight: 700; letter-spacing: 0.025em; }
+        .text-xxs { font-size: 10px; } .text-xs { font-size: 0.75rem; } .text-sm { font-size: 0.875rem; } .text-base { font-size: 1rem; } .text-lg { font-size: 1.125rem; } .text-xl { font-size: 1.25rem; }
+        .text-slate-400 { color: var(--slate-400); } .text-slate-500 { color: var(--slate-500); } .text-slate-700 { color: var(--slate-700); }
+        .text-ind-400 { color: var(--ind-400); } .text-eme-500 { color: var(--eme-500); } .text-ora-500 { color: var(--ora-500); } .text-blu-500 { color: var(--blu-500); }
+        .text-center { text-align: center; } .text-right { text-align: right; }
+        .whitespace-nowrap { white-space: nowrap; } .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .header-wrap { position: relative; flex-shrink: 0; z-index: 40; width: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(226,232,240,0.6); box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow: hidden; }
+        
+        /* 親ラッパーを非スクロールに変更し、子要素内でスクロールを管理 */
+        .main-wrapper { flex: 1; overflow: hidden; width: 100%; display: flex; flex-direction: column; }
+        
+        .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(to right, var(--ind-500), var(--blu-500), var(--eme-500), var(--ora-500)); opacity: 0.9; }
+        .glow { position: absolute; top: -6rem; width: 16rem; height: 16rem; border-radius: 50%; filter: blur(3rem); pointer-events: none; }
+        .glow-ind { left: -6rem; background: rgba(99,102,241,0.1); } .glow-ora { right: -6rem; background: rgba(249,115,22,0.1); }
+        
+        .container { max-width: 72rem; width: 100%; margin: 0 auto; padding: 1rem; position: relative; }
+        .app-header { margin-bottom: 1.25rem; text-align: center; }
+        .app-title { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.1em; background: linear-gradient(to right, var(--ind-600), var(--blu-600), var(--eme-600), var(--ora-600)); -webkit-background-clip: text; color: transparent; display: inline-block; }
+        .title-dots { margin-top: 0.5rem; display: flex; justify-content: center; gap: 0.375rem; align-items: center; }
+        .dot { height: 6px; border-radius: 3px; }
+        .dot-ind { width: 12px; background: var(--ind-500); box-shadow: 0 0 8px rgba(99,102,241,0.5); }
+        .dot-blu { width: 32px; background: var(--blu-500); box-shadow: 0 0 8px rgba(59,130,246,0.5); }
+        .dot-eme { width: 32px; background: var(--eme-500); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+        .dot-ora { width: 12px; background: var(--ora-500); box-shadow: 0 0 8px rgba(249,115,22,0.5); }
+        
+        .tabs { display: flex; flex-direction: column; gap: 4px; background: #fff; border: 1px solid rgba(226,232,240,0.6); border-radius: 0.75rem; padding: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        @media(min-width:640px) { .tabs { flex-direction: row; } }
+        .tab-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; color: var(--slate-500); transition: all 0.2s; position: relative; }
+        .tab-btn:hover { background: #e8f0fe; color: var(--slate-700); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .tab-main.act { background: var(--ind-600); color: #fff; box-shadow: 0 4px 6px -1px rgba(79,70,229,0.2); }
+        .tab-sum.act { background: var(--blu-500); color: #fff; box-shadow: 0 4px 6px -1px rgba(59,130,246,0.2); }
+        .tab-prod.act { background: var(--eme-500); color: #fff; box-shadow: 0 4px 6px -1px rgba(16,185,129,0.2); }
+        .tab-mat.act { background: var(--ora-500); color: #fff; box-shadow: 0 4px 6px -1px rgba(249,115,22,0.2); }
+        .badge-round { position: absolute; top: -0.375rem; right: 2.5rem; background: var(--ros-500); color: #fff; font-size: 10px; font-weight: 900; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transform: scale(1); transition: transform 0.2s; }
+        .badge-round.hide { transform: scale(0); display: flex !important; }
+        
+        /* Flexboxによる各タブのスクロールレイアウト */
+        .main-content { flex: 1; display: flex; flex-direction: column; min-height: 0; padding-bottom: 1rem; animation: fade-in-up 0.5s ease-out; }
+        .p-main { flex: 1; overflow-y: auto; padding-right: 0.25rem; }
+        .p-sum { flex: 1; overflow-y: auto; margin-bottom: 0; padding-right: 0.25rem; }
+        
+        .p-prod, .p-mat { flex: 1; display: flex; flex-direction: column; min-height: 0; margin-bottom: 0; }
+        .p-prod .card-header, .p-mat .card-header, .p-prod .input-wrap, .p-mat .input-wrap { flex-shrink: 0; }
+        .p-prod .table-wrap, .p-mat .table-wrap { flex: 1; overflow-y: auto; }
+
+        .card { background: #fff; border-radius: 1rem; padding: 1.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(226,232,240,0.6); position: relative; margin-bottom: 1rem; }
+        .card-header { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+        @media(min-width:640px) { .card-header { flex-direction: row; justify-content: space-between; align-items: center; } }
+        .card-title { font-size: 1.25rem; font-weight: 900; color: var(--slate-800); display: flex; align-items: center; gap: 0.5rem; }
+        .card-desc { font-size: 0.75rem; color: var(--slate-500); margin-top: 0.25rem; }
+        
+        .input-wrap { position: relative; width: 100%; margin-bottom: 1rem; }
+        .input-icon { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--slate-400); width: 1rem; height: 1rem; transition: color 0.2s; }
+        .input-wrap textarea ~ .input-icon { top: 0.75rem; transform: none; }
+        .input-wrap:focus-within .input-icon { color: var(--ind-500); }
+        .p-prod .input-wrap:focus-within .input-icon { color: var(--eme-500); }
+        .p-mat .input-wrap:focus-within .input-icon { color: var(--ora-500); }
+        .input { width: 100%; padding: 0.625rem 0.75rem; padding-left: 2.25rem; border: 1px solid var(--slate-200); border-radius: 0.75rem; background: var(--slate-50); color: var(--slate-800); font-size: 0.875rem; transition: all 0.2s; }
+        .input.no-icon { padding-left: 0.75rem; }
+        .input:focus { background: #fff; border-color: var(--ind-400); box-shadow: 0 0 0 2px rgba(99,102,241,0.2); }
+        .p-prod .input:focus, .m-prod .input:focus { border-color: var(--eme-400); box-shadow: 0 0 0 2px rgba(16,185,129,0.2); }
+        .p-mat .input:focus, .m-mat .input:focus { border-color: var(--ora-400); box-shadow: 0 0 0 2px rgba(249,115,22,0.2); }
+
+        .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 0.875rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; transition: all 0.2s; cursor: pointer; }
+        .btn:disabled { opacity: 0.5; pointer-events: none; }
+        .btn-ind { background: var(--ind-500); color: #fff; } .btn-ind:hover { background: var(--ind-600); box-shadow: 0 4px 6px -1px rgba(99,102,241,0.3); }
+        .btn-eme { background: var(--eme-500); color: #fff; } .btn-eme:hover { background: var(--eme-600); box-shadow: 0 4px 6px -1px rgba(16,185,129,0.3); }
+        .btn-ora { background: var(--ora-500); color: #fff; } .btn-ora:hover { background: var(--ora-600); box-shadow: 0 4px 6px -1px rgba(249,115,22,0.3); }
+        .btn-blu { background: var(--blu-600); color: #fff; } .btn-blu:hover { background: var(--blu-700); box-shadow: 0 4px 6px -1px rgba(37,99,235,0.3); }
+        .btn-out { background: #fff; border: 1px solid var(--slate-200); color: var(--slate-500); } .btn-out:hover { background: var(--slate-50); color: var(--slate-700); }
+        .btn-icon { padding: 0.25rem; color: var(--slate-400); border-radius: 0.375rem; transition: all 0.2s; } 
+        .btn-icon:hover { background: var(--slate-50); color: var(--slate-700); }
+        .btn-icon.eme:hover { background: var(--eme-50); color: var(--eme-600); }
+        .btn-icon.ora:hover { background: var(--ora-50); color: var(--ora-600); }
+        .btn-icon.err:hover { background: var(--ros-50); color: var(--ros-600); }
+
+        .list-box { border: 1px solid var(--slate-100); border-radius: 0.75rem; background: #fff; max-height: 20rem; overflow-y: auto; }
+        .s-item { padding: 0.375rem 0.75rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid transparent; transition: all 0.2s; }
+        .s-item:hover { background: #e8f0fe; }
+        .s-item.act { background: var(--ind-50); border-left-color: var(--ind-600); }
+        .s-title { font-weight: bold; font-size: 0.875rem; color: var(--slate-700); }
+        .s-item.act .s-title { color: #312e81; }
+        .s-sub { display: flex; gap: 0.375rem; align-items: center; margin-top: 0.125rem; }
+        .tag { font-family: monospace; font-size: 0.625rem; padding: 0.125rem 0.375rem; border-radius: 0.25rem; border: 1px solid; box-shadow: 0 1px 2px rgba(0,0,0,0.05); white-space: nowrap; }
+        .tag-w { background: #fff; color: var(--slate-600); border-color: rgba(226,232,240,0.6); }
+        .tag-i { background: var(--ind-50); color: var(--ind-600); border-color: var(--ind-100); }
+        .badge-plan { margin-left: auto; background: var(--ind-100); color: var(--ind-700); border: 1px solid var(--ind-200); font-size: 10px; font-weight: 900; padding: 0.125rem 0.375rem; border-radius: 0.25rem; white-space: nowrap; }
+
+        .det-wrap { background: #fff; border-radius: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(226,232,240,0.6); overflow: hidden; animation: zoom-in 0.3s; }
+        @keyframes zoom-in { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .det-header { background: rgba(238,242,255,0.5); border-bottom: 1px solid rgba(224,231,255,0.5); padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+        @media(min-width:640px) { .det-header { flex-direction: row; justify-content: space-between; align-items: center; } }
+        .dh-label { font-size: 10px; font-weight: bold; letter-spacing: 0.05em; color: var(--ind-500); text-transform: uppercase; margin-bottom: 0.25rem; display: block; }
+        .dh-title { font-size: 1.25rem; font-weight: 900; color: var(--slate-800); display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        
+        .cnt-ctrl { background: #fff; padding: 0.5rem; border-radius: 0.75rem; border: 1px solid var(--ind-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 0.5rem; width: 100%; }
+        @media(min-width:640px) { .cnt-ctrl { width: auto; } }
+        .cnt-label { font-size: 0.75rem; font-weight: bold; color: var(--slate-500); text-transform: uppercase; padding: 0 0.5rem; }
+        .cnt-group { display: flex; align-items: center; }
+        .cnt-btn { width: 2.25rem; height: 2.5rem; background: var(--slate-50); border: 1px solid var(--slate-200); color: var(--slate-600); display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
+        .cnt-btn:hover { background: var(--slate-100); }
+        .cnt-btn.l { border-radius: 0.5rem 0 0 0.5rem; } .cnt-btn.r { border-radius: 0 0.5rem 0.5rem 0; }
+        .cnt-input { width: 5rem; height: 2.5rem; border: none; border-top: 1px solid var(--slate-200); border-bottom: 1px solid var(--slate-200); text-align: center; font-weight: 900; font-size: 1.125rem; color: var(--ind-700); -moz-appearance: textfield; z-index: 0; }
+        .cnt-input:focus { z-index: 20; position: relative; box-shadow: 0 0 0 2px rgba(99,102,241,0.5); border-radius: 2px; }
+        .cnt-input::-webkit-outer-spin-button, .cnt-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .memo-box { background: rgba(254,243,199,0.5); border: 1px solid rgba(253,230,138,0.5); padding: 0.75rem 1rem; border-radius: 0.75rem; font-size: 0.875rem; color: var(--amb-800); position: relative; overflow: hidden; margin-bottom: 1rem; }
+        .memo-title { font-size: 0.75rem; font-weight: bold; color: var(--amb-800); margin-bottom: 0.25rem; }
+        .memo-line { position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #fbbf24; }
+        .warn-box { background: var(--ros-50); border: 1px solid var(--ros-200); padding: 0.75rem 1rem; border-radius: 0.75rem; display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
+        .warn-icon { background: var(--ros-100); padding: 0.375rem; border-radius: 50%; color: var(--ros-600); }
+
+        .table-wrap { overflow-x: auto; border-radius: 0.75rem; border: 1px solid rgba(226,232,240,0.6); }
+        
+        /* 見出し固定とボーダー分離設定 */
+        table { width: 100%; min-width: 760px; text-align: left; border-collapse: separate; border-spacing: 0; white-space: nowrap; }
+        th { background: #f8fafc; padding: 0.375rem 0.75rem; font-size: 11px; font-weight: bold; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--slate-200); }
+        
+        /* 製品・資材リスト専用の見出し固定スタイル */
+        .p-prod th, .p-mat th { position: sticky; top: 0; z-index: 10; background: rgba(248,250,252,0.95); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-bottom: none; box-shadow: inset 0 -1px 0 var(--slate-200); }
+        
+        td { padding: 0.25rem 0.75rem; font-size: 0.875rem; border-bottom: 1px solid rgba(241,245,249,0.5); }
+        
+        .tr-hov { transition: background 0.2s; }
+        .tr-hov:hover { background: #e8f0fe !important; }
+        .cat { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: bold; border: 1px solid; }
+        .cat-袋 { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+        .cat-段ボール { background: #ffedd5; color: #c2410c; border-color: #fdba74; }
+        .cat-仕切り { background: #ecfccb; color: #4d7c0f; border-color: #d9f99d; }
+        .cat-緩衝材 { background: #ccfbf1; color: #0f766e; border-color: #99f6e4; }
+        .cat-通函 { background: #fae8ff; color: #a21caf; border-color: #f5d0fe; }
+        .cat-部品 { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+        .cat-ラベル { background: #fce7f3; color: #be185d; border-color: #fbcfe8; }
+        .cat-テープ { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+        .cat-付属品 { background: #ede9fe; color: #6d28d9; border-color: #ddd6fe; }
+        .cat-その他 { background: #f9fafb; color: #4b5563; border-color: #e5e7eb; }
+        .tr-err { background: rgba(255,228,230,0.5); border-bottom-color: rgba(254,205,211,0.5); }
+        .tr-err:hover { background: rgba(255,228,230,0.8); }
+        .badge-err { display: inline-flex; align-items: center; justify-content: center; padding: 0.125rem 0.375rem; font-size: 11px; font-weight: bold; background: var(--ros-500); color: #fff; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .text-ok { color: var(--eme-600); font-weight: bold; }
+
+        .tag-c { background: var(--slate-50); color: var(--slate-500); border-color: rgba(226,232,240,0.6); }
+        .tag-c-act { background: #fff; color: var(--blu-600); border-color: var(--blu-200); }
+        .tag-m { background: var(--ind-50); color: var(--ind-500); border-color: rgba(224,231,255,0.6); }
+        .tag-m-act { background: rgba(219,234,254,0.5); color: var(--blu-700); border-color: var(--blu-200); }
+
+        .grid-sum { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media(min-width:1024px) { .grid-sum { grid-template-columns: 1fr 2fr; } }
+        .sum-plist { max-height: 25rem; overflow-y: auto; padding-right: 0.25rem; }
+        .sum-pitem { background: #fff; padding: 0.5rem 0.75rem; border-radius: 0.5rem; border: 2px solid rgba(226,232,240,0.6); box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; margin-bottom: 0.375rem; }
+        .sum-pitem:hover { background: #e8f0fe; border-color: var(--blu-300); }
+        .sum-pitem.act { background: rgba(239,246,255,0.5); border-color: var(--blu-400); }
+
+        .sum-qty-input { width: 4.5rem; text-align: right; font-weight: 900; font-size: 0.875rem; color: inherit; background: transparent; border: 1px solid transparent; border-radius: 0.25rem; padding: 0.125rem 0.25rem; transition: all 0.2s; outline: none; -moz-appearance: textfield; cursor: text; }
+        .sum-qty-input:hover { border-color: rgba(148, 163, 184, 0.4); background: rgba(255,255,255,0.5); }
+        .sum-qty-input:focus { border-color: var(--blu-400); background: #fff; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2); }
+        .sum-qty-input::-webkit-outer-spin-button, .sum-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 100; animation: fade-in 0.2s; }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        
+        .modal-box { background: #fff; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); width: 100%; max-width: 48rem; height: 85vh; min-height: 600px; max-height: 900px; display: flex; flex-direction: column; overflow: hidden; }
+        .modal-box.sm { max-width: 32rem; height: auto; min-height: 500px; }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border-bottom: 1px solid var(--slate-100); background: rgba(248,250,252,0.5); }
+        .mh-title { display: flex; align-items: center; gap: 0.625rem; font-size: 1.125rem; font-weight: 900; color: var(--slate-800); }
+        .mh-icon { padding: 0.375rem; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; }
+        .mh-icon i { width: 1rem; height: 1rem; }
+        .mh-icon.eme { background: var(--eme-100); color: var(--eme-600); }
+        .mh-icon.ora { background: var(--ora-100); color: var(--ora-600); }
+        .mh-icon.blu { background: var(--blu-100); color: var(--blu-600); }
+        .mh-icon.ind { background: var(--ind-100); color: var(--ind-600); }
+        
+        .modal-close-btn { width: 2rem; height: 2rem; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--slate-400); transition: all 0.2s; cursor: pointer; border: none; outline: none; }
+        .modal-close-btn:hover { background: var(--slate-100); color: var(--slate-600); }
+        
+        .modal-body { padding: 1.25rem; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--slate-100); background: var(--slate-50); display: flex; justify-content: flex-end; gap: 0.5rem; flex-shrink: 0; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        @media(min-width:640px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+        
+        .modal-err { color: var(--ros-600); font-size: 0.875rem; font-weight: bold; background: var(--ros-50); padding: 0.5rem 0.75rem; border-radius: 0.5rem; border: 1px solid var(--ros-200); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem; }
+        .label { font-size: 0.75rem; font-weight: bold; color: var(--slate-600); display: block; }
+        .req { color: var(--ros-500); }
+        
+        .input-group { display: flex; width: 100%; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border-radius: 0.5rem; }
+        .input-group .input.prefix { width: auto; border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; background: var(--slate-100); padding-left: 0.5rem; padding-right: 0.5rem; color: var(--slate-700); }
+        .input-group .input.value { flex: 1; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+        .input-group:focus-within { box-shadow: 0 0 0 2px rgba(16,185,129,0.2); }
+        .input-group:focus-within .input.prefix { border-color: var(--eme-400); }
+        .input-group:focus-within .input.value { border-color: var(--eme-400); }
+
+        .btn-add-bom { width: 100%; padding: 0.5rem; border: 2px dashed var(--eme-200); background: rgba(209,250,229,0.5); color: var(--eme-600); font-weight: bold; font-size: 0.75rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.375rem; transition: background 0.2s; margin-top: 0.25rem; }
+        .btn-add-bom:hover { background: var(--eme-50); color: var(--eme-700); }
+
+        .modal-footer .btn-out { padding: 0.5rem 1.25rem; border: 1px solid var(--slate-200); background: #fff; color: var(--slate-500); font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; }
+        .modal-footer .btn-out:hover { background: var(--slate-50); color: var(--slate-700); }
+        .modal-footer .btn-eme { padding: 0.5rem 1.5rem; background: var(--eme-500); color: #fff; box-shadow: 0 4px 6px -1px rgba(16,185,129,0.3); font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; }
+        .modal-footer .btn-eme:hover { background: var(--eme-600); }
+        .modal-footer .btn-ora { padding: 0.5rem 1.5rem; background: var(--ora-500); color: #fff; box-shadow: 0 4px 6px -1px rgba(249,115,22,0.3); font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; }
+        .modal-footer .btn-ora:hover { background: var(--ora-600); }
+        .modal-footer .btn-blu { padding: 0.5rem 1.5rem; background: var(--blu-600); color: #fff; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.3); font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; }
+        .modal-footer .btn-blu:hover { background: var(--blu-700); }
+
+        .bom-section { border-top: 1px solid var(--slate-100); padding-top: 0.75rem; padding-bottom: 4rem; }
+        .bom-item { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem; background: #fff; border: 1px solid var(--slate-200); border-radius: 0.75rem; margin-bottom: 0.5rem; transition: border-color 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .bom-item:hover { border-color: var(--eme-200); }
+        @media(min-width:1024px) { .bom-item { flex-direction: row; align-items: center; } }
+        
+        .c-sel { position: relative; flex: 1; min-width: 0; width: 100%; }
+        .c-sel-trig { width: 100%; padding: 0.375rem 0.75rem; border: 1px solid var(--slate-200); border-radius: 0.5rem; background: var(--slate-50); cursor: pointer; display: flex; justify-content: space-between; align-items: center; height: 38px; transition: all 0.2s; }
+        .c-sel-trig:hover { background: #fff; border-color: var(--eme-300); }
+        .c-sel-text { font-size: 0.875rem; font-weight: bold; color: var(--slate-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .c-sel-text.emp { color: var(--slate-400); font-weight: normal; }
+        
+        .c-sel-drop { position: absolute; z-index: 50; top: 100%; left: 0; width: 100%; margin-top: 0.25rem; background: #fff; border: 1px solid var(--slate-100); border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); overflow: hidden; }
+        .c-sel-search-wrap { padding: 0.5rem; border-bottom: 1px solid var(--slate-100); background: rgba(248,250,252,0.5); }
+        .c-sel-list { max-height: 12rem; overflow-y: auto; padding: 0.25rem; margin: 0; list-style: none; }
+        .c-sel-opt { padding: 0.375rem 0.625rem; margin: 0.125rem; border-radius: 0.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .c-sel-opt:hover { background: var(--ind-50); }
+        .c-sel-opt-n { font-size: 0.75rem; font-weight: bold; color: var(--slate-700); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 0.5rem; }
+        .c-sel-opt-c { font-size: 0.75rem; font-family: monospace; font-weight: bold; color: var(--slate-500); background: var(--slate-100); padding: 0.125rem 0.375rem; border-radius: 0.25rem; letter-spacing: 0.05em; }
+        .c-sel-opt:hover .c-sel-opt-n { color: var(--ind-700); }
+        .c-sel-opt:hover .c-sel-opt-c { background: #fff; }
+        
+        .c-sel-icon { width: 1rem; height: 1rem; color: var(--slate-400); transition: transform 0.2s; }
+        .c-sel-icon.open { transform: rotate(180deg); color: var(--eme-500); }
+        
+        .bom-inputs { display: flex; align-items: center; gap: 0.375rem; background: var(--slate-50); padding: 0.25rem; border-radius: 0.5rem; border: 1px solid var(--slate-100); }
+        .bom-input { width: 4rem; height: 34px; padding: 0.25rem 0.5rem; text-align: right; font-weight: bold; border: 1px solid var(--slate-200); border-radius: 0.375rem; font-size: 0.875rem; outline: none; background: #fff; }
+        .bom-input:focus { border-color: var(--eme-400); box-shadow: 0 0 0 2px rgba(16,185,129,0.2); }
+        .bom-text { font-size: 10px; font-weight: bold; color: var(--slate-500); white-space: nowrap; }
+
+        .confirm-box { width: 100%; max-width: 24rem; background: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; border: 1px solid var(--slate-100); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .c-icon { width: 4rem; height: 4rem; background: var(--ros-50); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--ros-500); }
+        .c-icon i { width: 2rem; height: 2rem; }
+        .c-title { font-size: 1.25rem; font-weight: 900; color: var(--slate-800); margin-bottom: 0.5rem; }
+        .c-desc { font-size: 0.875rem; color: var(--slate-600); margin-bottom: 1.5rem; white-space: pre-wrap; }
+        .btn-c-cancel { background: #fff; border: 1px solid var(--slate-200); color: var(--slate-600); padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 0.875rem; }
+        .btn-c-cancel:hover { background: var(--slate-50); color: var(--slate-800); border-color: var(--slate-300); }
+        .btn-c-del { background: var(--ros-500); color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 0.875rem; display: flex; align-items: center; gap: 0.25rem; }
+        .btn-c-del:hover { background: var(--ros-600); box-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.3); }
+
+        .loader-box { background: #fff; border-radius: 1rem; padding: 1.5rem 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .loader-spinner { color: var(--ind-500); animation: spin 1s linear infinite; width: 2rem; height: 2rem; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .mat-table { table-layout: fixed; width: 100%; min-width: 760px; }
+        .mat-table th, .mat-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .mat-table th:last-child, .mat-table td:last-child { overflow: visible; text-overflow: clip; }
+        .col-mat-code { width: 15%; }
+        .col-mat-name { width: 30%; }
+        .col-mat-stock { width: 12%; }
+        .col-mat-prod { width: 33%; }
+        .col-mat-action { width: 100px; }
+    </style>
+</head>
+<body>
+    <div class="header-wrap">
+        <div class="top-bar"></div>
+        <div class="glow glow-ind"></div>
+        <div class="glow glow-ora"></div>
+        <div class="container" style="padding-top:1rem; padding-bottom:0.75rem;">
+            <header class="app-header">
+                <h1 class="app-title">資材管理パネル</h1>
+                <div class="title-dots">
+                    <span class="dot dot-ind"></span><span class="dot dot-blu"></span><span class="dot dot-eme"></span><span class="dot dot-ora"></span>
+                </div>
+            </header>
+            <div class="tabs">
+                <button id="t-main" class="tab-btn tab-main act" onclick="setTab('main')"><i data-lucide="clipboard-list"></i>生産計画</button>
+                <button id="t-sum" class="tab-btn tab-sum" onclick="setTab('sum')"><i data-lucide="check-circle"></i>確認<span id="sum-bdg" class="badge-round hide">0</span></button>
+                <button id="t-prod" class="tab-btn tab-prod" onclick="setTab('prod')"><i data-lucide="package"></i>製品リスト</button>
+                <button id="t-mat" class="tab-btn tab-mat" onclick="setTab('mat')"><i data-lucide="box"></i>資材リスト</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="container main-content">
+            
+            <div id="p-main" class="p-main">
+                <div class="card">
+                    <h2 class="card-title text-base mb-2"><i data-lucide="search" class="text-ind-400"></i>製品を検索</h2>
+                    <div class="input-wrap">
+                        <i data-lucide="search" class="input-icon"></i>
+                        <textarea class="input" rows="5" oninput="d.qm=this.value; drawMList()" placeholder="製品名、商品コード、金型番号を改行区切りで複数入力..."></textarea>
+                    </div>
+                    <div id="m-res" class="list-box"></div>
+                </div>
+                
+                <div id="m-det" class="det-wrap hide">
+                    <div class="det-header">
+                        <div>
+                            <span class="dh-label">Selected Product</span>
+                            <h2 class="dh-title">
+                                <span id="md-name"></span>
+                                <span id="md-code" class="tag tag-w"></span>
+                                <span id="md-mn" class="tag tag-i"></span>
+                            </h2>
+                        </div>
+                        <div class="cnt-ctrl">
+                            <span class="cnt-label">生産計画数</span>
+                            <div class="cnt-group">
+                                <button class="cnt-btn l" onclick="adjCnt(-1)"><i data-lucide="minus"></i></button>
+                                <input type="number" id="md-cnt" class="cnt-input" min="0" oninput="setCnt(this.value)">
+                                <button class="cnt-btn r" onclick="adjCnt(1)"><i data-lucide="plus"></i></button>
+                            </div>
+                            <button class="btn-icon err" onclick="setCnt(0)" title="クリア"><i data-lucide="eraser"></i></button>
+                        </div>
+                    </div>
+                    <div style="padding:1.25rem;">
+                        <div id="md-memo-box" class="memo-box hide">
+                            <div class="memo-line"></div>
+                            <div class="memo-title"><span class="memo-dot"></span>メモ</div>
+                            <div id="md-memo" style="padding-left:1rem; opacity:0.8;"></div>
+                        </div>
+                        <div id="md-warn" class="warn-box hide">
+                            <div class="warn-icon"><i data-lucide="alert-triangle"></i></div>
+                            <div class="warn-text"><h3>資材不足の警告</h3><p>生産数を満たすための資材が不足しています。</p></div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>資材コード</th><th>資材名</th><th>カテゴリ</th><th>使用条件</th><th class="text-right">必要総数</th><th class="text-right">現在庫</th><th class="text-right">不足数</th></tr></thead>
+                                <tbody id="md-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p-sum" class="p-sum hide card">
+                <div style="margin-bottom:1.25rem;">
+                    <h2 class="card-title text-xl"><i data-lucide="check-circle" class="text-blu-500" style="width:1.5rem;height:1.5rem;"></i>生産・資材確認</h2>
+                    <p class="text-xs text-slate-500 mt-1">生産計画数が入力された製品と、必要となる資材の総計を確認できます</p>
+                </div>
+
+                <div class="grid-sum">
+                    <div style="background:var(--slate-50); border:1px solid rgba(226,232,240,0.6); border-radius:0.75rem; padding:1rem; height:100%;">
+                        <h3 class="text-sm font-bold text-slate-700 flex items-center gap-1-5 mb-3"><i data-lucide="list-checks" class="text-slate-400" style="width:1rem;height:1rem;"></i>生産計画の製品</h3>
+                        <div id="sum-plist" class="sum-plist" style="display:flex; flex-direction:column; gap:0.5rem; padding-right:0.25rem;"></div>
+                    </div>
+                    
+                    <div class="det-wrap" style="display:flex; flex-direction:column; margin-bottom:0;">
+                        <div class="det-header" style="background:rgba(248,250,252,0.8); border-bottom:1px solid var(--slate-200); padding:1rem 1.25rem; min-height:5.25rem;">
+                            <h3 id="sum-mtitle" class="text-base font-bold text-slate-700 flex items-center gap-2">
+                                <i data-lucide="layers" class="text-slate-400" style="width:1.25rem;height:1.25rem;"></i><span class="text-slate-700">必要な資材の合計</span>
+                            </h3>
+                            <button id="sum-rst" class="btn btn-blu hide" style="border-radius:0.75rem; box-shadow:0 4px 6px -1px rgba(59,130,246,0.3); padding:0.625rem 1rem;" onclick="d.sumId=null; drawSum()"><i data-lucide="list-checks" style="width:1rem;height:1rem;"></i>全体の合計を表示</button>
+                        </div>
+                        <div class="table-wrap" style="border:none; border-radius:0;">
+                            <table>
+                                <thead><tr><th>資材コード</th><th>資材名</th><th>カテゴリ</th><th class="text-right">総必要数</th><th class="text-right">現在庫</th><th class="text-right">不足数</th></tr></thead>
+                                <tbody id="sum-mtbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p-prod" class="p-prod hide card">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title"><i data-lucide="package" class="text-eme-500"></i>製品リスト</h2>
+                        <p class="card-desc">生産対象となる製品の構成情報を管理します</p>
+                    </div>
+                    <button class="btn btn-eme shrink-0" onclick="openProd(null)"><i data-lucide="plus"></i>新規製品を登録</button>
+                </div>
+                <div class="input-wrap">
+                    <i data-lucide="search" class="input-icon"></i>
+                    <input type="text" class="input" oninput="d.qp=this.value; drawPList()" placeholder="製品名、商品コード、または金型番号で絞り込み...">
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>商品コード</th><th>金型番号</th><th>製品名</th><th>使用資材数</th><th class="text-right">操作</th></tr></thead>
+                        <tbody id="p-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="p-mat" class="p-mat hide card">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title"><i data-lucide="box" class="text-ora-500"></i>資材リスト</h2>
+                        <p class="card-desc">製品を構成する部品や資材の在庫状況を管理します</p>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <button class="btn btn-out" onclick="openBulk()"><i data-lucide="clipboard-paste"></i>在庫状況</button>
+                        <button class="btn btn-ora" onclick="openMat(null)"><i data-lucide="plus"></i>新規資材を登録</button>
+                    </div>
+                </div>
+                <div class="input-wrap">
+                    <i data-lucide="search" class="input-icon"></i>
+                    <input type="text" class="input" oninput="d.qmat=this.value; drawMatList()" placeholder="資材名、資材コードで絞り込み...">
+                </div>
+                <div class="table-wrap">
+                    <table class="mat-table">
+                        <colgroup>
+                            <col class="col-mat-code">
+                            <col class="col-mat-name">
+                            <col class="col-mat-stock">
+                            <col class="col-mat-prod">
+                            <col class="col-mat-action">
+                        </colgroup>
+                        <thead><tr><th>資材コード</th><th>資材名</th><th class="text-right">現在庫数</th><th>使用されている製品</th><th class="text-right">操作</th></tr></thead>
+                        <tbody id="mat-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="m-prod" class="modal-overlay m-prod hide">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 class="mh-title"><div class="mh-icon eme"><i data-lucide="package"></i></div><span id="mp-title">製品の編集</span></h2>
+                <button class="modal-close-btn" onclick="cls('m-prod')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="p-err" class="modal-err hide"><i data-lucide="alert-circle"></i><span id="p-err-msg"></span></div>
+                <div class="grid-2">
+                    <div class="form-group"><label class="label">商品コード</label><input id="p-code" class="input no-icon font-mono" placeholder="例: 99999-00"></div>
+                    <div class="form-group">
+                        <label class="label">金型番号</label>
+                        <div class="input-group">
+                            <select id="p-mn-prefix" class="input prefix font-mono">
+                                <option value="">-</option>
+                                <option value="ZZ">ZZ</option>
+                                <option value="SK">SK</option>
+                            </select>
+                            <input id="p-mn-value" class="input value no-icon font-mono" placeholder="番号を入力...">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group"><label class="label">製品名 <span class="req">*</span></label><input id="p-name" class="input no-icon" placeholder="製品の名称を入力..."></div>
+                <div class="form-group"><label class="label flex items-center gap-1"><span class="dot" style="background:var(--amb-500);width:6px"></span>メモ <span class="text-slate-400 font-normal text-xxs">(任意)</span></label><textarea id="p-memo" class="input no-icon" rows="2" placeholder="注意事項など..."></textarea></div>
+                
+                <div class="bom-section">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-slate-700">構成資材 (BOM)</span>
+                        <span id="bom-cnt" class="badge-plan" style="margin-left:auto"></span>
+                    </div>
+                    <div id="m-bom"></div>
+                    <button class="btn-add-bom" onclick="d.eP.bom.push({materialId:'',quantity:1,perQuantity:1}); drawBom()"><i data-lucide="plus"></i>新しい資材行を追加</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-out" onclick="cls('m-prod')">キャンセル</button>
+                <button class="btn-eme" onclick="saveProd()">保存する</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="m-mat" class="modal-overlay m-mat hide">
+        <div class="modal-box sm">
+            <div class="modal-header">
+                <h2 class="mh-title"><div class="mh-icon ora"><i data-lucide="box"></i></div><span id="mm-title">資材の編集</span></h2>
+                <button class="modal-close-btn" onclick="cls('m-mat')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="m-err" class="modal-err hide"><i data-lucide="alert-circle"></i><span id="m-err-msg"></span></div>
+                <div class="form-group"><label class="label flex items-center gap-1">資材コード <span class="text-slate-400 font-normal ml-1">(任意)</span></label><input id="m-code" class="input no-icon font-mono font-bold" placeholder="例: 11000-001"></div>
+                <div class="form-group"><label class="label">資材名 <span class="req">*</span></label><input id="m-name" class="input no-icon" placeholder="資材の名称..."></div>
+                <div class="grid-2">
+                    <div class="form-group"><label class="label">カテゴリ</label><select id="m-cat" class="input no-icon font-bold text-slate-700"></select></div>
+                    <div class="form-group">
+                        <label class="label">現在庫数</label>
+                        <div style="position:relative">
+                            <input id="m-stock" type="number" min="0" class="input no-icon text-right font-bold text-base">
+                            <span style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:var(--slate-400); font-size:12px; font-weight:bold; pointer-events:none;">個</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-out" onclick="cls('m-mat')">キャンセル</button>
+                <button class="btn-ora" onclick="saveMat()">保存する</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="m-bulk" class="modal-overlay hide">
+        <div class="modal-box sm">
+            <div class="modal-header">
+                <h2 class="mh-title"><div class="mh-icon blu"><i data-lucide="clipboard-paste"></i></div><span>在庫状況の一括更新</span></h2>
+                <button class="modal-close-btn" onclick="cls('m-bulk')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="b-err" class="modal-err hide"><i data-lucide="alert-circle"></i><span id="b-err-msg"></span></div>
+                <div class="form-group">
+                    <label class="label">在庫データ (TSV形式)</label>
+                    <textarea id="b-text" class="input no-icon" rows="12" placeholder="データを貼り付けてください..." style="font-family: monospace; white-space: pre; overflow-wrap: normal; overflow-x: auto;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-out" onclick="cls('m-bulk')">キャンセル</button>
+                <button class="btn-blu" onclick="applyBulk()">一括更新する</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm" class="modal-overlay hide">
+        <div class="confirm-box">
+            <div class="c-icon"><i data-lucide="alert-triangle"></i></div>
+            <h3 class="c-title">確認</h3>
+            <p id="c-msg" class="c-desc"></p>
+            <div class="flex gap-3 justify-center">
+                <button class="btn-c-cancel" onclick="cls('confirm')">キャンセル</button>
+                <button class="btn-c-del" onclick="if(window.tempConfirmCb) window.tempConfirmCb(); cls('confirm');"><i data-lucide="trash-2" style="width:1rem;height:1rem;"></i> 削除する</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="m-used-prods" class="modal-overlay hide">
+        <div class="modal-box sm" style="min-height: auto;">
+            <div class="modal-header">
+                <h2 class="mh-title"><div class="mh-icon ind"><i data-lucide="package"></i></div><span>使用されている製品</span></h2>
+                <button class="modal-close-btn" onclick="cls('m-used-prods')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 1.25rem;">
+                <ul id="up-list" style="margin: 0; padding: 0; list-style: none; border: 1px solid var(--slate-200); border-radius: 0.5rem; max-height: 400px; overflow-y: auto; background: var(--slate-50);">
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-out" onclick="cls('m-used-prods')">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="load" class="modal-overlay hide">
+        <div class="loader-box">
+            <i data-lucide="loader-2" class="loader-spinner"></i>
+            <p id="load-msg" class="font-bold text-slate-700">処理中...</p>
+        </div>
+    </div>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwZ0QypPqH5qofYqwvkqyBFfjPkzqHrlfhTrwXCHAAEnbbcMAmQBCU_hvssbZCLxFAM/exec';
+        const SHARE_URL = 'https://docs.google.com/spreadsheets/d/1_wX-Rq0Cdy-QBqPBAOQfbFZr6F4dsRMj9MlaB4cqRYI/edit?usp=sharing';
+        
+        const CAT_STYLES = {
+            '付属品': { cls: '付属品', bg: 'rgba(237,233,254,0.5)', bgLight: 'rgba(237,233,254,0.25)', bd: '#ddd6fe', tc: '#6d28d9' },
+            '段ボール': { cls: '段ボール', bg: 'rgba(255,237,213,0.5)', bgLight: 'rgba(255,237,213,0.25)', bd: '#fdba74', tc: '#c2410c' },
+            '仕切り／パット': { cls: '仕切り', bg: 'rgba(236,252,203,0.5)', bgLight: 'rgba(236,252,203,0.25)', bd: '#d9f99d', tc: '#4d7c0f' },
+            '袋／シート': { cls: '袋', bg: 'rgba(224,242,254,0.5)', bgLight: 'rgba(224,242,254,0.25)', bd: '#bae6fd', tc: '#0369a1' },
+            '緩衝材': { cls: '緩衝材', bg: 'rgba(204,251,241,0.5)', bgLight: 'rgba(204,251,241,0.25)', bd: '#99f6e4', tc: '#0f766e' },
+            '通函': { cls: '通函', bg: 'rgba(250,232,255,0.5)', bgLight: 'rgba(250,232,255,0.25)', bd: '#f5d0fe', tc: '#a21caf' },
+            'ラベル': { cls: 'ラベル', bg: 'rgba(252,231,243,0.5)', bgLight: 'rgba(252,231,243,0.25)', bd: '#fbcfe8', tc: '#be185d' },
+            '部品': { cls: '部品', bg: 'rgba(241,245,249,0.5)', bgLight: 'rgba(241,245,249,0.25)', bd: '#cbd5e1', tc: '#334155' },
+            'テープ': { cls: 'テープ', bg: 'rgba(254,243,199,0.5)', bgLight: 'rgba(254,243,199,0.25)', bd: '#fde68a', tc: '#b45309' },
+            'その他': { cls: 'その他', bg: 'rgba(249,250,251,0.5)', bgLight: 'rgba(249,250,251,0.25)', bd: '#e5e7eb', tc: '#4b5563' }
+        };
+        const CATS = Object.keys(CAT_STYLES);
+        const catStyle = c => CAT_STYLES[c] || CAT_STYLES['その他'];
+        const catCls = c => `cat-${catStyle(c).cls}`;
+
+        const sortMats = (a, b) => {
+            let catA = CATS.indexOf(a.category || 'その他');
+            let catB = CATS.indexOf(b.category || 'その他');
+            if (catA === -1) catA = CATS.length;
+            if (catB === -1) catB = CATS.length;
+            if (catA !== catB) return catA - catB;
+            return String(a.code || '').localeCompare(String(b.code || ''));
+        };
+
+        let d = { tab: 'main', qm: '', qp: '', qmat: '', lastQmat: '', sId: null, sumId: null, plan: {}, mats: [], prods: [], eP: null, eM: null, matCatOpen: {} };
+        
+        const $ = id => document.getElementById(id);
+        const v = id => $(id).value;
+        const sv = (id, val) => { if($(id)) $(id).value = val; };
+        const h = (id, html) => { if($(id)) $(id).innerHTML = html; };
+        const cls = id => $(id).classList.add('hide');
+        const eq = (a, b) => a != null && b != null && String(a) === String(b);
+        const norm = t => String(t || '').normalize('NFKC').toLowerCase();
+
+        const showLoad = (s, msg="処理中...") => { $('load-msg').innerText = msg; $('load').classList.toggle('hide', !s); lucide.createIcons({root:$('load')}); };
+        const showConfirm = (msg, cb) => { $('c-msg').innerText = msg; window.tempConfirmCb = cb; $('confirm').classList.remove('hide'); lucide.createIcons({root:$('confirm')}); };
+
+        const init = async () => {
+            lucide.createIcons();
+            h('m-cat', CATS.map(c=>`<option value="${c}">${c}</option>`).join(''));
+            if(GAS_URL && !GAS_URL.includes('YOUR_GAS')) {
+                showLoad(true, "データを読み込んでいます...");
+                try {
+                    const r = await fetch(GAS_URL);
+                    const j = await r.json();
+                    if(j.status === 'success') { 
+                        let mIds = new Set();
+                        d.mats = (j.materials || []).map((m, i) => {
+                            let id = String(m.id || '');
+                            if (!id || mIds.has(id)) id = 'm_auto_' + i + '_' + Date.now();
+                            mIds.add(id);
+                            return { ...m, id };
+                        });
+                        
+                        let pIds = new Set();
+                        d.prods = (j.products || []).map((p, i) => {
+                            let id = String(p.id || '');
+                            if (!id || pIds.has(id)) id = 'p_auto_' + i + '_' + Date.now();
+                            pIds.add(id);
+                            return { ...p, id, bom: p.bom || [] };
+                        });
+                    }
+                } catch(e) {}
+                showLoad(false);
+            }
+            setTab('main');
+        };
+
+        const sync = async () => {
+            if(!GAS_URL || GAS_URL.includes('YOUR_GAS')) return;
+            showLoad(true, "データを保存しています...");
+            try { await fetch(GAS_URL, {method:'POST', body:JSON.stringify({materials:d.mats, products:d.prods})}); } catch(e) {}
+            showLoad(false);
+        };
+
+        const setTab = t => {
+            d.tab = t;
+            ['main','sum','prod','mat'].forEach(x => {
+                $(`t-${x}`).classList.toggle('act', x === t);
+                $(`p-${x}`).classList.toggle('hide', x !== t);
+            });
+            if(t==='main') { drawMList(); drawMDet(); }
+            if(t==='sum') drawSum();
+            if(t==='prod') drawPList();
+            if(t==='mat') drawMatList();
+        };
+
+        const updatePlan = (id, val) => {
+            let c = parseInt(val) || 0;
+            if (c > 0) d.plan[id] = c; 
+            else delete d.plan[id];
+            
+            if (!d.plan[d.sumId]) d.sumId = null;
+
+            if (d.tab === 'main') { drawMList(); drawMDet(); }
+            if (d.tab === 'sum') drawSum();
+            drawBdg();
+        };
+
+        const drawMList = () => {
+            const q = d.qm.split('\n').map(x => norm(x.trim())).filter(Boolean);
+            let out = '<div class="text-center text-sm text-slate-400 p-5">検索してください</div>';
+            if(q.length) {
+                const res = d.prods.filter(p => q.some(k => norm(p.name).includes(k) || norm(p.code).includes(k) || norm(p.managementNumber).includes(k)));
+                out = res.length ? res.map(p => `
+                    <div class="s-item ${eq(d.sId, p.id)?'act':''}" onclick="selProd('${p.id}')">
+                        <div class="flex-1 min-w-0 pr-2">
+                            <div class="s-title truncate">${p.name}</div>
+                            <div class="s-sub">
+                                ${p.code ? `<span class="tag tag-w">${p.code}</span>`:''}${p.managementNumber ? `<span class="tag tag-i">${p.managementNumber}</span>`:''}
+                            </div>
+                        </div>
+                        <div class="flex items-center shrink-0">
+                            ${d.plan[p.id] ? `<span class="badge-plan">${d.plan[p.id]}個 計画</span>` : ''}
+                            <i data-lucide="chevron-right" class="text-slate-300 ml-2"></i>
+                        </div>
+                    </div>`).join('') : '<div class="text-center text-sm text-slate-400 p-5">該当する製品がありません</div>';
+            }
+            h('m-res', out);
+            lucide.createIcons({ root: $('m-res') });
+        };
+
+        const selProd = id => { 
+            d.sId = id; 
+            drawMList(); 
+            drawMDet(); 
+            setTimeout(() => {
+                const el = $('md-cnt');
+                if (el) {
+                    el.focus();
+                    el.select();
+                }
+            }, 10);
+        };
+
+        const adjCnt = dlt => {
+            if(!d.sId) return;
+            updatePlan(d.sId, Math.max(0, (d.plan[d.sId]||0) + dlt));
+        };
+        const setCnt = val => {
+            if(!d.sId) return;
+            updatePlan(d.sId, val);
+        };
+
+        const drawMDet = () => {
+            const p = d.prods.find(x => eq(x.id, d.sId));
+            if(!p) return $('m-det').classList.add('hide');
+            $('m-det').classList.remove('hide');
+            h('md-name', p.name); h('md-code', p.code||''); h('md-mn', p.managementNumber||'');
+            $('md-code').classList.toggle('hide', !p.code); $('md-mn').classList.toggle('hide', !p.managementNumber);
+            h('md-memo', p.memo||''); $('md-memo-box').classList.toggle('hide', !p.memo);
+            sv('md-cnt', d.plan[p.id]||'');
+            
+            let hasShortage = false;
+            
+            const bomData = p.bom.map(b => {
+                const m = d.mats.find(x => eq(x.id, b.materialId)) || {code:'?',name:'不明',category:'?',stock:0};
+                return { b, m };
+            });
+            bomData.sort((a, b) => sortMats(a.m, b.m));
+
+            const rqs = bomData.map(item => {
+                const b = item.b;
+                const m = item.m;
+                const perQ = b.perQuantity ?? 1;
+                const q = b.quantity ?? 0;
+                
+                let rq = 0;
+                if (m.category === 'テープ') {
+                    rq = (d.plan[p.id] > 0) ? 1 : 0;
+                } else {
+                    rq = (perQ === 0 || q === 0) ? 0 : Math.ceil((d.plan[p.id]||0) / perQ) * q;
+                }
+                
+                const st = Number(m.stock) || 0;
+                const sh = Math.max(0, rq - st);
+                if (sh > 0) hasShortage = true;
+                return `<tr class="tr-hov ${sh>0?'tr-err':''}">
+                    <td class="font-mono text-slate-600">${m.code||'-'}</td><td class="font-bold text-slate-800">${m.name}</td>
+                    <td><span class="cat ${catCls(m.category)}">${m.category}</span></td>
+                    <td class="text-xs text-slate-500"><span class="tag tag-w">${q}個 / ${perQ}製品</span></td>
+                    <td class="text-right font-bold text-slate-800">${rq.toLocaleString()}</td><td class="text-right text-slate-600">${st.toLocaleString()}</td>
+                    <td class="text-right">${sh>0 ? `<span class="badge-err">${sh.toLocaleString()} 不足</span>` : '<span class="text-ok">0</span>'}</td>
+                </tr>`;
+            });
+            h('md-tbody', rqs.length ? rqs.join('') : '<tr><td colspan="7" class="text-center text-sm text-slate-400 p-5">構成資材が登録されていません</td></tr>');
+            $('md-warn').classList.toggle('hide', !hasShortage);
+        };
+
+        const drawBdg = () => {
+            const n = Object.keys(d.plan).length;
+            $('sum-bdg').innerText = n;
+            $('sum-bdg').classList.toggle('hide', n === 0);
+        };
+
+        const drawSum = () => {
+            const pids = Object.keys(d.plan);
+            if(!pids.length) {
+                h('sum-plist', '<div class="text-center text-sm text-slate-400" style="padding:1rem; background:#fff; border-radius:0.5rem; border:1px solid var(--slate-100); box-shadow:0 1px 2px rgba(0,0,0,0.05);">生産計画が入力された製品はありません</div>');
+                h('sum-mtbody', '<tr><td colspan="6" class="text-center text-sm text-slate-400 p-5">集計データがありません</td></tr>');
+                $('sum-rst').classList.add('hide'); 
+                h('sum-mtitle', `<i data-lucide="layers" class="text-slate-400" style="width:1.25rem;height:1.25rem;"></i><span class="text-slate-700">必要な資材の合計</span>`);
+                lucide.createIcons({ root: $('p-sum') });
+                return;
+            }
+
+            if (d.sumId && !d.plan[d.sumId]) {
+                d.sumId = null;
+            }
+
+            h('sum-plist', pids.map(id => {
+                const p = d.prods.find(x=>eq(x.id, id));
+                if(!p) return '';
+                const isAct = eq(d.sumId, id);
+                return `
+                <div class="sum-pitem ${isAct?'act':''}" onclick="selSum('${id}')">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-bold text-sm ${isAct?'text-blu-800':'text-slate-800'}">${p.name}</span>
+                        <div class="flex items-center" onclick="event.stopPropagation()">
+                            <input type="number" class="sum-qty-input ${isAct?'text-blu-700':'text-blu-600'}" value="${d.plan[id]}" min="0" onchange="updatePlan('${id}', this.value)" title="数量を変更">
+                            <span class="text-xxs ${isAct?'text-blu-500':'text-blu-400'} font-bold ml-1">個</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1-5">
+                        ${p.code ? `<span class="tag ${isAct?'tag-c-act':'tag-c'}">${p.code}</span>`:''}
+                        ${p.managementNumber ? `<span class="tag ${isAct?'tag-m-act':'tag-m'}">${p.managementNumber}</span>`:''}
+                    </div>
+                </div>`;
+            }).join(''));
+
+            const sp = d.sumId ? d.prods.find(x=>eq(x.id, d.sumId)) : null;
+            const titleHtml = sp
+                ? `<i data-lucide="package" class="text-blu-500" style="width:1.25rem;height:1.25rem;"></i><span class="text-blu-700 text-lg">${sp.name}</span> <span class="text-slate-500 text-sm font-medium ml-1">の必要資材</span>`
+                : `<i data-lucide="layers" class="text-slate-400" style="width:1.25rem;height:1.25rem;"></i><span class="text-slate-700">必要な資材の合計</span>`;
+            h('sum-mtitle', titleHtml);
+
+            const r = {};
+            (d.sumId ? [d.sumId] : pids).forEach(id => {
+                const p = d.prods.find(x=>eq(x.id, id));
+                if(!p) return;
+                p.bom.forEach(b => {
+                    const m = d.mats.find(x => eq(x.id, b.materialId));
+                    const perQ = b.perQuantity ?? 1;
+                    const q = b.quantity ?? 0;
+                    
+                    let rq = 0;
+                    if (m && m.category === 'テープ') {
+                        rq = d.plan[id] > 0 ? 1 : 0;
+                    } else {
+                        rq = (perQ === 0 || q === 0) ? 0 : Math.ceil(d.plan[id] / perQ) * q;
+                    }
+
+                    r[b.materialId] = (r[b.materialId]||0) + rq;
+                });
+            });
+
+            const matMap = new Map(d.mats.map(m => [String(m.id), m]));
+            const rKeys = Object.keys(r).sort((a,b) => { 
+                const matA = matMap.get(String(a)) || {category: 'その他'}; 
+                const matB = matMap.get(String(b)) || {category: 'その他'}; 
+                return sortMats(matA, matB); 
+            });
+
+            h('sum-mtbody', rKeys.map(mid => {
+                const m = matMap.get(String(mid)) || { code: '?', name: '不明な資材(削除済)', category: 'その他', stock: 0 };
+                const rq = r[mid];
+                const st = Number(m.stock) || 0;
+                const sh = Math.max(0, rq - st);
+                return `<tr class="tr-hov ${sh>0?'tr-err':''}">
+                    <td class="font-mono text-slate-600">${m.code||'-'}</td><td class="font-bold text-slate-800">${m.name}</td>
+                    <td><span class="cat ${catCls(m.category)}">${m.category}</span></td>
+                    <td class="text-right font-bold text-blu-600 text-base">${rq.toLocaleString()}</td><td class="text-right text-slate-600">${st.toLocaleString()}</td>
+                    <td class="text-right">${sh>0 ? `<span class="badge-err">${sh.toLocaleString()} 不足</span>` : '<span class="text-ok">0</span>'}</td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="6" class="text-center text-sm text-slate-400 p-5">構成資材がありません</td></tr>');
+            
+            $('sum-rst').classList.toggle('hide', !d.sumId);
+            lucide.createIcons({ root: $('p-sum') });
+        };
+        const selSum = id => { d.sumId = eq(d.sumId, id) ? null : id; drawSum(); };
+
+        const drawPList = () => {
+            const q = norm(d.qp);
+            const f = d.prods.filter(p => norm(p.name).includes(q) || norm(p.code).includes(q) || norm(p.managementNumber).includes(q));
+            h('p-tbody', f.length ? f.map(p => {
+                const bomLen = (p.bom||[]).length;
+                const catStyle = bomLen > 0 
+                    ? "background:var(--eme-50);color:var(--eme-700);border-color:var(--eme-100)" 
+                    : "background:var(--slate-50);color:var(--slate-500);border-color:var(--slate-200)";
+                return `<tr class="tr-hov group">
+                <td class="font-mono text-slate-600">${p.code||'-'}</td><td class="font-mono text-ind-600">${p.managementNumber||'-'}</td><td class="font-bold text-slate-800">${p.name}</td>
+                <td><span class="cat" style="${catStyle}">${bomLen} 種類</span></td>
+                <td class="text-right"><button class="btn-icon eme" onclick="openProd('${p.id}')"><i data-lucide="edit-2"></i></button> <button class="btn-icon err" onclick="delP('${p.id}')"><i data-lucide="trash-2"></i></button></td>
+            </tr>`;
+            }).join('') : '<tr><td colspan="5" class="text-center text-sm text-slate-400 p-5">該当する製品がありません</td></tr>');
+            lucide.createIcons({ root: $('p-tbody') });
+        };
+
+        const toggleMatCat = (c) => {
+            d.matCatOpen[c] = !d.matCatOpen[c];
+            drawMatList();
+        };
+
+        const openUsedProdsModal = matId => {
+            const usedProds = d.prods.filter(p => (p.bom || []).some(b => eq(b.materialId, matId)));
+            const listHtml = usedProds.length 
+                ? usedProds.map(p => `
+                    <li style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--slate-200); background: #fff; display: flex; flex-direction: column; gap: 0.375rem;">
+                        <span class="font-bold text-slate-800 text-sm">${p.name}</span>
+                        <div class="flex gap-2 text-xs">
+                            ${p.code ? `<span class="tag tag-w">${p.code}</span>` : ''}
+                            ${p.managementNumber ? `<span class="tag tag-i">${p.managementNumber}</span>` : ''}
+                        </div>
+                    </li>`).join('')
+                : '<li style="padding: 2rem; text-align: center; color: var(--slate-500); font-size: 0.875rem;">使用されている製品はありません</li>';
+            
+            h('up-list', listHtml);
+            $('m-used-prods').classList.remove('hide');
+            lucide.createIcons({ root: $('m-used-prods') });
+        };
+
+        const drawMatList = () => {
+            const q = norm(d.qmat);
+            const isSearch = q.length > 0;
+            
+            const queryChanged = d.lastQmat !== q;
+            if (queryChanged) {
+                d.matCatOpen = {};
+                d.lastQmat = q;
+            }
+
+            const f = d.mats.filter(m => norm(m.name).includes(q) || norm(m.code).includes(q));
+
+            if (q === '008376') {
+                f.push({
+                    id: '__share_file__',
+                    code: '',
+                    name: '共有ファイル',
+                    stock: '',
+                    category: 'その他',
+                    isShareFile: true
+                });
+            }
+            const cMap = f.reduce((a, m) => { (a[m.category||'その他']=a[m.category||'その他']||[]).push(m); return a; }, {});
+            
+            if (queryChanged && isSearch) {
+                for (let c in cMap) {
+                    d.matCatOpen[c] = true;
+                }
+            }
+            
+            let out = '';
+            for(let c of CATS) {
+                if (!cMap[c]) continue;
+                const s = catStyle(c);
+                const isOpen = !!d.matCatOpen[c];
+                const icon = isOpen ? 'chevron-down' : 'chevron-right';
+
+                out += `<tr>
+                    <td colspan="5" style="background:${s.bg}; border-bottom:1px solid ${s.bd}; padding:0.375rem 0.75rem; cursor:pointer; transition:background 0.2s;" onclick="toggleMatCat('${c}')" onmouseover="this.style.background='#e8f0fe'" onmouseout="this.style.background='${s.bg}'">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="${icon}" style="width:1rem;height:1rem;color:${s.tc}"></i>
+                            <span class="cat ${catCls(c)}">${c}</span>
+                            <span class="text-xs font-bold opacity-60" style="color:${s.tc}">${cMap[c].length}件</span>
+                        </div>
+                    </td>
+                </tr>`;
+                
+                if (isOpen) {
+                    cMap[c].sort(sortMats);
+                    out += cMap[c].map(m => {
+                        const usedProdsNames = d.prods.filter(p=>(p.bom||[]).some(b=>eq(b.materialId, m.id))).map(p=>p.name).join(', ') || '-';
+                        return `<tr class="tr-hov" style="background:${s.bgLight}">
+                        <td class="font-mono text-slate-600" title="${m.code||'-'}">${m.code||'-'}</td>
+                        <td class="font-bold text-slate-800 pl-4" title="${m.isShareFile ? '共有ファイル' : m.name}">${m.isShareFile ? `<a href="${SHARE_URL}" target="_blank" rel="noopener noreferrer">共有ファイル</a>` : m.name}</td>
+                        <td class="text-right font-bold">${m.isShareFile ? '' : (m.stock===0 ? `<span class="badge-err" style="background:var(--ros-50);color:var(--ros-500);border:1px solid var(--ros-200);box-shadow:none">0</span>`: Number(m.stock||0).toLocaleString())}</td>
+                        <td class="text-xs text-slate-500 pl-6"><span class="tag tag-w truncate" style="max-width:100%;display:inline-block;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='var(--slate-50)'" onmouseout="this.style.background='#fff'" onclick="openUsedProdsModal('${m.id}')" title="クリックして詳細を表示">${usedProdsNames}</span></td>
+                        <td class="text-right"><button class="btn-icon ora" onclick="openMat('${m.id}')" title="編集"><i data-lucide="edit-2"></i></button> <button class="btn-icon err" onclick="delM('${m.id}')" title="削除"><i data-lucide="trash-2"></i></button></td>
+                    </tr>`;
+                    }).join('');
+                }
+            }
+            h('mat-tbody', out || '<tr><td colspan="5" class="text-center text-sm text-slate-400 p-5">該当する資材がありません</td></tr>');
+            lucide.createIcons({ root: $('mat-tbody') });
+        };
+
+        const openProd = id => {
+            const target = id ? d.prods.find(x => eq(x.id, id)) : null;
+            d.eP = target ? JSON.parse(JSON.stringify(target)) : { id:'', code:'', managementNumber:'', name:'', memo:'', bom:[] };
+            d.eP.bom = d.eP.bom || [];
+            
+            h('mp-title', id ? '製品を編集' : '新規製品登録');
+            $('m-prod').classList.remove('hide');
+            $('p-err').classList.add('hide');
+            sv('p-code', d.eP.code || ''); 
+            
+            let mn = String(d.eP.managementNumber || '');
+            let pfx = '';
+            if(mn.startsWith('ZZ') || mn.startsWith('SK')) { pfx = mn.substring(0,2); mn = mn.substring(2); }
+            sv('p-mn-prefix', pfx); sv('p-mn-value', mn);
+            
+            sv('p-name', d.eP.name || ''); sv('p-memo', d.eP.memo || '');
+            drawBom();
+        };
+
+        const toggleBomDrop = (idx, e) => {
+            e.stopPropagation();
+            const drop = $('bom-drop-' + idx);
+            const isHidden = drop.classList.contains('hide');
+            
+            document.querySelectorAll('.c-sel-drop').forEach(el => el.classList.add('hide'));
+            document.querySelectorAll('.c-sel-icon').forEach(el => el.classList.remove('open'));
+            
+            if (isHidden) {
+                drop.classList.remove('hide');
+                $('bom-icon-' + idx).classList.add('open');
+                const search = $('bom-search-' + idx);
+                search.value = '';
+                filterBomDrop(idx, '');
+                setTimeout(() => search.focus(), 50);
+            }
+        };
+
+        const filterBomDrop = (idx, val) => {
+            const q = norm(val);
+            const list = $('bom-list-' + idx);
+            if (!list) return;
+            
+            const filtered = d.mats.filter(m => norm(m.name).includes(q) || norm(m.code).includes(q));
+            filtered.sort(sortMats);
+            
+            if (filtered.length) {
+                list.innerHTML = filtered.map(m => {
+                    const s = catStyle(m.category||'その他');
+                    return `
+                    <li class="c-sel-opt" onclick="selectBomMat(${idx}, '${m.id}')">
+                        <div class="c-sel-opt-n">
+                            <span>${m.name}</span>
+                            <span style="font-size:10px; font-weight:normal; padding:0.125rem 0.375rem; border-radius:0.25rem; background:${s.bg}; border:1px solid ${s.bd}; color:${s.tc}">${m.category||'その他'}</span>
+                        </div>
+                        ${m.code ? `<div class="c-sel-opt-c">${m.code}</div>` : ''}
+                    </li>
+                `}).join('');
+            } else {
+                list.innerHTML = '<li class="p-5 text-center text-xs text-slate-400">該当する資材がありません</li>';
+            }
+        };
+
+        const selectBomMat = (idx, matId) => {
+            d.eP.bom[idx].materialId = matId;
+            const mat = d.mats.find(m => eq(m.id, matId));
+            if (mat && mat.category === 'テープ') {
+                d.eP.bom[idx].perQuantity = 1;
+            }
+            drawBom();
+        };
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.c-sel-drop').forEach(el => el.classList.add('hide'));
+            document.querySelectorAll('.c-sel-icon').forEach(el => el.classList.remove('open'));
+        });
+
+        const drawBom = () => {
+            $('bom-cnt').innerText = `${d.eP.bom.length}件`;
+            h('m-bom', d.eP.bom.map((b, i) => {
+                const mat = d.mats.find(m => eq(m.id, b.materialId));
+                const matName = mat ? mat.name : '資材を検索・選択...';
+                const matCode = mat && mat.code ? `(${mat.code})` : '';
+                const textCls = mat ? '' : 'emp';
+                const showPerQuantity = mat && mat.category !== 'テープ';
+                const tooltipText = mat ? `${matName} ${matCode}`.trim() : '資材を検索・選択...';
+                
+                return `
+                <div class="bom-item group">
+                    <div class="c-sel" data-idx="${i}">
+                        <div class="c-sel-trig" onclick="toggleBomDrop(${i}, event)" title="${tooltipText}">
+                            <span class="c-sel-text ${textCls}">${matName} <span style="color:var(--slate-400);font-weight:normal">${matCode}</span></span>
+                            <i data-lucide="chevron-down" class="c-sel-icon" id="bom-icon-${i}"></i>
+                        </div>
+                        <div class="c-sel-drop hide" id="bom-drop-${i}" onclick="event.stopPropagation()">
+                            <div class="c-sel-search-wrap">
+                                <div class="input-wrap" style="margin-bottom:0">
+                                    <i data-lucide="search" class="input-icon" style="width:0.875rem;height:0.875rem;left:0.5rem;top:50%;transform:translateY(-50%);"></i>
+                                    <input type="text" class="input" style="padding:0.375rem 0.5rem 0.375rem 1.75rem; font-size:0.75rem;" placeholder="名称やコードで検索..." oninput="filterBomDrop(${i}, this.value)" id="bom-search-${i}">
+                                </div>
+                            </div>
+                            <ul class="c-sel-list" id="bom-list-${i}"></ul>
+                        </div>
+                    </div>
+                    <div class="bom-inputs shrink-0 mt-1 lg:mt-0">
+                        ${showPerQuantity ? `
+                        <span class="bom-text pl-1">製品</span>
+                        <input type="number" class="bom-input" min="0" value="${b.perQuantity ?? 1}" oninput="d.eP.bom[${i}].perQuantity=+this.value">
+                        <span class="bom-text">個 につき</span>
+                        ` : ''}
+                        <input type="number" class="bom-input ${!showPerQuantity ? 'ml-1' : ''}" min="0" value="${b.quantity ?? 1}" oninput="d.eP.bom[${i}].quantity=+this.value">
+                        <span class="bom-text pr-1">使用</span>
+                    </div>
+                    <button class="btn-icon err shrink-0 mt-1 lg:mt-0" onclick="d.eP.bom.splice(${i},1); drawBom()"><i data-lucide="trash-2"></i></button>
+                </div>
+                `;
+            }).join('') || '');
+            lucide.createIcons({ root: $('m-bom') });
+            
+            d.eP.bom.forEach((_, i) => filterBomDrop(i, ''));
+        };
+
+        const saveProd = () => {
+            d.eP.code=v('p-code').trim(); d.eP.managementNumber=(v('p-mn-prefix') + v('p-mn-value').trim()).trim(); d.eP.name=v('p-name').trim(); d.eP.memo=v('p-memo');
+            d.eP.bom = (d.eP.bom || []).filter(b=>b.materialId);
+            if(!d.eP.name) {
+                $('p-err-msg').innerText = "製品名は必須です";
+                $('p-err').classList.remove('hide');
+                return;
+            }
+            $('p-err').classList.add('hide');
+            if(d.eP.id) d.prods[d.prods.findIndex(x=>eq(x.id, d.eP.id))] = d.eP;
+            else { d.eP.id = 'P'+Date.now(); d.prods.push(d.eP); }
+            cls('m-prod'); drawPList(); if(eq(d.sId, d.eP.id)){drawMList(); drawMDet();} sync();
+        };
+
+        const openMat = id => {
+            const target = id ? d.mats.find(x => eq(x.id, id)) : null;
+            d.eM = target ? JSON.parse(JSON.stringify(target)) : {id:'',code:'',name:'',stock:'',category:'部品'};
+            
+            h('mm-title', id ? '資材を編集' : '新規資材登録');
+            $('m-mat').classList.remove('hide');
+            $('m-err').classList.add('hide');
+            sv('m-code', d.eM.code || ''); sv('m-name', d.eM.name || ''); sv('m-cat', d.eM.category || 'その他'); sv('m-stock', Number(d.eM.stock) || '');
+        };
+
+        const saveMat = () => {
+            d.eM.code=v('m-code').trim(); d.eM.name=v('m-name').trim(); d.eM.category=v('m-cat'); d.eM.stock=parseInt(v('m-stock'))||0;
+            if(!d.eM.name) {
+                $('m-err-msg').innerText = "資材名は必須です";
+                $('m-err').classList.remove('hide');
+                return;
+            }
+            $('m-err').classList.add('hide');
+            if(d.eM.id) d.mats[d.mats.findIndex(x=>eq(x.id, d.eM.id))] = d.eM;
+            else { d.eM.id = 'M'+Date.now(); d.mats.push(d.eM); }
+            cls('m-mat'); drawMatList(); drawMDet(); sync();
+        };
+
+        const openBulk = () => {
+            $('m-bulk').classList.remove('hide');
+            $('b-err').classList.add('hide');
+            sv('b-text', '');
+        };
+
+        const applyBulk = () => {
+            const text = v('b-text');
+            if (!text.trim()) {
+                $('b-err-msg').innerText = "データが入力されていません";
+                $('b-err').classList.remove('hide');
+                return;
+            }
+
+            const lines = text.split(/\r?\n/);
+
+            let updateCount = 0;
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const cols = line.split('\t');
+                if (cols.length < 8) continue;
+
+                const code0 = cols[0].trim();
+                const code1 = cols[1].trim();
+                const code = code1 ? `${code0}-${code1}` : code0;
+                const normalizedCode = code.replace(/[\s\u3000]+/g, '');
+                
+                const stockStr = cols[7].replace(/,/g, '').trim();
+                const stock = parseInt(stockStr, 10);
+
+                if (!normalizedCode || isNaN(stock)) continue;
+
+                const mat = d.mats.find(m => {
+                    const mCode = String(m.code || '').replace(/[\s\u3000]+/g, '');
+                    return mCode === normalizedCode;
+                });
+                if (mat) {
+                    mat.stock = stock;
+                    updateCount++;
+                }
+            }
+
+            if (updateCount === 0) {
+                $('b-err-msg').innerText = "更新対象の資材コードが見つかりませんでした";
+                $('b-err').classList.remove('hide');
+                return;
+            }
+
+            cls('m-bulk');
+            drawMatList();
+            drawMDet(); 
+            sync();
+        };
+
+        const delP = id => { showConfirm('この製品を削除してもよろしいですか？\n削除したデータは復元できません。', () => { d.prods=d.prods.filter(x=>!eq(x.id, id)); delete d.plan[id]; drawPList(); if(eq(d.sId, id)){d.sId=null; drawMList(); drawMDet();} drawBdg(); sync(); }); };
+        const delM = id => { showConfirm('この資材を削除してもよろしいですか？\n関連する製品の構成からも削除されます。', () => { d.mats=d.mats.filter(x=>!eq(x.id, id)); d.prods.forEach(p=>p.bom=p.bom.filter(b=>!eq(b.materialId, id))); drawMatList(); drawPList(); drawMDet(); sync(); }); };
+
+        window.onload = init;
+    </script>
+</body>
+</html>
