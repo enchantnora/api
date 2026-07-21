@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>資材管理パネル</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -46,14 +47,14 @@
 
         .header-wrap { position: relative; flex-shrink: 0; z-index: 40; width: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(226,232,240,0.6); box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow: hidden; }
         
-        /* 親ラッパーを非スクロールに変更し、子要素内でスクロールを管理 */
         .main-wrapper { flex: 1; overflow: hidden; width: 100%; display: flex; flex-direction: column; }
         
         .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(to right, var(--ind-500), var(--blu-500), var(--eme-500), var(--ora-500)); opacity: 0.9; }
         .glow { position: absolute; top: -6rem; width: 16rem; height: 16rem; border-radius: 50%; filter: blur(3rem); pointer-events: none; }
         .glow-ind { left: -6rem; background: rgba(99,102,241,0.1); } .glow-ora { right: -6rem; background: rgba(249,115,22,0.1); }
         
-        .container { max-width: 72rem; width: 100%; margin: 0 auto; padding: 1rem; position: relative; }
+        .container { max-width: 80rem; width: 100%; margin: 0 auto; padding: 1rem; position: relative; }
+        .header-inner { padding-top: 1rem; padding-bottom: 0.75rem; }
         .app-header { margin-bottom: 1.25rem; text-align: center; }
         .app-title { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.1em; background: linear-gradient(to right, var(--ind-600), var(--blu-600), var(--eme-600), var(--ora-600)); -webkit-background-clip: text; color: transparent; display: inline-block; }
         .title-dots { margin-top: 0.5rem; display: flex; justify-content: center; gap: 0.375rem; align-items: center; }
@@ -63,8 +64,8 @@
         .dot-eme { width: 32px; background: var(--eme-500); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
         .dot-ora { width: 12px; background: var(--ora-500); box-shadow: 0 0 8px rgba(249,115,22,0.5); }
         
-        .tabs { display: flex; flex-direction: column; gap: 4px; background: #fff; border: 1px solid rgba(226,232,240,0.6); border-radius: 0.75rem; padding: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        @media(min-width:640px) { .tabs { flex-direction: row; } }
+        .tabs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; background: #fff; border: 1px solid rgba(226,232,240,0.6); border-radius: 0.75rem; padding: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        @media(min-width:640px) { .tabs { display: flex; flex-direction: row; } }
         .tab-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; color: var(--slate-500); transition: all 0.2s; position: relative; }
         .tab-btn:hover { background: #e8f0fe; color: var(--slate-700); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .tab-main.act { background: var(--ind-600); color: #fff; box-shadow: 0 4px 6px -1px rgba(79,70,229,0.2); }
@@ -74,10 +75,95 @@
         .badge-round { position: absolute; top: -0.375rem; right: 2.5rem; background: var(--ros-500); color: #fff; font-size: 10px; font-weight: 900; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transform: scale(1); transition: transform 0.2s; }
         .badge-round.hide { transform: scale(0); display: flex !important; }
         
-        /* Flexboxによる各タブのスクロールレイアウト */
         .main-content { flex: 1; display: flex; flex-direction: column; min-height: 0; padding-bottom: 1rem; animation: fade-in-up 0.5s ease-out; }
-        .p-main { flex: 1; overflow-y: auto; padding-right: 0.25rem; }
-        .p-sum { flex: 1; overflow-y: auto; margin-bottom: 0; padding-right: 0.25rem; }
+        
+        .grid-layout { display: flex; flex-direction: column; gap: 1rem; height: 100%; min-height: 0; }
+        .grid-left { display: flex; flex-direction: column; min-height: 0; }
+        .grid-right { display: flex; flex-direction: column; min-height: 0; }
+        @media (min-width: 992px) {
+            .grid-layout { flex-direction: row; }
+            .grid-left { flex: 4 1 0%; min-width: 0; }
+            .grid-right { flex: 6 1 0%; min-width: 0; }
+        }
+        @media (max-width: 991px) {
+            #p-main .grid-left { flex: 0 0 auto; max-height: 38vh; }
+            #p-main .grid-right { flex: 1 1 0%; min-height: 0; }
+            #m-search-input { height: 3rem; }
+            .grid-layout { gap: 0.5rem; }
+        }
+
+        /* ===== スマホ向け: 全面的なレスポンシブ最適化 ===== */
+        @media (max-width: 767px) {
+            /* iOS Safari の自動ズーム防止 (必須) */
+            input, textarea, select, .input, .cnt-input, .sum-qty-input, .bom-input { 
+                font-size: 16px !important; 
+            }
+
+            .container { padding: 0.5rem; }
+            .header-inner { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+            .app-header { margin-bottom: 0.5rem; }
+            .app-title { font-size: 1.25rem; } /* タイトルを適正サイズに */
+            .title-dots { display: none; }
+
+            /* タブを縦並びにして見やすく、タップしやすくする */
+            .tab-btn { flex-direction: column; gap: 0.25rem; padding: 0.375rem 0.25rem; font-size: 0.7rem; line-height: 1.1; }
+            .tab-btn i { width: 1.25rem; height: 1.25rem; }
+            .badge-round { right: 1.25rem; top: -0.25rem; } /* バッジ位置調整 */
+
+            .main-content { padding-bottom: 0.5rem; }
+            .card { padding: 0.625rem; border-radius: 0.75rem; }
+            .card-header { margin-bottom: 0.5rem; gap: 0.5rem; flex-direction: column; align-items: stretch; }
+            .card-desc { margin-top: 0.125rem; }
+
+            .input-wrap { margin-bottom: 0.5rem; }
+            .det-header { padding: 0.625rem; gap: 0.5rem; }
+            .dh-title { font-size: 1.0625rem; }
+            .det-body { padding: 0.5rem 0.375rem; }
+            .memo-box, .warn-box { padding: 0.5rem 0.625rem; margin-bottom: 0.5rem; }
+
+            /* テーブルの最適化 */
+            thead th { height: 28px; padding: 0.375rem 0.5rem; font-size: 10px; }
+            .mat-cat-header { top: 28px; }
+            td { padding: 0.3rem 0.5rem; font-size: 0.8125rem; }
+
+            /* 確認タブの余白・高さ調整（スマホ用） */
+            #p-sum > .shrink-0 { margin-bottom: 0.5rem !important; }
+            #p-sum .card-title { font-size: 1.125rem; }
+            #p-sum .text-xs { margin-top: 0; font-size: 0.7rem; }
+            .grid-sum-left { padding: 0.5rem !important; max-height: 28vh !important; }
+            .grid-sum-right .det-header { padding: 0.5rem 0.625rem !important; min-height: auto !important; }
+            #sum-mtitle { font-size: 1.0625rem !important; }
+
+            .s-item { padding: 0.4rem 0.5rem; }
+            .btn { padding: 0.5rem 0.75rem; width: 100%; justify-content: center; } /* ボタンを押しやすく */
+            .btn-out, .btn-icon { width: auto; } /* 一部ボタンは幅を維持 */
+            
+            .flex.gap-2.shrink-0 { flex-direction: column; width: 100%; }
+            .flex.gap-2.shrink-0 .btn { width: 100%; margin-bottom: 0.25rem; }
+
+            /* モーダルを全画面（フルスクリーン）化して、はみ出しを防ぐ */
+            .modal-overlay { padding: 0; }
+            .modal-box, .modal-box.sm {
+                width: 100%;
+                height: 100vh; /* フォールバック */
+                height: 100dvh;
+                max-height: 100dvh;
+                min-height: 100dvh;
+                border-radius: 0;
+                max-width: 100%;
+            }
+            
+            /* BOM入力欄がスマホ画面に収まるように折り返す */
+            .bom-inputs { flex-wrap: wrap; justify-content: flex-end; width: 100%; margin-top: 0.5rem; }
+            .bom-item { align-items: stretch; }
+            .bom-item .btn-icon { align-self: flex-end; }
+        }
+        
+        .full-h-card { flex: 1; display: flex; flex-direction: column; min-height: 0; margin-bottom: 0 !important; }
+        .scroll-area { flex: 1; overflow-y: auto; min-height: 0; }
+
+        .p-main { flex: 1; min-height: 0; }
+        .p-sum { flex: 1; min-height: 0; margin-bottom: 0; display: flex; flex-direction: column; }
         
         .p-prod, .p-mat { flex: 1; display: flex; flex-direction: column; min-height: 0; margin-bottom: 0; }
         .p-prod .card-header, .p-mat .card-header, .p-prod .input-wrap, .p-mat .input-wrap { flex-shrink: 0; }
@@ -114,51 +200,81 @@
         .btn-icon.ora:hover { background: var(--ora-50); color: var(--ora-600); }
         .btn-icon.err:hover { background: var(--ros-50); color: var(--ros-600); }
 
-        .list-box { border: 1px solid var(--slate-100); border-radius: 0.75rem; background: #fff; max-height: 20rem; overflow-y: auto; }
-        .s-item { padding: 0.375rem 0.75rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid transparent; transition: all 0.2s; }
+        .list-box { background: #fff; }
+        .s-item { padding: 0.5rem 0.75rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid transparent; border-bottom: 1px solid var(--slate-100); transition: all 0.2s; }
         .s-item:hover { background: #e8f0fe; }
         .s-item.act { background: var(--ind-50); border-left-color: var(--ind-600); }
         .s-title { font-weight: bold; font-size: 0.875rem; color: var(--slate-700); }
         .s-item.act .s-title { color: #312e81; }
-        .s-sub { display: flex; gap: 0.375rem; align-items: center; margin-top: 0.125rem; }
+        .s-title.no-bom { color: var(--slate-400); }
+        .s-sub { display: flex; gap: 0.375rem; align-items: center; margin-top: 0.25rem; }
         .tag { font-family: monospace; font-size: 0.625rem; padding: 0.125rem 0.375rem; border-radius: 0.25rem; border: 1px solid; box-shadow: 0 1px 2px rgba(0,0,0,0.05); white-space: nowrap; }
         .tag-w { background: #fff; color: var(--slate-600); border-color: rgba(226,232,240,0.6); }
         .tag-i { background: var(--ind-50); color: var(--ind-600); border-color: var(--ind-100); }
-        .badge-plan { margin-left: auto; background: var(--ind-100); color: var(--ind-700); border: 1px solid var(--ind-200); font-size: 10px; font-weight: 900; padding: 0.125rem 0.375rem; border-radius: 0.25rem; white-space: nowrap; }
+        .badge-plan { margin-left: auto; background: var(--ind-100); color: var(--ind-700); border: 1px solid var(--ind-200); font-size: 11px; font-weight: 900; padding: 0.125rem 0.5rem; border-radius: 0.25rem; white-space: nowrap; }
 
-        .det-wrap { background: #fff; border-radius: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(226,232,240,0.6); overflow: hidden; animation: zoom-in 0.3s; }
+        .det-wrap { background: #fff; border-radius: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(226,232,240,0.6); overflow: hidden; animation: zoom-in 0.3s; display: flex; flex-direction: column; min-height: 0; }
         @keyframes zoom-in { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         .det-header { background: rgba(238,242,255,0.5); border-bottom: 1px solid rgba(224,231,255,0.5); padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
         @media(min-width:640px) { .det-header { flex-direction: row; justify-content: space-between; align-items: center; } }
-        .dh-label { font-size: 10px; font-weight: bold; letter-spacing: 0.05em; color: var(--ind-500); text-transform: uppercase; margin-bottom: 0.25rem; display: block; }
-        .dh-title { font-size: 1.25rem; font-weight: 900; color: var(--slate-800); display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .dh-title { font-size: 1.25rem; font-weight: 900; color: var(--slate-800); word-break: break-all; }
         
         .cnt-ctrl { background: #fff; padding: 0.5rem; border-radius: 0.75rem; border: 1px solid var(--ind-200); box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 0.5rem; width: 100%; }
         @media(min-width:640px) { .cnt-ctrl { width: auto; } }
         .cnt-label { font-size: 0.75rem; font-weight: bold; color: var(--slate-500); text-transform: uppercase; padding: 0 0.5rem; }
         .cnt-group { display: flex; align-items: center; }
         .cnt-btn { width: 2.25rem; height: 2.5rem; background: var(--slate-50); border: 1px solid var(--slate-200); color: var(--slate-600); display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
-        .cnt-btn:hover { background: var(--slate-100); }
+        .cnt-btn:hover { background: var(--slate-100); color: var(--ind-600); }
         .cnt-btn.l { border-radius: 0.5rem 0 0 0.5rem; } .cnt-btn.r { border-radius: 0 0.5rem 0.5rem 0; }
         .cnt-input { width: 5rem; height: 2.5rem; border: none; border-top: 1px solid var(--slate-200); border-bottom: 1px solid var(--slate-200); text-align: center; font-weight: 900; font-size: 1.125rem; color: var(--ind-700); -moz-appearance: textfield; z-index: 0; }
         .cnt-input:focus { z-index: 20; position: relative; box-shadow: 0 0 0 2px rgba(99,102,241,0.5); border-radius: 2px; }
         .cnt-input::-webkit-outer-spin-button, .cnt-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        
         .memo-box { background: rgba(254,243,199,0.5); border: 1px solid rgba(253,230,138,0.5); padding: 0.75rem 1rem; border-radius: 0.75rem; font-size: 0.875rem; color: var(--amb-800); position: relative; overflow: hidden; margin-bottom: 1rem; }
         .memo-title { font-size: 0.75rem; font-weight: bold; color: var(--amb-800); margin-bottom: 0.25rem; }
         .memo-line { position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #fbbf24; }
         .warn-box { background: var(--ros-50); border: 1px solid var(--ros-200); padding: 0.75rem 1rem; border-radius: 0.75rem; display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
         .warn-icon { background: var(--ros-100); padding: 0.375rem; border-radius: 50%; color: var(--ros-600); }
 
-        .table-wrap { overflow-x: auto; border-radius: 0.75rem; border: 1px solid rgba(226,232,240,0.6); }
+        .table-wrap { overflow-x: auto; border-radius: 0.75rem; border: 1px solid rgba(226,232,240,0.6); position: relative; z-index: 1; -webkit-overflow-scrolling: touch; }
+        .det-body { padding: 1.25rem; }
         
-        /* 見出し固定とボーダー分離設定 */
         table { width: 100%; min-width: 760px; text-align: left; border-collapse: separate; border-spacing: 0; white-space: nowrap; }
-        th { background: #f8fafc; padding: 0.375rem 0.75rem; font-size: 11px; font-weight: bold; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--slate-200); }
         
-        /* 製品・資材リスト専用の見出し固定スタイル */
-        .p-prod th, .p-mat th { position: sticky; top: 0; z-index: 10; background: rgba(248,250,252,0.95); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-bottom: none; box-shadow: inset 0 -1px 0 var(--slate-200); }
+        thead { position: sticky; top: 0; z-index: 40; }
+        thead th { background: var(--slate-50); padding: 0.5rem 0.75rem; font-size: 11px; font-weight: bold; color: var(--slate-600); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--slate-200); position: sticky; top: 0; z-index: 40; height: 34px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         
-        td { padding: 0.25rem 0.75rem; font-size: 0.875rem; border-bottom: 1px solid rgba(241,245,249,0.5); }
+        td { padding: 0.375rem 0.75rem; font-size: 0.875rem; border-bottom: 1px solid rgba(241,245,249,0.5); }
+        
+        .mat-cat-header { 
+            position: sticky; 
+            top: 34px; 
+            padding: 0.375rem 0.75rem; 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px); 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02); 
+            background-clip: padding-box; 
+            transition: opacity 0.1s ease;
+        }
+        
+        .grid-sum { display: flex; flex-direction: column; gap: 1rem; height: 100%; min-height: 0; }
+        .grid-sum-left { display: flex; flex-direction: column; min-height: 0; background: var(--slate-50); border: 1px solid rgba(226,232,240,0.6); border-radius: 0.75rem; padding: 1rem; }
+        .grid-sum-right { display: flex; flex-direction: column; min-height: 0; margin-bottom: 0; }
+        
+        @media(min-width:1024px) { 
+            .grid-sum { flex-direction: row; gap: 1.5rem; }
+            .grid-sum-left { flex: 1 1 0%; }
+            .grid-sum-right { flex: 2 1 0%; }
+        }
+        @media (max-width: 1023px) {
+            .grid-sum-left { flex: 0 0 auto; max-height: 35vh; }
+            .grid-sum-right { flex: 1 1 0%; min-height: 0; }
+        }
+        
+        .p-sum table { min-width: 100%; table-layout: auto; }
+        .p-sum td { padding: 0.375rem 0.5rem; font-size: 0.8125rem; white-space: nowrap; border-bottom: 1px solid rgba(241,245,249,0.5); }
+        .p-sum th { padding: 0.375rem 0.5rem; white-space: nowrap; }
+        .p-sum th:nth-child(2), .p-sum td:nth-child(2) { white-space: normal; word-break: break-word; width: 100%; min-width: 120px; }
         
         .tr-hov { transition: background 0.2s; }
         .tr-hov:hover { background: #e8f0fe !important; }
@@ -173,9 +289,10 @@
         .cat-テープ { background: #fef3c7; color: #b45309; border-color: #fde68a; }
         .cat-付属品 { background: #ede9fe; color: #6d28d9; border-color: #ddd6fe; }
         .cat-その他 { background: #f9fafb; color: #4b5563; border-color: #e5e7eb; }
-        .tr-err { background: rgba(255,228,230,0.5); border-bottom-color: rgba(254,205,211,0.5); }
-        .tr-err:hover { background: rgba(255,228,230,0.8); }
-        .badge-err { display: inline-flex; align-items: center; justify-content: center; padding: 0.125rem 0.375rem; font-size: 11px; font-weight: bold; background: var(--ros-500); color: #fff; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        
+        .tr-err { outline: 3px solid var(--ros-500); outline-offset: -3px; z-index: 2; position: relative; }
+        .tr-err td { color: var(--ros-700); }
+        .badge-err { display: inline-flex; align-items: center; justify-content: center; padding: 0.25rem 0.5rem; font-size: 11px; font-weight: bold; background: var(--ros-500); color: #fff; border-radius: 0.375rem; box-shadow: 0 1px 2px rgba(225, 29, 72, 0.2); }
         .text-ok { color: var(--eme-600); font-weight: bold; }
 
         .tag-c { background: var(--slate-50); color: var(--slate-500); border-color: rgba(226,232,240,0.6); }
@@ -183,14 +300,11 @@
         .tag-m { background: var(--ind-50); color: var(--ind-500); border-color: rgba(224,231,255,0.6); }
         .tag-m-act { background: rgba(219,234,254,0.5); color: var(--blu-700); border-color: var(--blu-200); }
 
-        .grid-sum { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-        @media(min-width:1024px) { .grid-sum { grid-template-columns: 1fr 2fr; } }
-        .sum-plist { max-height: 25rem; overflow-y: auto; padding-right: 0.25rem; }
-        .sum-pitem { background: #fff; padding: 0.5rem 0.75rem; border-radius: 0.5rem; border: 2px solid rgba(226,232,240,0.6); box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; margin-bottom: 0.375rem; }
+        .sum-pitem { background: #fff; padding: 0.375rem 0.5rem; border-radius: 0.375rem; border: 1px solid rgba(226,232,240,0.6); box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; margin-bottom: 0.25rem; }
         .sum-pitem:hover { background: #e8f0fe; border-color: var(--blu-300); }
-        .sum-pitem.act { background: rgba(239,246,255,0.5); border-color: var(--blu-400); }
+        .sum-pitem.act { background: rgba(239,246,255,0.5); border-color: var(--blu-400); border-width: 1px; padding: 0.375rem 0.5rem; }
 
-        .sum-qty-input { width: 4.5rem; text-align: right; font-weight: 900; font-size: 0.875rem; color: inherit; background: transparent; border: 1px solid transparent; border-radius: 0.25rem; padding: 0.125rem 0.25rem; transition: all 0.2s; outline: none; -moz-appearance: textfield; cursor: text; }
+        .sum-qty-input { width: 3.5rem; height: 1.5rem; text-align: right; font-weight: 900; font-size: 0.75rem; color: inherit; background: transparent; border: 1px solid transparent; border-radius: 0.25rem; padding: 0 0.25rem; transition: all 0.2s; outline: none; -moz-appearance: textfield; cursor: text; }
         .sum-qty-input:hover { border-color: rgba(148, 163, 184, 0.4); background: rgba(255,255,255,0.5); }
         .sum-qty-input:focus { border-color: var(--blu-400); background: #fff; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2); }
         .sum-qty-input::-webkit-outer-spin-button, .sum-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -198,10 +312,11 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 100; animation: fade-in 0.2s; }
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
         
-        .modal-box { background: #fff; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); width: 100%; max-width: 48rem; height: 85vh; min-height: 600px; max-height: 900px; display: flex; flex-direction: column; overflow: hidden; }
-        .modal-box.sm { max-width: 32rem; height: auto; min-height: 500px; }
+        /* 固定のmin-heightを外し、レスポンシブに対応させる */
+        .modal-box { background: #fff; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); width: 100%; max-width: 48rem; height: 85vh; max-height: 900px; display: flex; flex-direction: column; overflow: hidden; }
+        .modal-box.sm { max-width: 32rem; height: auto; max-height: 85vh; }
         
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border-bottom: 1px solid var(--slate-100); background: rgba(248,250,252,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border-bottom: 1px solid var(--slate-100); background: rgba(248,250,252,0.5); flex-shrink: 0; }
         .mh-title { display: flex; align-items: center; gap: 0.625rem; font-size: 1.125rem; font-weight: 900; color: var(--slate-800); }
         .mh-icon { padding: 0.375rem; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; }
         .mh-icon i { width: 1rem; height: 1rem; }
@@ -210,10 +325,10 @@
         .mh-icon.blu { background: var(--blu-100); color: var(--blu-600); }
         .mh-icon.ind { background: var(--ind-100); color: var(--ind-600); }
         
-        .modal-close-btn { width: 2rem; height: 2rem; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--slate-400); transition: all 0.2s; cursor: pointer; border: none; outline: none; }
+        .modal-close-btn { width: 2rem; height: 2rem; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--slate-400); transition: all 0.2s; cursor: pointer; border: none; outline: none; flex-shrink: 0; }
         .modal-close-btn:hover { background: var(--slate-100); color: var(--slate-600); }
         
-        .modal-body { padding: 1.25rem; overflow-y: auto; flex: 1; }
+        .modal-body { padding: 1.25rem; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
         .modal-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--slate-100); background: var(--slate-50); display: flex; justify-content: flex-end; gap: 0.5rem; flex-shrink: 0; }
         
         .grid-2 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
@@ -235,14 +350,11 @@
         .btn-add-bom { width: 100%; padding: 0.5rem; border: 2px dashed var(--eme-200); background: rgba(209,250,229,0.5); color: var(--eme-600); font-weight: bold; font-size: 0.75rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.375rem; transition: background 0.2s; margin-top: 0.25rem; }
         .btn-add-bom:hover { background: var(--eme-50); color: var(--eme-700); }
 
-        .modal-footer .btn-out { padding: 0.5rem 1.25rem; border: 1px solid var(--slate-200); background: #fff; color: var(--slate-500); font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; }
-        .modal-footer .btn-out:hover { background: var(--slate-50); color: var(--slate-700); }
-        .modal-footer .btn-eme { padding: 0.5rem 1.5rem; background: var(--eme-500); color: #fff; box-shadow: 0 4px 6px -1px rgba(16,185,129,0.3); font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; }
-        .modal-footer .btn-eme:hover { background: var(--eme-600); }
-        .modal-footer .btn-ora { padding: 0.5rem 1.5rem; background: var(--ora-500); color: #fff; box-shadow: 0 4px 6px -1px rgba(249,115,22,0.3); font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; }
-        .modal-footer .btn-ora:hover { background: var(--ora-600); }
-        .modal-footer .btn-blu { padding: 0.5rem 1.5rem; background: var(--blu-600); color: #fff; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.3); font-size: 0.875rem; font-weight: bold; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; }
-        .modal-footer .btn-blu:hover { background: var(--blu-700); }
+        .modal-footer .btn { padding: 0.5rem 1.5rem; }
+        .modal-footer .btn-out { padding: 0.5rem 1.25rem; }
+        .modal-footer .btn-eme { box-shadow: 0 4px 6px -1px rgba(16,185,129,0.3); }
+        .modal-footer .btn-ora { box-shadow: 0 4px 6px -1px rgba(249,115,22,0.3); }
+        .modal-footer .btn-blu { box-shadow: 0 4px 6px -1px rgba(37,99,235,0.3); }
 
         .bom-section { border-top: 1px solid var(--slate-100); padding-top: 0.75rem; padding-bottom: 4rem; }
         .bom-item { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem; background: #fff; border: 1px solid var(--slate-200); border-radius: 0.75rem; margin-bottom: 0.5rem; transition: border-color 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
@@ -257,7 +369,7 @@
         
         .c-sel-drop { position: absolute; z-index: 50; top: 100%; left: 0; width: 100%; margin-top: 0.25rem; background: #fff; border: 1px solid var(--slate-100); border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); overflow: hidden; }
         .c-sel-search-wrap { padding: 0.5rem; border-bottom: 1px solid var(--slate-100); background: rgba(248,250,252,0.5); }
-        .c-sel-list { max-height: 12rem; overflow-y: auto; padding: 0.25rem; margin: 0; list-style: none; }
+        .c-sel-list { max-height: 12rem; overflow-y: auto; padding: 0.25rem; margin: 0; list-style: none; -webkit-overflow-scrolling: touch; }
         .c-sel-opt { padding: 0.375rem 0.625rem; margin: 0.125rem; border-radius: 0.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
         .c-sel-opt:hover { background: var(--ind-50); }
         .c-sel-opt-n { font-size: 0.75rem; font-weight: bold; color: var(--slate-700); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 0.5rem; }
@@ -273,14 +385,14 @@
         .bom-input:focus { border-color: var(--eme-400); box-shadow: 0 0 0 2px rgba(16,185,129,0.2); }
         .bom-text { font-size: 10px; font-weight: bold; color: var(--slate-500); white-space: nowrap; }
 
-        .confirm-box { width: 100%; max-width: 24rem; background: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; border: 1px solid var(--slate-100); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .confirm-box { width: 100%; max-width: 24rem; background: #fff; border-radius: 1rem; padding: 1.5rem; text-align: center; border: 1px solid var(--slate-100); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); margin: 1rem; }
         .c-icon { width: 4rem; height: 4rem; background: var(--ros-50); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--ros-500); }
         .c-icon i { width: 2rem; height: 2rem; }
         .c-title { font-size: 1.25rem; font-weight: 900; color: var(--slate-800); margin-bottom: 0.5rem; }
         .c-desc { font-size: 0.875rem; color: var(--slate-600); margin-bottom: 1.5rem; white-space: pre-wrap; }
         .btn-c-cancel { background: #fff; border: 1px solid var(--slate-200); color: var(--slate-600); padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 0.875rem; }
         .btn-c-cancel:hover { background: var(--slate-50); color: var(--slate-800); border-color: var(--slate-300); }
-        .btn-c-del { background: var(--ros-500); color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 0.875rem; display: flex; align-items: center; gap: 0.25rem; }
+        .btn-c-del { background: var(--ros-500); color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 0.875rem; display: flex; align-items: center; justify-content: center; gap: 0.25rem; }
         .btn-c-del:hover { background: var(--ros-600); box-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.3); }
 
         .loader-box { background: #fff; border-radius: 1rem; padding: 1.5rem 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
@@ -302,7 +414,7 @@
         <div class="top-bar"></div>
         <div class="glow glow-ind"></div>
         <div class="glow glow-ora"></div>
-        <div class="container" style="padding-top:1rem; padding-bottom:0.75rem;">
+        <div class="container header-inner">
             <header class="app-header">
                 <h1 class="app-title">資材管理パネル</h1>
                 <div class="title-dots">
@@ -321,76 +433,75 @@
     <div class="main-wrapper">
         <div class="container main-content">
             
-            <div id="p-main" class="p-main">
-                <div class="card">
-                    <h2 class="card-title text-base mb-2"><i data-lucide="search" class="text-ind-400"></i>製品を検索</h2>
-                    <div class="input-wrap">
-                        <i data-lucide="search" class="input-icon"></i>
-                        <textarea class="input" rows="5" oninput="d.qm=this.value; drawMList()" placeholder="製品名、商品コード、金型番号を改行区切りで複数入力..."></textarea>
+            <div id="p-main" class="p-main grid-layout">
+                <div class="card grid-left full-h-card">
+                    <div class="flex justify-between items-center mb-2 shrink-0">
+                        <h2 class="card-title text-base mb-0"><i data-lucide="search" class="text-ind-400"></i>製品を検索</h2>
+                        <button class="btn btn-out" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto;" onclick="clearAllPlans()"><i data-lucide="trash-2" style="width: 0.875rem; height: 0.875rem;"></i>全てクリア</button>
                     </div>
-                    <div id="m-res" class="list-box"></div>
+                    <div class="input-wrap shrink-0" style="margin-bottom:0.5rem;">
+                        <i data-lucide="search" class="input-icon"></i>
+                        <textarea id="m-search-input" class="input" rows="6" tabindex="1" oninput="d.qm=this.value; drawMList()" placeholder="製品名、商品コード、金型番号を改行区切りで複数入力..."></textarea>
+                    </div>
+                    <div id="m-res" class="list-box scroll-area" style="border:1px solid var(--slate-100); border-radius:0.5rem;"></div>
                 </div>
                 
-                <div id="m-det" class="det-wrap hide">
-                    <div class="det-header">
-                        <div>
-                            <span class="dh-label">Selected Product</span>
+                <div id="m-det" class="det-wrap grid-right full-h-card">
+                    <div class="det-header shrink-0">
+                        <div style="flex:1; min-width:0;">
+                            <div style="display:flex; gap:0.5rem; margin-bottom:0.25rem; flex-wrap:wrap;">
+                                <span id="md-code" class="tag tag-w hide"></span>
+                                <span id="md-mn" class="tag tag-i hide"></span>
+                            </div>
                             <h2 class="dh-title">
-                                <span id="md-name"></span>
-                                <span id="md-code" class="tag tag-w"></span>
-                                <span id="md-mn" class="tag tag-i"></span>
+                                <span id="md-name" class="text-slate-800">製品を選択してください</span>
                             </h2>
                         </div>
-                        <div class="cnt-ctrl">
-                            <span class="cnt-label">生産計画数</span>
-                            <div class="cnt-group">
-                                <button class="cnt-btn l" onclick="adjCnt(-1)"><i data-lucide="minus"></i></button>
-                                <input type="number" id="md-cnt" class="cnt-input" min="0" oninput="setCnt(this.value)">
-                                <button class="cnt-btn r" onclick="adjCnt(1)"><i data-lucide="plus"></i></button>
-                            </div>
-                            <button class="btn-icon err" onclick="setCnt(0)" title="クリア"><i data-lucide="eraser"></i></button>
-                        </div>
                     </div>
-                    <div style="padding:1.25rem;">
-                        <div id="md-memo-box" class="memo-box hide">
+                    <div class="scroll-area det-body">
+                        <div id="md-memo-box" class="memo-box hide shrink-0">
                             <div class="memo-line"></div>
                             <div class="memo-title"><span class="memo-dot"></span>メモ</div>
                             <div id="md-memo" style="padding-left:1rem; opacity:0.8;"></div>
                         </div>
-                        <div id="md-warn" class="warn-box hide">
+                        <div id="md-warn" class="warn-box hide shrink-0">
                             <div class="warn-icon"><i data-lucide="alert-triangle"></i></div>
                             <div class="warn-text"><h3>資材不足の警告</h3><p>生産数を満たすための資材が不足しています。</p></div>
                         </div>
-                        <div class="table-wrap">
+                        <div class="table-wrap flex-1">
                             <table>
                                 <thead><tr><th>資材コード</th><th>資材名</th><th>カテゴリ</th><th>使用条件</th><th class="text-right">必要総数</th><th class="text-right">現在庫</th><th class="text-right">不足数</th></tr></thead>
-                                <tbody id="md-tbody"></tbody>
+                                <tbody id="md-tbody">
+                                    <tr><td colspan="7" class="text-center text-sm text-slate-400 p-5">製品が選択されていません</td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="p-sum" class="p-sum hide card">
-                <div style="margin-bottom:1.25rem;">
+            <div id="p-sum" class="p-sum hide card full-h-card">
+                <div class="shrink-0" style="margin-bottom:1.25rem;">
                     <h2 class="card-title text-xl"><i data-lucide="check-circle" class="text-blu-500" style="width:1.5rem;height:1.5rem;"></i>生産・資材確認</h2>
                     <p class="text-xs text-slate-500 mt-1">生産計画数が入力された製品と、必要となる資材の総計を確認できます</p>
                 </div>
 
-                <div class="grid-sum">
-                    <div style="background:var(--slate-50); border:1px solid rgba(226,232,240,0.6); border-radius:0.75rem; padding:1rem; height:100%;">
-                        <h3 class="text-sm font-bold text-slate-700 flex items-center gap-1-5 mb-3"><i data-lucide="list-checks" class="text-slate-400" style="width:1rem;height:1rem;"></i>生産計画の製品</h3>
-                        <div id="sum-plist" class="sum-plist" style="display:flex; flex-direction:column; gap:0.5rem; padding-right:0.25rem;"></div>
+                <div class="grid-sum flex-1 min-h-0">
+                    <div class="grid-sum-left">
+                        <h3 class="text-sm font-bold text-slate-700 flex items-center gap-1-5 mb-3 shrink-0"><i data-lucide="list-checks" class="text-slate-400" style="width:1rem;height:1rem;"></i>生産計画の製品</h3>
+                        <div id="sum-plist" class="sum-plist scroll-area" style="display:flex; flex-direction:column; padding-right:0.25rem;"></div>
                     </div>
                     
-                    <div class="det-wrap" style="display:flex; flex-direction:column; margin-bottom:0;">
-                        <div class="det-header" style="background:rgba(248,250,252,0.8); border-bottom:1px solid var(--slate-200); padding:1rem 1.25rem; min-height:5.25rem;">
-                            <h3 id="sum-mtitle" class="text-base font-bold text-slate-700 flex items-center gap-2">
-                                <i data-lucide="layers" class="text-slate-400" style="width:1.25rem;height:1.25rem;"></i><span class="text-slate-700">必要な資材の合計</span>
-                            </h3>
-                            <button id="sum-rst" class="btn btn-blu hide" style="border-radius:0.75rem; box-shadow:0 4px 6px -1px rgba(59,130,246,0.3); padding:0.625rem 1rem;" onclick="d.sumId=null; drawSum()"><i data-lucide="list-checks" style="width:1rem;height:1rem;"></i>全体の合計を表示</button>
+                    <div class="det-wrap grid-sum-right">
+                        <div class="det-header shrink-0" style="background:rgba(248,250,252,0.8); border-bottom:1px solid var(--slate-200); padding:1rem 1.25rem; min-height:5.25rem;">
+                            <div style="flex:1; min-width:0; padding-right:1rem;">
+                                <h3 id="sum-mtitle" class="text-base font-bold text-slate-700 flex items-center gap-2" style="word-break:break-all;">
+                                    <i data-lucide="layers" class="text-slate-400 shrink-0" style="width:1.25rem;height:1.25rem;"></i><span class="text-slate-700">必要な資材の合計</span>
+                                </h3>
+                            </div>
+                            <button id="sum-rst" class="btn btn-blu hide shrink-0" style="border-radius:0.75rem; padding:0.625rem 1rem; width: auto;" onclick="d.sumId=null; drawSum()"><i data-lucide="list-checks" style="width:1rem;height:1rem;"></i>全体の合計を表示</button>
                         </div>
-                        <div class="table-wrap" style="border:none; border-radius:0;">
+                        <div class="table-wrap scroll-area" style="border:none; border-radius:0;">
                             <table>
                                 <thead><tr><th>資材コード</th><th>資材名</th><th>カテゴリ</th><th class="text-right">総必要数</th><th class="text-right">現在庫</th><th class="text-right">不足数</th></tr></thead>
                                 <tbody id="sum-mtbody"></tbody>
@@ -400,7 +511,7 @@
                 </div>
             </div>
 
-            <div id="p-prod" class="p-prod hide card">
+            <div id="p-prod" class="p-prod hide card full-h-card">
                 <div class="card-header">
                     <div>
                         <h2 class="card-title"><i data-lucide="package" class="text-eme-500"></i>製品リスト</h2>
@@ -420,7 +531,7 @@
                 </div>
             </div>
 
-            <div id="p-mat" class="p-mat hide card">
+            <div id="p-mat" class="p-mat hide card full-h-card">
                 <div class="card-header">
                     <div>
                         <h2 class="card-title"><i data-lucide="box" class="text-ora-500"></i>資材リスト</h2>
@@ -435,17 +546,8 @@
                     <i data-lucide="search" class="input-icon"></i>
                     <input type="text" class="input" oninput="d.qmat=this.value; drawMatList()" placeholder="資材名、資材コードで絞り込み...">
                 </div>
-                <div class="table-wrap">
-                    <table class="mat-table">
-                        <colgroup>
-                            <col class="col-mat-code">
-                            <col class="col-mat-name">
-                            <col class="col-mat-stock">
-                            <col class="col-mat-prod">
-                            <col class="col-mat-action">
-                        </colgroup>
-                        <thead><tr><th>資材コード</th><th>資材名</th><th class="text-right">現在庫数</th><th>使用されている製品</th><th class="text-right">操作</th></tr></thead>
-                        <tbody id="mat-tbody"></tbody>
+                <div class="table-wrap" id="mat-table-wrap">
+                    <table class="mat-table" id="mat-table-root">
                     </table>
                 </div>
             </div>
@@ -487,8 +589,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-out" onclick="cls('m-prod')">キャンセル</button>
-                <button class="btn-eme" onclick="saveProd()">保存する</button>
+                <button class="btn btn-out" onclick="cls('m-prod')">キャンセル</button>
+                <button class="btn btn-eme" onclick="saveProd()">保存する</button>
             </div>
         </div>
     </div>
@@ -515,8 +617,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-out" onclick="cls('m-mat')">キャンセル</button>
-                <button class="btn-ora" onclick="saveMat()">保存する</button>
+                <button class="btn btn-out" onclick="cls('m-mat')">キャンセル</button>
+                <button class="btn btn-ora" onclick="saveMat()">保存する</button>
             </div>
         </div>
     </div>
@@ -524,7 +626,7 @@
     <div id="m-bulk" class="modal-overlay hide">
         <div class="modal-box sm">
             <div class="modal-header">
-                <h2 class="mh-title"><div class="mh-icon blu"><i data-lucide="clipboard-paste"></i></div><span>在庫状況の一括更新</span></h2>
+                <h2 class="mh-title"><div class="mh-icon blu"><i data-lucide="clipboard-paste"></i></div><span>在庫状況の一括更新</span><span id="b-last-update" class="text-xs text-slate-400 font-medium"></span></h2>
                 <button class="modal-close-btn" onclick="cls('m-bulk')"><i data-lucide="x"></i></button>
             </div>
             <div class="modal-body">
@@ -535,8 +637,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-out" onclick="cls('m-bulk')">キャンセル</button>
-                <button class="btn-blu" onclick="applyBulk()">一括更新する</button>
+                <button class="btn btn-out" onclick="cls('m-bulk')">キャンセル</button>
+                <button class="btn btn-blu" onclick="applyBulk()">一括更新する</button>
             </div>
         </div>
     </div>
@@ -547,14 +649,14 @@
             <h3 class="c-title">確認</h3>
             <p id="c-msg" class="c-desc"></p>
             <div class="flex gap-3 justify-center">
-                <button class="btn-c-cancel" onclick="cls('confirm')">キャンセル</button>
-                <button class="btn-c-del" onclick="if(window.tempConfirmCb) window.tempConfirmCb(); cls('confirm');"><i data-lucide="trash-2" style="width:1rem;height:1rem;"></i> 削除する</button>
+                <button id="confirm-no" class="btn-c-cancel">キャンセル</button>
+                <button id="confirm-yes" class="btn-c-del"><i data-lucide="trash-2" style="width:1rem;height:1rem;"></i> 削除する</button>
             </div>
         </div>
     </div>
 
     <div id="m-used-prods" class="modal-overlay hide">
-        <div class="modal-box sm" style="min-height: auto;">
+        <div class="modal-box sm" style="height: auto; min-height: auto;">
             <div class="modal-header">
                 <h2 class="mh-title"><div class="mh-icon ind"><i data-lucide="package"></i></div><span>使用されている製品</span></h2>
                 <button class="modal-close-btn" onclick="cls('m-used-prods')"><i data-lucide="x"></i></button>
@@ -564,7 +666,7 @@
                 </ul>
             </div>
             <div class="modal-footer">
-                <button class="btn-out" onclick="cls('m-used-prods')">閉じる</button>
+                <button class="btn btn-out" onclick="cls('m-used-prods')">閉じる</button>
             </div>
         </div>
     </div>
@@ -577,7 +679,7 @@
     </div>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwZ0QypPqH5qofYqwvkqyBFfjPkzqHrlfhTrwXCHAAEnbbcMAmQBCU_hvssbZCLxFAM/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzSr9-3n00rNyTEVa5sx0sPNujPiwR2zPh6EfeEXKX0Gp5z4xhN_PxHq20WJyxBGH2b/exec';
         const SHARE_URL = 'https://docs.google.com/spreadsheets/d/1_wX-Rq0Cdy-QBqPBAOQfbFZr6F4dsRMj9MlaB4cqRYI/edit?usp=sharing';
         
         const CAT_STYLES = {
@@ -605,7 +707,7 @@
             return String(a.code || '').localeCompare(String(b.code || ''));
         };
 
-        let d = { tab: 'main', qm: '', qp: '', qmat: '', lastQmat: '', sId: null, sumId: null, plan: {}, mats: [], prods: [], eP: null, eM: null, matCatOpen: {} };
+        let d = { tab: 'main', qm: '', qp: '', qmat: '', lastQmat: '', sId: null, sumId: null, plan: {}, mats: [], prods: [], eP: null, eM: null, matCatOpen: {}, lastUpdate: null };
         
         const $ = id => document.getElementById(id);
         const v = id => $(id).value;
@@ -615,12 +717,111 @@
         const eq = (a, b) => a != null && b != null && String(a) === String(b);
         const norm = t => String(t || '').normalize('NFKC').toLowerCase();
 
+        const esc = str => {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        };
+
+        const generateId = (prefix) => {
+            return prefix + '_' + (window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2, 5));
+        };
+
         const showLoad = (s, msg="処理中...") => { $('load-msg').innerText = msg; $('load').classList.toggle('hide', !s); lucide.createIcons({root:$('load')}); };
-        const showConfirm = (msg, cb) => { $('c-msg').innerText = msg; window.tempConfirmCb = cb; $('confirm').classList.remove('hide'); lucide.createIcons({root:$('confirm')}); };
+        
+        const showConfirm = (msg) => {
+            return new Promise((resolve) => {
+                $('c-msg').innerText = msg;
+                $('confirm').classList.remove('hide');
+                lucide.createIcons({root:$('confirm')});
+                
+                const btnYes = $('confirm-yes');
+                const btnNo = $('confirm-no');
+                
+                const cleanup = () => {
+                    const newYes = btnYes.cloneNode(true);
+                    const newNo = btnNo.cloneNode(true);
+                    btnYes.replaceWith(newYes);
+                    btnNo.replaceWith(newNo);
+                    $('confirm').classList.add('hide');
+                };
+                
+                btnYes.addEventListener('click', () => { cleanup(); resolve(true); }, { once: true });
+                btnNo.addEventListener('click', () => { cleanup(); resolve(false); }, { once: true });
+            });
+        };
+
+        const updateStickyHeader = () => {
+            const wrap = $('mat-table-wrap');
+            if (!wrap) return;
+            const headers = wrap.querySelectorAll('.mat-cat-header');
+            
+            const offset = 34;
+            const wrapTop = wrap.getBoundingClientRect().top;
+            
+            for (let i = 0; i < headers.length; i++) {
+                const h = headers[i];
+                const tr = h.parentElement;
+                const rect = tr.getBoundingClientRect();
+                const hTopRelative = rect.top - wrapTop;
+                const hHeight = h.offsetHeight;
+                
+                let translateY = 0;
+                let opacity = 1;
+
+                if (hTopRelative <= offset) {
+                    if (i + 1 < headers.length) {
+                        const nextH = headers[i+1];
+                        const nextRect = nextH.parentElement.getBoundingClientRect();
+                        const nextTopRelative = nextRect.top - wrapTop;
+
+                        if (nextTopRelative < offset + hHeight) {
+                            translateY = nextTopRelative - (offset + hHeight);
+                        }
+                    }
+                }
+
+                if (translateY <= -hHeight) {
+                    opacity = 0;
+                }
+
+                h.style.transform = `translateY(${translateY}px)`;
+                h.style.opacity = opacity;
+                h.style.pointerEvents = opacity === 0 ? 'none' : 'auto';
+            }
+        };
 
         const init = async () => {
             lucide.createIcons();
             h('m-cat', CATS.map(c=>`<option value="${c}">${c}</option>`).join(''));
+            
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    const noCloseIds = ['load', 'confirm', 'm-prod', 'm-mat', 'm-bulk'];
+                    if (e.target === overlay && !noCloseIds.includes(overlay.id)) {
+                        overlay.classList.add('hide');
+                    }
+                });
+            });
+
+            const matWrap = $('mat-table-wrap');
+            if (matWrap) {
+                let isScrolling = false;
+                matWrap.addEventListener('scroll', () => {
+                    if (!isScrolling) {
+                        window.requestAnimationFrame(() => {
+                            updateStickyHeader();
+                            isScrolling = false;
+                        });
+                        isScrolling = true;
+                    }
+                });
+            }
+
             if(GAS_URL && !GAS_URL.includes('YOUR_GAS')) {
                 showLoad(true, "データを読み込んでいます...");
                 try {
@@ -628,20 +829,22 @@
                     const j = await r.json();
                     if(j.status === 'success') { 
                         let mIds = new Set();
-                        d.mats = (j.materials || []).map((m, i) => {
+                        d.mats = (j.materials || []).map(m => {
                             let id = String(m.id || '');
-                            if (!id || mIds.has(id)) id = 'm_auto_' + i + '_' + Date.now();
+                            if (!id || mIds.has(id)) id = generateId('m');
                             mIds.add(id);
                             return { ...m, id };
                         });
                         
                         let pIds = new Set();
-                        d.prods = (j.products || []).map((p, i) => {
+                        d.prods = (j.products || []).map(p => {
                             let id = String(p.id || '');
-                            if (!id || pIds.has(id)) id = 'p_auto_' + i + '_' + Date.now();
+                            if (!id || pIds.has(id)) id = generateId('p');
                             pIds.add(id);
                             return { ...p, id, bom: p.bom || [] };
                         });
+
+                        d.lastUpdate = j.lastUpdate || null;
                     }
                 } catch(e) {}
                 showLoad(false);
@@ -649,10 +852,15 @@
             setTab('main');
         };
 
-        const sync = async () => {
+        const sync = async (opts = {}) => {
             if(!GAS_URL || GAS_URL.includes('YOUR_GAS')) return;
             showLoad(true, "データを保存しています...");
-            try { await fetch(GAS_URL, {method:'POST', body:JSON.stringify({materials:d.mats, products:d.prods})}); } catch(e) {}
+            const payload = {materials:d.mats, products:d.prods};
+            if (opts.bulkUpdate) payload.bulkUpdate = true;
+            try {
+                await fetch(GAS_URL, {method:'POST', body:JSON.stringify(payload)});
+                if (opts.bulkUpdate) d.lastUpdate = new Date().toString();
+            } catch(e) {}
             showLoad(false);
         };
 
@@ -665,74 +873,174 @@
             if(t==='main') { drawMList(); drawMDet(); }
             if(t==='sum') drawSum();
             if(t==='prod') drawPList();
-            if(t==='mat') drawMatList();
+            if(t==='mat') {
+                drawMatList();
+                setTimeout(updateStickyHeader, 10);
+            }
         };
 
-        const updatePlan = (id, val) => {
+        const updatePlan = (id, val, skipListRedraw = false) => {
             let c = parseInt(val) || 0;
             if (c > 0) d.plan[id] = c; 
             else delete d.plan[id];
             
             if (!d.plan[d.sumId]) d.sumId = null;
 
-            if (d.tab === 'main') { drawMList(); drawMDet(); }
+            if (d.tab === 'main') { 
+                if (!skipListRedraw) {
+                    drawMList();
+                }
+                drawMDet(); 
+            }
+            if (d.tab === 'sum') drawSum();
+            drawBdg();
+        };
+
+        const clearAllPlans = async () => {
+            if (Object.keys(d.plan).length === 0 && d.qm.trim() === '') return;
+            
+            if (Object.keys(d.plan).length > 0) {
+                const confirmed = await showConfirm('入力されたすべての生産計画をクリアしてもよろしいですか？');
+                if (!confirmed) return;
+            }
+            
+            d.plan = {};
+            d.sumId = null;
+            d.sId = null;
+            d.qm = '';
+            sv('m-search-input', '');
+            
+            drawMList();
+            drawMDet();
             if (d.tab === 'sum') drawSum();
             drawBdg();
         };
 
         const drawMList = () => {
-            const q = d.qm.split('\n').map(x => norm(x.trim())).filter(Boolean);
+            const rawQ = d.qm.split('\n').map(x => x.trim()).filter(Boolean);
             let out = '<div class="text-center text-sm text-slate-400 p-5">検索してください</div>';
-            if(q.length) {
-                const res = d.prods.filter(p => q.some(k => norm(p.name).includes(k) || norm(p.code).includes(k) || norm(p.managementNumber).includes(k)));
-                out = res.length ? res.map(p => `
-                    <div class="s-item ${eq(d.sId, p.id)?'act':''}" onclick="selProd('${p.id}')">
+            if(rawQ.length) {
+                const normQ = rawQ.map(k => norm(k));
+                const matched = new Set();
+                const resultsByKeyword = Array.from({ length: rawQ.length }, () => []);
+
+                d.prods.forEach(p => {
+                    const pName = norm(p.name);
+                    const pCode = norm(p.code);
+                    const pMn = norm(p.managementNumber);
+                    
+                    let assigned = false;
+                    for (let i = 0; i < normQ.length; i++) {
+                        const k = normQ[i];
+                        if (pName.includes(k) || pCode.includes(k) || pMn.includes(k)) {
+                            matched.add(rawQ[i]);
+                            if (!assigned) {
+                                resultsByKeyword[i].push(p);
+                                assigned = true;
+                            }
+                        }
+                    }
+                });
+
+                const res = resultsByKeyword.flat();
+                
+                const notFound = rawQ.filter(rawK => !matched.has(rawK));
+                let notFoundHtml = '';
+                if (notFound.length > 0) {
+                    notFoundHtml = `
+                    <div style="background:var(--ros-50); border-bottom:1px solid var(--ros-100); padding:0.75rem; font-size:0.75rem; color:var(--ros-700);">
+                        <div class="font-bold flex items-center gap-1 mb-1"><i data-lucide="alert-triangle" style="width:1rem;height:1rem;"></i>見つからないキーワード:</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:0.25rem;">
+                            ${notFound.map(k => `<span style="background:#fff; border:1px solid var(--ros-200); padding:0.125rem 0.375rem; border-radius:0.25rem; font-family:monospace;">${esc(k)}</span>`).join('')}
+                        </div>
+                    </div>`;
+                }
+
+                out = res.length ? res.map((p, index) => {
+                    const isAct = eq(d.sId, p.id);
+                    const planCnt = d.plan[p.id] || '';
+                    const hasBom = (p.bom || []).length > 0;
+                    return `
+                    <div class="s-item ${isAct?'act':''}" data-id="${p.id}" onclick="selProd('${p.id}')" style="padding-right:0.5rem;">
                         <div class="flex-1 min-w-0 pr-2">
-                            <div class="s-title truncate">${p.name}</div>
+                            <div class="s-title truncate ${hasBom ? '' : 'no-bom'}" title="${esc(p.name)}">${esc(p.name)}</div>
                             <div class="s-sub">
-                                ${p.code ? `<span class="tag tag-w">${p.code}</span>`:''}${p.managementNumber ? `<span class="tag tag-i">${p.managementNumber}</span>`:''}
+                                ${p.code ? `<span class="tag tag-w">${esc(p.code)}</span>`:''}${p.managementNumber ? `<span class="tag tag-i">${esc(p.managementNumber)}</span>`:''}
                             </div>
                         </div>
                         <div class="flex items-center shrink-0">
-                            ${d.plan[p.id] ? `<span class="badge-plan">${d.plan[p.id]}個 計画</span>` : ''}
-                            <i data-lucide="chevron-right" class="text-slate-300 ml-2"></i>
+                            <div class="cnt-ctrl shrink-0" style="padding:0.25rem; box-shadow:none; border-color:${isAct?'rgba(99,102,241,0.3)':'transparent'}; background:transparent;">
+                                <div class="cnt-group">
+                                    <button class="cnt-btn l" tabindex="-1" style="width:2rem;height:2rem;" onclick="adjCnt('${p.id}', -1)"><i data-lucide="minus"></i></button>
+                                    <input type="number" id="list-cnt-${p.id}" class="cnt-input" tabindex="${index + 2}" style="width:3.5rem;height:2rem;font-size:1rem;" min="0" value="${planCnt}" oninput="setCnt('${p.id}', this.value, true)">
+                                    <button class="cnt-btn r" tabindex="-1" style="width:2rem;height:2rem;" onclick="adjCnt('${p.id}', 1)"><i data-lucide="plus"></i></button>
+                                </div>
+                                <button class="btn-icon err" tabindex="-1" style="padding:0.25rem; margin-left:0.25rem;" onclick="setCnt('${p.id}', 0, true)" title="クリア"><i data-lucide="eraser"></i></button>
+                            </div>
                         </div>
-                    </div>`).join('') : '<div class="text-center text-sm text-slate-400 p-5">該当する製品がありません</div>';
+                    </div>`;
+                }).join('') : '<div class="text-center text-sm text-slate-400 p-5">該当する製品がありません</div>';
+                
+                out = notFoundHtml + out;
             }
             h('m-res', out);
             lucide.createIcons({ root: $('m-res') });
         };
 
         const selProd = id => { 
+            if (d.sId === id) return;
             d.sId = id; 
-            drawMList(); 
+            
+            const res = $('m-res');
+            if (res) {
+                res.querySelectorAll('.s-item').forEach(el => {
+                    const isTarget = el.getAttribute('data-id') === id;
+                    el.classList.toggle('act', isTarget);
+                    const ctrl = el.querySelector('.cnt-ctrl');
+                    if (ctrl) {
+                        ctrl.style.borderColor = isTarget ? 'rgba(99,102,241,0.3)' : 'transparent';
+                    }
+                });
+            }
             drawMDet(); 
-            setTimeout(() => {
-                const el = $('md-cnt');
-                if (el) {
-                    el.focus();
-                    el.select();
-                }
-            }, 10);
         };
 
-        const adjCnt = dlt => {
-            if(!d.sId) return;
-            updatePlan(d.sId, Math.max(0, (d.plan[d.sId]||0) + dlt));
+        const adjCnt = (id, dlt) => {
+            if(!id) return;
+            updatePlan(id, Math.max(0, (d.plan[id]||0) + dlt), true);
+            const el = $(`list-cnt-${id}`);
+            if (el) el.value = d.plan[id] || '';
         };
-        const setCnt = val => {
-            if(!d.sId) return;
-            updatePlan(d.sId, val);
+
+        const setCnt = (id, val, skipListRedraw = false) => {
+            if(!id) return;
+            updatePlan(id, val, skipListRedraw);
+            if (!skipListRedraw) {
+                const el = $(`list-cnt-${id}`);
+                if (el) el.value = d.plan[id] || '';
+            }
         };
 
         const drawMDet = () => {
             const p = d.prods.find(x => eq(x.id, d.sId));
-            if(!p) return $('m-det').classList.add('hide');
-            $('m-det').classList.remove('hide');
-            h('md-name', p.name); h('md-code', p.code||''); h('md-mn', p.managementNumber||'');
-            $('md-code').classList.toggle('hide', !p.code); $('md-mn').classList.toggle('hide', !p.managementNumber);
-            h('md-memo', p.memo||''); $('md-memo-box').classList.toggle('hide', !p.memo);
-            sv('md-cnt', d.plan[p.id]||'');
+            if(!p) {
+                h('md-name', '<span class="text-slate-400">製品を選択してください</span>');
+                $('md-code').classList.add('hide');
+                $('md-mn').classList.add('hide');
+                $('md-memo-box').classList.add('hide');
+                $('md-warn').classList.add('hide');
+                h('md-tbody', '<tr><td colspan="7" class="text-center text-sm text-slate-400 p-5">製品が選択されていません</td></tr>');
+                return;
+            }
+            
+            h('md-name', esc(p.name)); 
+            h('md-code', esc(p.code||'')); 
+            h('md-mn', esc(p.managementNumber||''));
+            $('md-code').classList.toggle('hide', !p.code); 
+            $('md-mn').classList.toggle('hide', !p.managementNumber);
+            
+            h('md-memo', esc(p.memo||'')); 
+            $('md-memo-box').classList.toggle('hide', !p.memo);
             
             let hasShortage = false;
             
@@ -758,9 +1066,13 @@
                 const st = Number(m.stock) || 0;
                 const sh = Math.max(0, rq - st);
                 if (sh > 0) hasShortage = true;
-                return `<tr class="tr-hov ${sh>0?'tr-err':''}">
-                    <td class="font-mono text-slate-600">${m.code||'-'}</td><td class="font-bold text-slate-800">${m.name}</td>
-                    <td><span class="cat ${catCls(m.category)}">${m.category}</span></td>
+
+                const s = catStyle(m.category || 'その他');
+                const bgStyle = `background:${s.bgLight}`;
+
+                return `<tr class="tr-hov ${sh>0?'tr-err':''}" style="${bgStyle}">
+                    <td class="font-mono text-slate-600">${esc(m.code||'-')}</td><td class="font-bold text-slate-800">${esc(m.name)}</td>
+                    <td><span class="cat ${catCls(m.category)}">${esc(m.category)}</span></td>
                     <td class="text-xs text-slate-500"><span class="tag tag-w">${q}個 / ${perQ}製品</span></td>
                     <td class="text-right font-bold text-slate-800">${rq.toLocaleString()}</td><td class="text-right text-slate-600">${st.toLocaleString()}</td>
                     <td class="text-right">${sh>0 ? `<span class="badge-err">${sh.toLocaleString()} 不足</span>` : '<span class="text-ok">0</span>'}</td>
@@ -797,23 +1109,23 @@
                 const isAct = eq(d.sumId, id);
                 return `
                 <div class="sum-pitem ${isAct?'act':''}" onclick="selSum('${id}')">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="font-bold text-sm ${isAct?'text-blu-800':'text-slate-800'}">${p.name}</span>
-                        <div class="flex items-center" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center mb-0.5">
+                        <span class="font-bold text-xs ${isAct?'text-blu-800':'text-slate-800'} truncate mr-2" title="${esc(p.name)}">${esc(p.name)}</span>
+                        <div class="flex items-center shrink-0" onclick="event.stopPropagation()">
                             <input type="number" class="sum-qty-input ${isAct?'text-blu-700':'text-blu-600'}" value="${d.plan[id]}" min="0" onchange="updatePlan('${id}', this.value)" title="数量を変更">
                             <span class="text-xxs ${isAct?'text-blu-500':'text-blu-400'} font-bold ml-1">個</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1-5">
-                        ${p.code ? `<span class="tag ${isAct?'tag-c-act':'tag-c'}">${p.code}</span>`:''}
-                        ${p.managementNumber ? `<span class="tag ${isAct?'tag-m-act':'tag-m'}">${p.managementNumber}</span>`:''}
+                    <div class="flex items-center gap-1 mt-1">
+                        ${p.code ? `<span class="tag ${isAct?'tag-c-act':'tag-c'}">${esc(p.code)}</span>`:''}
+                        ${p.managementNumber ? `<span class="tag ${isAct?'tag-m-act':'tag-m'}">${esc(p.managementNumber)}</span>`:''}
                     </div>
                 </div>`;
             }).join(''));
 
             const sp = d.sumId ? d.prods.find(x=>eq(x.id, d.sumId)) : null;
             const titleHtml = sp
-                ? `<i data-lucide="package" class="text-blu-500" style="width:1.25rem;height:1.25rem;"></i><span class="text-blu-700 text-lg">${sp.name}</span> <span class="text-slate-500 text-sm font-medium ml-1">の必要資材</span>`
+                ? `<i data-lucide="package" class="text-blu-500" style="width:1.25rem;height:1.25rem;"></i><span class="text-blu-700 text-lg">${esc(sp.name)}</span> <span class="text-slate-500 text-sm font-medium ml-1">の必要資材</span>`
                 : `<i data-lucide="layers" class="text-slate-400" style="width:1.25rem;height:1.25rem;"></i><span class="text-slate-700">必要な資材の合計</span>`;
             h('sum-mtitle', titleHtml);
 
@@ -849,10 +1161,16 @@
                 const rq = r[mid];
                 const st = Number(m.stock) || 0;
                 const sh = Math.max(0, rq - st);
-                return `<tr class="tr-hov ${sh>0?'tr-err':''}">
-                    <td class="font-mono text-slate-600">${m.code||'-'}</td><td class="font-bold text-slate-800">${m.name}</td>
-                    <td><span class="cat ${catCls(m.category)}">${m.category}</span></td>
-                    <td class="text-right font-bold text-blu-600 text-base">${rq.toLocaleString()}</td><td class="text-right text-slate-600">${st.toLocaleString()}</td>
+
+                const s = catStyle(m.category || 'その他');
+                const bgStyle = `background:${s.bgLight}`;
+
+                return `<tr class="tr-hov ${sh>0?'tr-err':''}" style="${bgStyle}">
+                    <td class="font-mono text-slate-600">${esc(m.code||'-')}</td>
+                    <td class="font-bold text-slate-800">${esc(m.name)}</td>
+                    <td><span class="cat ${catCls(m.category)}">${esc(m.category||'その他')}</span></td>
+                    <td class="text-right font-bold text-blu-600">${rq.toLocaleString()}</td>
+                    <td class="text-right text-slate-600">${st.toLocaleString()}</td>
                     <td class="text-right">${sh>0 ? `<span class="badge-err">${sh.toLocaleString()} 不足</span>` : '<span class="text-ok">0</span>'}</td>
                 </tr>`;
             }).join('') || '<tr><td colspan="6" class="text-center text-sm text-slate-400 p-5">構成資材がありません</td></tr>');
@@ -871,7 +1189,7 @@
                     ? "background:var(--eme-50);color:var(--eme-700);border-color:var(--eme-100)" 
                     : "background:var(--slate-50);color:var(--slate-500);border-color:var(--slate-200)";
                 return `<tr class="tr-hov group">
-                <td class="font-mono text-slate-600">${p.code||'-'}</td><td class="font-mono text-ind-600">${p.managementNumber||'-'}</td><td class="font-bold text-slate-800">${p.name}</td>
+                <td class="font-mono text-slate-600">${esc(p.code||'-')}</td><td class="font-mono text-ind-600">${esc(p.managementNumber||'-')}</td><td class="font-bold text-slate-800">${esc(p.name)}</td>
                 <td><span class="cat" style="${catStyle}">${bomLen} 種類</span></td>
                 <td class="text-right"><button class="btn-icon eme" onclick="openProd('${p.id}')"><i data-lucide="edit-2"></i></button> <button class="btn-icon err" onclick="delP('${p.id}')"><i data-lucide="trash-2"></i></button></td>
             </tr>`;
@@ -889,10 +1207,10 @@
             const listHtml = usedProds.length 
                 ? usedProds.map(p => `
                     <li style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--slate-200); background: #fff; display: flex; flex-direction: column; gap: 0.375rem;">
-                        <span class="font-bold text-slate-800 text-sm">${p.name}</span>
+                        <span class="font-bold text-slate-800 text-sm">${esc(p.name)}</span>
                         <div class="flex gap-2 text-xs">
-                            ${p.code ? `<span class="tag tag-w">${p.code}</span>` : ''}
-                            ${p.managementNumber ? `<span class="tag tag-i">${p.managementNumber}</span>` : ''}
+                            ${p.code ? `<span class="tag tag-w">${esc(p.code)}</span>` : ''}
+                            ${p.managementNumber ? `<span class="tag tag-i">${esc(p.managementNumber)}</span>` : ''}
                         </div>
                     </li>`).join('')
                 : '<li style="padding: 2rem; text-align: center; color: var(--slate-500); font-size: 0.875rem;">使用されている製品はありません</li>';
@@ -932,21 +1250,34 @@
                 }
             }
             
-            let out = '';
+            let out = `
+                <colgroup>
+                    <col class="col-mat-code">
+                    <col class="col-mat-name">
+                    <col class="col-mat-stock">
+                    <col class="col-mat-prod">
+                    <col class="col-mat-action">
+                </colgroup>
+                <thead><tr><th>資材コード</th><th>資材名</th><th class="text-right">現在庫数</th><th>使用されている製品</th><th class="text-right">操作</th></tr></thead>
+            `;
+            
+            let hasResult = false;
             for(let c of CATS) {
                 if (!cMap[c]) continue;
+                hasResult = true;
                 const s = catStyle(c);
                 const isOpen = !!d.matCatOpen[c];
                 const icon = isOpen ? 'chevron-down' : 'chevron-right';
 
+                out += `<tbody>`;
                 out += `<tr>
-                    <td colspan="5" style="background:${s.bg}; border-bottom:1px solid ${s.bd}; padding:0.375rem 0.75rem; cursor:pointer; transition:background 0.2s;" onclick="toggleMatCat('${c}')" onmouseover="this.style.background='#e8f0fe'" onmouseout="this.style.background='${s.bg}'">
+                    <th colspan="5" class="mat-cat-header" style="background:${s.bg}; border-bottom:1px solid ${s.bd}; cursor:pointer; transition:background 0.2s, opacity 0.1s ease;" onclick="toggleMatCat('${c}')" onmouseover="this.style.background='#e8f0fe'" onmouseout="this.style.background='${s.bg}'">
                         <div class="flex items-center gap-2">
                             <i data-lucide="${icon}" style="width:1rem;height:1rem;color:${s.tc}"></i>
-                            <span class="cat ${catCls(c)}">${c}</span>
+                            <span class="cat ${catCls(c)}">${esc(c)}</span>
                             <span class="text-xs font-bold opacity-60" style="color:${s.tc}">${cMap[c].length}件</span>
                         </div>
-                    </td>
+                    </th>
                 </tr>`;
                 
                 if (isOpen) {
@@ -954,22 +1285,37 @@
                     out += cMap[c].map(m => {
                         const usedProdsNames = d.prods.filter(p=>(p.bom||[]).some(b=>eq(b.materialId, m.id))).map(p=>p.name).join(', ') || '-';
                         return `<tr class="tr-hov" style="background:${s.bgLight}">
-                        <td class="font-mono text-slate-600" title="${m.code||'-'}">${m.code||'-'}</td>
-                        <td class="font-bold text-slate-800 pl-4" title="${m.isShareFile ? '共有ファイル' : m.name}">${m.isShareFile ? `<a href="${SHARE_URL}" target="_blank" rel="noopener noreferrer">共有ファイル</a>` : m.name}</td>
+                        <td class="font-mono text-slate-600" title="${esc(m.code||'-')}">${esc(m.code||'-')}</td>
+                        <td class="font-bold text-slate-800 pl-4" title="${m.isShareFile ? '共有ファイル' : esc(m.name)}">${m.isShareFile ? `<a href="${SHARE_URL}" target="_blank" rel="noopener noreferrer">共有ファイル</a>` : esc(m.name)}</td>
                         <td class="text-right font-bold">${m.isShareFile ? '' : (m.stock===0 ? `<span class="badge-err" style="background:var(--ros-50);color:var(--ros-500);border:1px solid var(--ros-200);box-shadow:none">0</span>`: Number(m.stock||0).toLocaleString())}</td>
-                        <td class="text-xs text-slate-500 pl-6"><span class="tag tag-w truncate" style="max-width:100%;display:inline-block;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='var(--slate-50)'" onmouseout="this.style.background='#fff'" onclick="openUsedProdsModal('${m.id}')" title="クリックして詳細を表示">${usedProdsNames}</span></td>
+                        <td class="text-xs text-slate-500 pl-6"><span class="tag tag-w truncate" style="max-width:100%;display:inline-block;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='var(--slate-50)'" onmouseout="this.style.background='#fff'" onclick="openUsedProdsModal('${m.id}')" title="クリックして詳細を表示">${esc(usedProdsNames)}</span></td>
                         <td class="text-right"><button class="btn-icon ora" onclick="openMat('${m.id}')" title="編集"><i data-lucide="edit-2"></i></button> <button class="btn-icon err" onclick="delM('${m.id}')" title="削除"><i data-lucide="trash-2"></i></button></td>
                     </tr>`;
                     }).join('');
                 }
+                out += `</tbody>`;
             }
-            h('mat-tbody', out || '<tr><td colspan="5" class="text-center text-sm text-slate-400 p-5">該当する資材がありません</td></tr>');
-            lucide.createIcons({ root: $('mat-tbody') });
+            if (!hasResult) {
+                out += `<tbody><tr><td colspan="5" class="text-center text-sm text-slate-400 p-5">該当する資材がありません</td></tr></tbody>`;
+            }
+            
+            const root = $('mat-table-root');
+            if (root) {
+                root.innerHTML = out;
+                lucide.createIcons({ root: root });
+                
+                const headers = root.querySelectorAll('.mat-cat-header');
+                headers.forEach((h, idx) => {
+                    h.style.zIndex = 10 + idx;
+                });
+
+                setTimeout(updateStickyHeader, 10);
+            }
         };
 
         const openProd = id => {
             const target = id ? d.prods.find(x => eq(x.id, id)) : null;
-            d.eP = target ? JSON.parse(JSON.stringify(target)) : { id:'', code:'', managementNumber:'', name:'', memo:'', bom:[] };
+            d.eP = target ? (window.structuredClone ? structuredClone(target) : JSON.parse(JSON.stringify(target))) : { id:'', code:'', managementNumber:'', name:'', memo:'', bom:[] };
             d.eP.bom = d.eP.bom || [];
             
             h('mp-title', id ? '製品を編集' : '新規製品登録');
@@ -1018,10 +1364,10 @@
                     return `
                     <li class="c-sel-opt" onclick="selectBomMat(${idx}, '${m.id}')">
                         <div class="c-sel-opt-n">
-                            <span>${m.name}</span>
-                            <span style="font-size:10px; font-weight:normal; padding:0.125rem 0.375rem; border-radius:0.25rem; background:${s.bg}; border:1px solid ${s.bd}; color:${s.tc}">${m.category||'その他'}</span>
+                            <span>${esc(m.name)}</span>
+                            <span style="font-size:10px; font-weight:normal; padding:0.125rem 0.375rem; border-radius:0.25rem; background:${s.bg}; border:1px solid ${s.bd}; color:${s.tc}">${esc(m.category||'その他')}</span>
                         </div>
-                        ${m.code ? `<div class="c-sel-opt-c">${m.code}</div>` : ''}
+                        ${m.code ? `<div class="c-sel-opt-c">${esc(m.code)}</div>` : ''}
                     </li>
                 `}).join('');
             } else {
@@ -1056,8 +1402,8 @@
                 return `
                 <div class="bom-item group">
                     <div class="c-sel" data-idx="${i}">
-                        <div class="c-sel-trig" onclick="toggleBomDrop(${i}, event)" title="${tooltipText}">
-                            <span class="c-sel-text ${textCls}">${matName} <span style="color:var(--slate-400);font-weight:normal">${matCode}</span></span>
+                        <div class="c-sel-trig" onclick="toggleBomDrop(${i}, event)" title="${esc(tooltipText)}">
+                            <span class="c-sel-text ${textCls}">${esc(matName)} <span style="color:var(--slate-400);font-weight:normal">${esc(matCode)}</span></span>
                             <i data-lucide="chevron-down" class="c-sel-icon" id="bom-icon-${i}"></i>
                         </div>
                         <div class="c-sel-drop hide" id="bom-drop-${i}" onclick="event.stopPropagation()">
@@ -1098,13 +1444,13 @@
             }
             $('p-err').classList.add('hide');
             if(d.eP.id) d.prods[d.prods.findIndex(x=>eq(x.id, d.eP.id))] = d.eP;
-            else { d.eP.id = 'P'+Date.now(); d.prods.push(d.eP); }
+            else { d.eP.id = generateId('P'); d.prods.push(d.eP); }
             cls('m-prod'); drawPList(); if(eq(d.sId, d.eP.id)){drawMList(); drawMDet();} sync();
         };
 
         const openMat = id => {
             const target = id ? d.mats.find(x => eq(x.id, id)) : null;
-            d.eM = target ? JSON.parse(JSON.stringify(target)) : {id:'',code:'',name:'',stock:'',category:'部品'};
+            d.eM = target ? (window.structuredClone ? structuredClone(target) : JSON.parse(JSON.stringify(target))) : {id:'',code:'',name:'',stock:'',category:'部品'};
             
             h('mm-title', id ? '資材を編集' : '新規資材登録');
             $('m-mat').classList.remove('hide');
@@ -1121,7 +1467,7 @@
             }
             $('m-err').classList.add('hide');
             if(d.eM.id) d.mats[d.mats.findIndex(x=>eq(x.id, d.eM.id))] = d.eM;
-            else { d.eM.id = 'M'+Date.now(); d.mats.push(d.eM); }
+            else { d.eM.id = generateId('M'); d.mats.push(d.eM); }
             cls('m-mat'); drawMatList(); drawMDet(); sync();
         };
 
@@ -1129,6 +1475,8 @@
             $('m-bulk').classList.remove('hide');
             $('b-err').classList.add('hide');
             sv('b-text', '');
+            const lu = d.lastUpdate ? new Date(d.lastUpdate) : null;
+            h('b-last-update', lu && !isNaN(lu) ? `（前回：${lu.toLocaleString('ja-JP')}）` : '');
         };
 
         const applyBulk = () => {
@@ -1178,11 +1526,32 @@
             cls('m-bulk');
             drawMatList();
             drawMDet(); 
-            sync();
+            sync({bulkUpdate: true});
         };
 
-        const delP = id => { showConfirm('この製品を削除してもよろしいですか？\n削除したデータは復元できません。', () => { d.prods=d.prods.filter(x=>!eq(x.id, id)); delete d.plan[id]; drawPList(); if(eq(d.sId, id)){d.sId=null; drawMList(); drawMDet();} drawBdg(); sync(); }); };
-        const delM = id => { showConfirm('この資材を削除してもよろしいですか？\n関連する製品の構成からも削除されます。', () => { d.mats=d.mats.filter(x=>!eq(x.id, id)); d.prods.forEach(p=>p.bom=p.bom.filter(b=>!eq(b.materialId, id))); drawMatList(); drawPList(); drawMDet(); sync(); }); };
+        const delP = async (id) => {
+            const confirmed = await showConfirm('この製品を削除してもよろしいですか？\n削除したデータは復元できません。');
+            if (confirmed) {
+                d.prods = d.prods.filter(x => !eq(x.id, id));
+                delete d.plan[id];
+                drawPList();
+                if (eq(d.sId, id)) { d.sId = null; drawMList(); drawMDet(); }
+                drawBdg();
+                sync();
+            }
+        };
+        
+        const delM = async (id) => {
+            const confirmed = await showConfirm('この資材を削除してもよろしいですか？\n関連する製品の構成からも削除されます。');
+            if (confirmed) {
+                d.mats = d.mats.filter(x => !eq(x.id, id));
+                d.prods.forEach(p => p.bom = p.bom.filter(b => !eq(b.materialId, id)));
+                drawMatList();
+                drawPList();
+                drawMDet();
+                sync();
+            }
+        };
 
         window.onload = init;
     </script>
