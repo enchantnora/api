@@ -582,11 +582,6 @@
         let lastTappedElement = null;
         const DOUBLE_TAP_THRESHOLD = 300;
 
-        // ダブルタップによるブラウザの拡大(ズーム)を抑制する。
-        // 「時間が近い」だけで判定すると、モーダル内で連続スクロールした際の
-        // 素早い再タッチまでダブルタップ扱いしてしまい、スクロールが止まる原因になる。
-        // そのため「位置がほぼ同じ」かつ「直前のタッチが動きのないタップだった」
-        // 場合のみズームを抑制する。
         const DOUBLE_TAP_ZOOM_WINDOW = 350;
         const DOUBLE_TAP_ZOOM_Y_TOLERANCE = 25;
 
@@ -614,8 +609,6 @@
         document.addEventListener('touchmove', function(e) {
             const t = e.touches[0];
             if (!t) return;
-            // 縦方向の移動だけを見る。横スワイプ(ページ送り)は意図的な動きなので
-            // ここでは「動いた」に含めず、引き続きズーム防止の対象にする。
             if (Math.abs(t.clientY - zoomTouchStart.y) > 10) {
                 zoomTouchStart.moved = true;
             }
@@ -626,7 +619,6 @@
             if (!t) return;
 
             if (zoomTouchStart.moved) {
-                // 縦スクロールだった場合は「タップ」として扱わない
                 lastStationaryTap.valid = false;
                 return;
             }

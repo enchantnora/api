@@ -8879,3 +8879,28 @@ Arguments: ()
 [2026-07-23 10:15:39 +0900] [84365] [INFO] Started server process [84365]
 [2026-07-23 10:15:39 +0900] [84365] [INFO] Waiting for application startup.
 [2026-07-23 10:15:39 +0900] [84365] [INFO] Application startup complete.
+[2026-07-23 10:17:28 +0900] [84317] [INFO] Handling signal: term
+[2026-07-23 10:17:28 +0900] [84365] [INFO] Shutting down
+[2026-07-23 10:17:28 +0900] [84365] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 10:17:28 +0900] [84363] [INFO] Shutting down
+[2026-07-23 10:17:28 +0900] [84363] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 10:17:28 +0900] [84365] [INFO] Waiting for application shutdown.
+[2026-07-23 10:17:28 +0900] [84365] [INFO] Application shutdown complete.
+[2026-07-23 10:17:28 +0900] [84365] [INFO] Finished server process [84365]
+[2026-07-23 10:17:28 +0900] [84317] [ERROR] Worker (pid:84365) was sent SIGTERM!
+[2026-07-23 10:17:28 +0900] [84363] [INFO] Waiting for application shutdown.
+[2026-07-23 10:17:28 +0900] [84363] [INFO] Application shutdown complete.
+[2026-07-23 10:17:28 +0900] [84363] [INFO] Finished server process [84363]
+[2026-07-23 10:17:28 +0900] [84317] [ERROR] Worker (pid:84363) was sent SIGTERM!
+[2026-07-23 10:17:28 +0900] [84317] [INFO] Shutting down: Master
+[2026-07-23 10:17:29 +0900] [84520] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 10:17:29 +0900] [84520] [INFO] Listening at: http://0.0.0.0:9900 (84520)
+[2026-07-23 10:17:29 +0900] [84520] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 10:17:29 +0900] [84566] [INFO] Booting worker with pid: 84566
+[2026-07-23 10:17:29 +0900] [84567] [INFO] Booting worker with pid: 84567
+[2026-07-23 10:17:30 +0900] [84566] [INFO] Started server process [84566]
+[2026-07-23 10:17:30 +0900] [84567] [INFO] Started server process [84567]
+[2026-07-23 10:17:30 +0900] [84566] [INFO] Waiting for application startup.
+[2026-07-23 10:17:30 +0900] [84567] [INFO] Waiting for application startup.
+[2026-07-23 10:17:30 +0900] [84567] [INFO] Application startup complete.
+[2026-07-23 10:17:30 +0900] [84566] [INFO] Application startup complete.
