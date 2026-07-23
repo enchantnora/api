@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import unquote
 from fastapi import Request, Response
 import anyio
 
@@ -63,6 +64,9 @@ async def requests_control(request: Request, call_next):
         client_ip = "Unknown"
 
     path = request.url.path
+    query = unquote(request.url.query)
+    full_path = f"{path}?{query}" if query else path
+    
     method = request.method
     user_agent = request.headers.get("user-agent", "-")
 
@@ -76,7 +80,7 @@ async def requests_control(request: Request, call_next):
 
     if client_ip not in ADMIN_IPS:
         now = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        log_message = f'[{now}] {client_ip} "{method} {path}" {status} "{user_agent}"'
+        log_message = f'[{now}] {client_ip} "{method} {full_path}" {status} "{user_agent}"'
         await anyio.to_thread.run_sync(write_log, log_message)
 
     return response

@@ -9354,3 +9354,53 @@ Arguments: ()
 [2026-07-23 12:36:27 +0900] [88187] [INFO] Started server process [88187]
 [2026-07-23 12:36:27 +0900] [88187] [INFO] Waiting for application startup.
 [2026-07-23 12:36:27 +0900] [88187] [INFO] Application startup complete.
+[2026-07-23 12:48:07 +0900] [88140] [INFO] Handling signal: term
+[2026-07-23 12:48:07 +0900] [88187] [INFO] Shutting down
+[2026-07-23 12:48:07 +0900] [88187] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 12:48:07 +0900] [88186] [INFO] Shutting down
+[2026-07-23 12:48:07 +0900] [88186] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 12:48:07 +0900] [88187] [INFO] Waiting for application shutdown.
+[2026-07-23 12:48:07 +0900] [88187] [INFO] Application shutdown complete.
+[2026-07-23 12:48:07 +0900] [88187] [INFO] Finished server process [88187]
+[2026-07-23 12:48:07 +0900] [88186] [INFO] Waiting for application shutdown.
+[2026-07-23 12:48:07 +0900] [88186] [INFO] Application shutdown complete.
+[2026-07-23 12:48:07 +0900] [88186] [INFO] Finished server process [88186]
+[2026-07-23 12:48:07 +0900] [88140] [ERROR] Worker (pid:88187) was sent SIGTERM!
+[2026-07-23 12:48:07 +0900] [88140] [ERROR] Worker (pid:88186) was sent SIGTERM!
+[2026-07-23 12:48:07 +0900] [88140] [INFO] Shutting down: Master
+[2026-07-23 12:48:08 +0900] [88381] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 12:48:08 +0900] [88381] [INFO] Listening at: http://0.0.0.0:9900 (88381)
+[2026-07-23 12:48:08 +0900] [88381] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 12:48:08 +0900] [88427] [INFO] Booting worker with pid: 88427
+[2026-07-23 12:48:08 +0900] [88429] [INFO] Booting worker with pid: 88429
+[2026-07-23 12:48:10 +0900] [88427] [INFO] Started server process [88427]
+[2026-07-23 12:48:10 +0900] [88427] [INFO] Waiting for application startup.
+[2026-07-23 12:48:10 +0900] [88427] [INFO] Application startup complete.
+[2026-07-23 12:48:10 +0900] [88429] [INFO] Started server process [88429]
+[2026-07-23 12:48:10 +0900] [88429] [INFO] Waiting for application startup.
+[2026-07-23 12:48:10 +0900] [88429] [INFO] Application startup complete.
+[2026-07-23 12:51:39 +0900] [88381] [INFO] Handling signal: term
+[2026-07-23 12:51:39 +0900] [88427] [INFO] Shutting down
+[2026-07-23 12:51:39 +0900] [88427] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 12:51:39 +0900] [88429] [INFO] Shutting down
+[2026-07-23 12:51:39 +0900] [88429] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 12:51:39 +0900] [88427] [INFO] Waiting for application shutdown.
+[2026-07-23 12:51:39 +0900] [88427] [INFO] Application shutdown complete.
+[2026-07-23 12:51:39 +0900] [88427] [INFO] Finished server process [88427]
+[2026-07-23 12:51:39 +0900] [88381] [ERROR] Worker (pid:88427) was sent SIGTERM!
+[2026-07-23 12:51:39 +0900] [88429] [INFO] Waiting for application shutdown.
+[2026-07-23 12:51:39 +0900] [88429] [INFO] Application shutdown complete.
+[2026-07-23 12:51:39 +0900] [88429] [INFO] Finished server process [88429]
+[2026-07-23 12:51:39 +0900] [88381] [ERROR] Worker (pid:88429) was sent SIGTERM!
+[2026-07-23 12:51:39 +0900] [88381] [INFO] Shutting down: Master
+[2026-07-23 12:51:40 +0900] [88586] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 12:51:40 +0900] [88586] [INFO] Listening at: http://0.0.0.0:9900 (88586)
+[2026-07-23 12:51:40 +0900] [88586] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 12:51:40 +0900] [88632] [INFO] Booting worker with pid: 88632
+[2026-07-23 12:51:40 +0900] [88634] [INFO] Booting worker with pid: 88634
+[2026-07-23 12:51:41 +0900] [88632] [INFO] Started server process [88632]
+[2026-07-23 12:51:41 +0900] [88632] [INFO] Waiting for application startup.
+[2026-07-23 12:51:41 +0900] [88632] [INFO] Application startup complete.
+[2026-07-23 12:51:41 +0900] [88634] [INFO] Started server process [88634]
+[2026-07-23 12:51:41 +0900] [88634] [INFO] Waiting for application startup.
+[2026-07-23 12:51:41 +0900] [88634] [INFO] Application startup complete.
