@@ -8441,3 +8441,31 @@ Could not determine dtype for column 36, falling back to string
 Could not determine dtype for column 55, falling back to string
 Could not determine dtype for column 57, falling back to string
 Could not determine dtype for column 59, falling back to string
+[2026-07-22 17:00:01 +0900] [31893] [WARNING] Invalid HTTP request received.
+[2026-07-22 17:00:04 +0900] [31893] [WARNING] Invalid HTTP request received.
+[2026-07-22 17:01:03 +0900] [31893] [WARNING] Invalid HTTP request received.
+[2026-07-23 09:07:34 +0900] [31847] [INFO] Handling signal: term
+[2026-07-23 09:07:34 +0900] [31893] [INFO] Shutting down
+[2026-07-23 09:07:34 +0900] [31893] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:07:34 +0900] [31895] [INFO] Shutting down
+[2026-07-23 09:07:34 +0900] [31895] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:07:34 +0900] [31893] [INFO] Waiting for application shutdown.
+[2026-07-23 09:07:34 +0900] [31893] [INFO] Application shutdown complete.
+[2026-07-23 09:07:34 +0900] [31893] [INFO] Finished server process [31893]
+[2026-07-23 09:07:34 +0900] [31847] [ERROR] Worker (pid:31893) was sent SIGTERM!
+[2026-07-23 09:07:34 +0900] [31895] [INFO] Waiting for application shutdown.
+[2026-07-23 09:07:34 +0900] [31895] [INFO] Application shutdown complete.
+[2026-07-23 09:07:34 +0900] [31895] [INFO] Finished server process [31895]
+[2026-07-23 09:07:34 +0900] [31847] [ERROR] Worker (pid:31895) was sent SIGTERM!
+[2026-07-23 09:07:34 +0900] [31847] [INFO] Shutting down: Master
+[2026-07-23 09:07:35 +0900] [82062] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:07:35 +0900] [82062] [INFO] Listening at: http://0.0.0.0:9900 (82062)
+[2026-07-23 09:07:35 +0900] [82062] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:07:35 +0900] [82108] [INFO] Booting worker with pid: 82108
+[2026-07-23 09:07:35 +0900] [82110] [INFO] Booting worker with pid: 82110
+[2026-07-23 09:07:36 +0900] [82110] [INFO] Started server process [82110]
+[2026-07-23 09:07:36 +0900] [82110] [INFO] Waiting for application startup.
+[2026-07-23 09:07:36 +0900] [82110] [INFO] Application startup complete.
+[2026-07-23 09:07:36 +0900] [82108] [INFO] Started server process [82108]
+[2026-07-23 09:07:36 +0900] [82108] [INFO] Waiting for application startup.
+[2026-07-23 09:07:36 +0900] [82108] [INFO] Application startup complete.

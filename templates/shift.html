@@ -24,6 +24,12 @@
             text-size-adjust: 100%;
             font-size: 10px;
         }
+        @media (max-width: 260px) {
+            body, html { font-size: 8px; }
+        }
+        body.no-scroll {
+            overflow: hidden !important;
+        }
         #scrollframe {
             display: block;
             width: 100%;
@@ -36,14 +42,14 @@
             padding-bottom: 50px;
         }
         #dateData {
-            font-size: 1.8em;
+            font-size: clamp(1.1em, 5vw, 1.8em);
             line-height: 0.9;
             padding-top: 20px;
         }
         #shiftData {
             display: inline-block;
             text-align: left;
-            font-size: 2em;
+            font-size: clamp(1.3em, 6vw, 2em);
             line-height: 1.2;
         }
         .group {
@@ -60,6 +66,10 @@
         }
         #w_hakui { color: #FFFFFF; }
         #b_hakui { color: #64C0FA; }
+        .name {
+            display: inline-block;
+            padding: 2px 15px;
+        }
         #button {
             z-index: 5;
             position: fixed;
@@ -81,6 +91,7 @@
             color: #000;
             font-weight: bold;
             transform: translate(-50%, -50%);
+            touch-action: manipulation;
         }
         .now {
             z-index: 3;
@@ -116,6 +127,105 @@
             position: relative;
             top: -4vh;
         }
+        #modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+        }
+        #modal-content {
+            position: absolute;
+            top: 50%;
+            left: 3vw;
+            width: 94vw;
+            max-height: 92vh;
+            transform: translateY(-50%);
+            background: #222;
+            border-radius: 10px;
+            box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 8px;
+            overflow-y: auto;
+        }
+        #modal-title {
+            font-size: clamp(1.1em, 4vw, 1.5em);
+            color: #ddd;
+            margin: 5px 0;
+            text-align: center;
+            font-weight: normal;
+            position: relative;
+        }
+        .modal-range {
+            position: absolute;
+            right: 3vw;
+            bottom: 2px;
+            font-size: 0.75em;
+            color: #aaa;
+        }
+        #modal-calendar {
+            width: 98%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            font-size: clamp(1em, 3.2vw, 1.4em);
+            table-layout: fixed;
+        }
+        #modal-calendar th, #modal-calendar td {
+            border: 1px solid #555;
+            width: 14.28%;
+        }
+        #modal-calendar th {
+            background-color: #333;
+            height: 26px;
+            font-weight: normal;
+            text-align: center;
+            vertical-align: middle;
+        }
+        #modal-calendar td {
+            padding: 0;
+            vertical-align: middle;
+        }
+        .cal-cell-inner {
+            position: relative;
+            width: 100%;
+            height: clamp(32px, 9vh, 52px);
+        }
+        .cal-date {
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: clamp(1em, 3vw, 1.2em);
+            color: #aaa;
+            line-height: 1;
+        }
+        .cal-shift {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(1.2em, 4.5vw, 1.8em);
+            font-weight: bold;
+            color: #fff;
+            line-height: 1;
+        }
+        .cal-today {
+            background-color: #444;
+        }
+        .cal-today .cal-date {
+            color: #FF7D81;
+            font-weight: bold;
+        }
+        .cal-out-of-range {
+            background-color: #1a1a1a;
+        }
+        .cal-out-of-range .cal-date {
+            color: #444;
+        }
     </style>
 </head>
 <body>
@@ -124,6 +234,24 @@
         <div class="circle r_b"><span>+7日</span></div>
         <div class="circle l_b"><span>-7日</span></div>
     </div>
+
+    <div id="modal-overlay">
+        <div id="modal-content">
+            <div id="modal-title"></div>
+            <table id="modal-calendar">
+                <thead>
+                    <tr>
+                        <th style="color:#FF7D81;">日</th>
+                        <th>月</th><th>火</th><th>水</th><th>木</th><th>金</th>
+                        <th style="color:#64C0FA;">土</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div id="scrollframe">
         <div id="content">
             <div id="dateData"></div>
@@ -135,10 +263,20 @@
     const cache = new Map();
     const maxCacheSize = 30;
     const CACHE_EXPIRE_MS = 60 * 60 * 1000;
-    
+
     let lastViewTime = Date.now();
     let G_current = 0;
-    let OK_current = 0;
+
+    let modalOpenTime = 0;
+    const MODAL_OPEN_GUARD_MS = 350;
+
+    const dateArea = document.getElementById('dateData');
+    const contentArea = document.getElementById('shiftData');
+    const buttonLayer = document.getElementById('button');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalTitle = document.getElementById('modal-title');
+    const modalTbody = document.querySelector('#modal-calendar tbody');
+    const inPresent = document.getElementById('content');
 
     async function fetchShift(address) {
         if (cache.has(address)) return cache.get(address);
@@ -146,7 +284,7 @@
         try {
             const response = await fetch(`../shift/${address}`);
             if (!response.ok) throw new Error(`Network response was not ok ${response.statusText}`);
-            
+
             const data = await response.json();
             if (data.shift) {
                 cache.set(address, data.shift);
@@ -178,22 +316,22 @@
         today.setDate(today.getDate() + dayPlus);
         const hour = today.getHours();
         const minute = String(today.getMinutes()).padStart(2, '0');
-        
+
         today.setHours(today.getHours() - 8);
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
-        
+
         return t === 0 ? `${year}${month}${day}` : `${hour}${minute}`;
     }
 
     function shiftWork(currentTimeNum, pageTodayStr, pageYesterdayStr) {
         const activeShifts = {};
-        
+
         if (currentTimeNum >= 900 && currentTimeNum < 2100) activeShifts['A'] = pageTodayStr;
         if (currentTimeNum >= 2100 || currentTimeNum < 800) activeShifts['C'] = pageTodayStr;
         if (currentTimeNum >= 800 && currentTimeNum < 900) activeShifts['C'] = pageYesterdayStr;
-        
+
         if (currentTimeNum >= 1450) {
             activeShifts['2'] = pageTodayStr;
             activeShifts['-2'] = pageTodayStr;
@@ -206,10 +344,10 @@
             activeShifts['3'] = pageYesterdayStr;
             activeShifts['-3'] = pageYesterdayStr;
         }
-        
+
         if (currentTimeNum >= 800 && currentTimeNum < 1710) activeShifts['1'] = pageTodayStr;
         if (currentTimeNum >= 1150 && currentTimeNum < 2100) activeShifts['A2'] = pageTodayStr;
-        
+
         return activeShifts;
     }
 
@@ -218,24 +356,23 @@
         if (now - lastViewTime >= CACHE_EXPIRE_MS) cache.clear();
         lastViewTime = now;
 
-        const date_area = document.getElementById('dateData');
-        const content_area = document.getElementById('shiftData');
-        
+        const todayStr = getPresent(0);
+        const yesterdayStr = getPresent(-1);
+        const currentTimeNum = parseInt(getPresent(0, 1), 10);
+
         try {
             const shiftArray = await fetchShift(getPresent(current));
             if (shiftArray === 'shift not found') {
-                date_area.textContent = '';
-                content_area.textContent = 'データがありません';
-                G_current = OK_current + 1;
+                dateArea.textContent = '';
+                contentArea.textContent = 'データがありません';
                 return;
             }
-            OK_current = G_current;
 
-            date_area.innerHTML = '';
+            dateArea.innerHTML = '';
             const parser = new DOMParser();
             const dateFragment = document.createDocumentFragment();
 
-            if (getPresent(0) === shiftArray.index_day) {
+            if (todayStr === shiftArray.index_day) {
                 const span = document.createElement('span');
                 span.className = 'pickup';
                 if (shiftArray.days) {
@@ -252,7 +389,7 @@
                 const colorDoc = parser.parseFromString(shiftArray.color, 'text/html');
                 Array.from(colorDoc.body.childNodes).forEach(node => dateFragment.appendChild(node.cloneNode(true)));
             }
-            date_area.appendChild(dateFragment);
+            dateArea.appendChild(dateFragment);
 
             const shiftFragment = document.createDocumentFragment();
             const data = JSON.parse(shiftArray.member);
@@ -262,8 +399,7 @@
                 "1": "早番", "2": "中番", "-2": "中番応援", "3": "夜勤", "-3": "夜勤応援",
             };
 
-            const currentTimeNum = parseInt(getPresent(0, 1), 10);
-            const activeShifts = shiftWork(currentTimeNum, getPresent(0), getPresent(-1));
+            const activeShifts = shiftWork(currentTimeNum, todayStr, yesterdayStr);
             const dataDateStr = String(shiftArray.index_day);
 
             const unassignedKeys = Object.keys(data).filter(key => !order.includes(key));
@@ -283,33 +419,35 @@
                 const isNamed = key in keyNames;
                 const displayKey = isNamed ? keyNames[key] : key;
                 const mark = isNamed ? "■■■" : "□□□";
-                
+
                 const groupDiv = document.createElement('div');
                 groupDiv.className = (activeShifts[key] === dataDateStr) ? "group pickup" : "group";
                 groupDiv.innerHTML = `${mark}[ ${displayKey} ]${mark}<br>`;
-                
+
                 if (Array.isArray(data[key])) {
                     data[key].forEach(member => {
-                        groupDiv.appendChild(document.createTextNode(` ${member}`));
+                        groupDiv.appendChild(document.createTextNode(' '));
+                        const nameSpan = document.createElement('span');
+                        nameSpan.className = 'name';
+                        nameSpan.textContent = member;
+                        groupDiv.appendChild(nameSpan);
                         groupDiv.appendChild(document.createElement('br'));
                     });
                 }
                 shiftFragment.appendChild(groupDiv);
             }
-            
-            content_area.innerHTML = '';
-            content_area.appendChild(shiftFragment);
 
-            const f_area = document.getElementById('scrollframe');
+            contentArea.innerHTML = '';
+            contentArea.appendChild(shiftFragment);
+
             setTimeout(() => {
                 window.scrollTo(0, 0);
                 document.body.scrollTop = 0;
                 document.documentElement.scrollTop = 0;
-                f_area.documentElement.scrollTop = 0;
             }, 10);
-            
+
         } catch (error) {
-            content_area.textContent = 'Error loading shift data';
+            contentArea.textContent = 'Error loading shift data';
         }
 
         const stock = 9;
@@ -324,34 +462,158 @@
     }
 
     function initButtons() {
-        const btn = document.getElementById('button');
-        
-        const touchendClickHandler = (event) => {
-            event.preventDefault();
+        const handlePress = (event) => {
             const target = event.target.closest('.circle');
             if (!target) return;
+            event.preventDefault();
 
             if (target.classList.contains('now')) G_current = 0;
             else if (target.classList.contains('r_b')) G_current += 7;
             else if (target.classList.contains('l_b')) G_current -= 7;
-            
-            if (target.classList.contains('now') || target.classList.contains('r_b') || target.classList.contains('l_b')) {
-                mainWrite(G_current);
-            }
+            else return;
+
+            mainWrite(G_current);
         };
 
-        btn.addEventListener('touchend', touchendClickHandler);
-        btn.addEventListener('click', touchendClickHandler);
+        buttonLayer.addEventListener('pointerup', handlePress);
+    }
+
+    function renderModalCalendar(data, name) {
+        modalTbody.innerHTML = '';
+
+        if (!data || Object.keys(data).length === 0) {
+            modalTitle.textContent = `${name} (データなし)`;
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 7;
+            td.style.textAlign = 'center';
+            td.style.verticalAlign = 'middle';
+            td.textContent = "データがありません";
+            tr.appendChild(td);
+            modalTbody.appendChild(tr);
+            return;
+        }
+
+        const keys = Object.keys(data).sort();
+        const firstDateStr = keys[0];
+        const lastDateStr = keys[keys.length - 1];
+
+        const fMonth = parseInt(firstDateStr.substring(4, 6), 10);
+        const lMonth = parseInt(lastDateStr.substring(4, 6), 10);
+
+        const rangeText = (fMonth === lMonth) ? `${fMonth}月` : `${fMonth}月～${lMonth}月`;
+
+        modalTitle.innerHTML = `${name}<span class="modal-range">${rangeText}</span>`;
+
+        const year = parseInt(firstDateStr.substring(0, 4), 10);
+        const month = parseInt(firstDateStr.substring(4, 6), 10) - 1;
+        const day = parseInt(firstDateStr.substring(6, 8), 10);
+
+        const startDate = new Date(year, month, day);
+        const startDayOfWeek = startDate.getDay();
+
+        const calStartDate = new Date(startDate);
+        calStartDate.setDate(startDate.getDate() - startDayOfWeek);
+
+        const lYear = parseInt(lastDateStr.substring(0, 4), 10);
+        const lMonthObj = parseInt(lastDateStr.substring(4, 6), 10) - 1;
+        const lDay = parseInt(lastDateStr.substring(6, 8), 10);
+        const lastDate = new Date(lYear, lMonthObj, lDay);
+
+        let currentDate = new Date(calStartDate);
+        const todayStr = getPresent(0);
+        const rowFragment = document.createDocumentFragment();
+
+        for (let row = 0; row < 6; row++) {
+            const tr = document.createElement('tr');
+
+            for (let col = 0; col < 7; col++) {
+                const td = document.createElement('td');
+
+                const cYear = currentDate.getFullYear();
+                const cMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const cDay = String(currentDate.getDate()).padStart(2, '0');
+                const dateKey = `${cYear}${cMonth}${cDay}`;
+
+                const innerDiv = document.createElement('div');
+                innerDiv.className = 'cal-cell-inner';
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'cal-date';
+                dateDiv.textContent = parseInt(cDay, 10);
+
+                const shiftDiv = document.createElement('div');
+                shiftDiv.className = 'cal-shift';
+
+                if (data.hasOwnProperty(dateKey)) {
+                    shiftDiv.textContent = data[dateKey];
+                } else {
+                    td.classList.add('cal-out-of-range');
+                }
+
+                if (dateKey === todayStr) {
+                    td.classList.add('cal-today');
+                }
+
+                innerDiv.appendChild(dateDiv);
+                innerDiv.appendChild(shiftDiv);
+                td.appendChild(innerDiv);
+                tr.appendChild(td);
+
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            rowFragment.appendChild(tr);
+
+            if (currentDate > lastDate) {
+                break;
+            }
+        }
+        modalTbody.appendChild(rowFragment);
     }
 
     (function() {
         let isSwiping = false, startX, currentX, longPressTimer = null, hasMoved = false, startTime = 0, tappedElement = null, isLongPress = false;
         const threshold = 50, LONG_PRESS_DURATION = 1000, MOVE_THRESHOLD = 10, TAP_TIME_THRESHOLD = 400;
-        const inPresent = document.getElementById('content');
-        const buttonLayer = document.getElementById('button');
-        
+
+        let lastTapTime = 0;
+        let lastTappedElement = null;
+        const DOUBLE_TAP_THRESHOLD = 300;
+
         mainWrite();
         initButtons();
+
+        async function handleTap(element) {
+            if (!element.closest('.circle')) {
+                buttonLayer.style.display = 'none';
+            }
+
+            if (element.classList.contains('name')) {
+                const now = Date.now();
+                if (now - lastTapTime < DOUBLE_TAP_THRESHOLD && element === lastTappedElement) {
+
+                    const name = element.textContent;
+                    const indexDay = getPresent(G_current);
+
+                    modalTitle.textContent = `${name} のデータを取得中...`;
+                    modalTbody.innerHTML = '';
+                    modalOverlay.style.display = 'block';
+                    document.body.classList.add('no-scroll');
+                    modalOpenTime = Date.now();
+
+                    try {
+                        const response = await fetch(`/shift/${indexDay}?name=${encodeURIComponent(name)}`);
+                        if (!response.ok) throw new Error("Network error");
+                        const data = await response.json();
+                        renderModalCalendar(data, name);
+                    } catch (error) {
+                        renderModalCalendar(null, name);
+                    }
+                }
+                lastTapTime = now;
+                lastTappedElement = element;
+            }
+        }
 
         async function animateSwipe(direction) {
             const width = window.innerWidth;
@@ -363,25 +625,31 @@
 
             inPresent.style.transition = 'none';
             inPresent.style.transform = `translateX(${-direction * width}px)`;
-    
+
             inPresent.offsetHeight;
-            
+
             inPresent.style.transition = 'transform 0.15s cubic-bezier(0, 1.17, 0.86, 0.99)';
             inPresent.style.transform = 'translateX(0px)';
-        }
-
-        function handleTap(element) {
-            if (!element.closest('.circle')) {
-                buttonLayer.style.display = 'none';
-            }
         }
 
         function handleLongPress() {
             buttonLayer.style.display = 'block';
         }
 
+        function resetSwipeState() {
+            isSwiping = false;
+            hasMoved = false;
+            isLongPress = false;
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        }
+
         function handlePointerStart(e) {
-            startX = e.changedTouches ? e.changedTouches[0].screenX : e.screenX;
+            if (document.body.classList.contains('no-scroll')) return;
+
+            startX = e.clientX;
             currentX = startX;
             startTime = Date.now();
             isSwiping = true;
@@ -389,7 +657,7 @@
             isLongPress = false;
             tappedElement = e.target;
             inPresent.style.transition = 'none';
-            
+
             longPressTimer = setTimeout(() => {
                 if (!hasMoved) {
                     isLongPress = true;
@@ -400,9 +668,9 @@
 
         function handlePointerMove(e) {
             if (!isSwiping) return;
-            currentX = e.changedTouches ? e.changedTouches[0].screenX : e.screenX;
+            currentX = e.clientX;
             const distance = Math.abs(currentX - startX);
-            
+
             if (distance > MOVE_THRESHOLD && !hasMoved) {
                 hasMoved = true;
                 if (longPressTimer) {
@@ -419,9 +687,9 @@
                 longPressTimer = null;
             }
             if (!isSwiping) return;
-            
+
             isSwiping = false;
-            currentX = e.changedTouches ? e.changedTouches[0].screenX : e.screenX;
+            currentX = e.clientX;
             const distance = Math.abs(currentX - startX);
             const duration = Date.now() - startTime;
 
@@ -429,14 +697,14 @@
                 inPresent.style.transition = 'transform 0.1s ease';
                 inPresent.style.transform = 'translateX(0px)';
                 handleTap(tappedElement);
-            } 
+            }
             else if (isLongPress) {
                 inPresent.style.transition = 'transform 0.1s ease';
                 inPresent.style.transform = 'translateX(0px)';
-            } 
+            }
             else {
                 buttonLayer.style.display = 'none';
-                
+
                 const realDistance = currentX - startX;
                 if (realDistance > threshold) {
                     G_current--;
@@ -453,13 +721,48 @@
             }
         }
 
-        document.addEventListener('touchstart', handlePointerStart, { passive: true });
-        document.addEventListener('touchmove', handlePointerMove, { passive: true });
-        document.addEventListener('touchend', handlePointerEnd, { passive: true });
-        
-        document.addEventListener('mousedown', handlePointerStart, { passive: true });
-        document.addEventListener('mousemove', handlePointerMove, { passive: true });
-        document.addEventListener('mouseup', handlePointerEnd, { passive: true });
+        document.addEventListener('pointerdown', handlePointerStart, { passive: true });
+        document.addEventListener('pointermove', handlePointerMove, { passive: true });
+        document.addEventListener('pointerup', handlePointerEnd, { passive: true });
+        document.addEventListener('pointercancel', resetSwipeState, { passive: true });
+
+        let modalStartX, modalStartY, modalStartTime, modalMoved = false;
+        const MODAL_MOVE_THRESHOLD = 10;
+        const MODAL_TAP_TIME_THRESHOLD = 400;
+
+        modalOverlay.addEventListener('pointerdown', function(e) {
+            modalStartX = e.clientX;
+            modalStartY = e.clientY;
+            modalStartTime = Date.now();
+            modalMoved = false;
+        }, { passive: true });
+
+        modalOverlay.addEventListener('pointermove', function(e) {
+            if (modalStartX === undefined) return;
+            const dx = Math.abs(e.clientX - modalStartX);
+            const dy = Math.abs(e.clientY - modalStartY);
+            if (dx > MODAL_MOVE_THRESHOLD || dy > MODAL_MOVE_THRESHOLD) {
+                modalMoved = true;
+            }
+        }, { passive: true });
+
+        modalOverlay.addEventListener('pointerup', function(e) {
+            if (modalStartX === undefined) return;
+            const duration = Date.now() - modalStartTime;
+            const justOpened = Date.now() - modalOpenTime < MODAL_OPEN_GUARD_MS;
+
+            if (!modalMoved && duration < MODAL_TAP_TIME_THRESHOLD && !justOpened) {
+                modalOverlay.style.display = 'none';
+                document.body.classList.remove('no-scroll');
+            }
+            modalStartX = undefined;
+        }, { passive: true });
+
+        modalOverlay.addEventListener('pointercancel', function() {
+            modalStartX = undefined;
+            modalMoved = false;
+        }, { passive: true });
+
     })();
     </script>
 </body>

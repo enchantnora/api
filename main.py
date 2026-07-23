@@ -338,17 +338,65 @@ async def output_table(table_name: str, page: int = 1, db: aiosqlite.Connection 
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/shift/{index_day}", name="shift")
-async def read_shift(index_day: str, db: aiosqlite.Connection = Depends(get_db)):
+async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = Depends(get_db)):
+    if not name:
+        try:
+            async with db.execute("SELECT * FROM shift WHERE index_day = ?", (index_day,)) as cursor:
+                row = await cursor.fetchone()
+        except aiosqlite.Error as e:
+            raise HTTPException(status_code=500, detail=str(e))
+        return {"shift": dict(row) if row else None}
+
+    cleaned_query_name = re.sub(r'\(.*?\)|（.*?）', '', name).strip()
+
     try:
-        async with db.execute("SELECT * FROM shift WHERE index_day = ?", (index_day,)) as cursor:
-            row = await cursor.fetchone()
-            
-        if row is None:
-            return {"shift": None}
-            
-        return {"shift": dict(row)}
+        dt = datetime.datetime.strptime(index_day, "%Y%m%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format")
+
+    def add_month(year: int, month: int, delta: int) -> tuple[int, int]:
+        total = year * 12 + (month - 1) + delta
+        return total // 12, total % 12 + 1
+
+    if dt.day >= 16:
+        start_date = dt.replace(day=16)
+        y, m = add_month(dt.year, dt.month, 1)
+        end_date = datetime.datetime(y, m, 15)
+    else:
+        end_date = dt.replace(day=15)
+        y, m = add_month(dt.year, dt.month, -1)
+        start_date = datetime.datetime(y, m, 16)
+
+    days = (end_date - start_date).days + 1
+    result_dict = {
+        (start_date + datetime.timedelta(days=i)).strftime("%Y%m%d"): ""
+        for i in range(days)
+    }
+
+    try:
+        async with db.execute(
+            "SELECT index_day, member FROM shift WHERE index_day BETWEEN ? AND ?",
+            (start_date.strftime("%Y%m%d"), end_date.strftime("%Y%m%d")),
+        ) as cursor:
+            rows = await cursor.fetchall()
     except aiosqlite.Error as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    for row in rows:
+        day, member_str = row["index_day"], row["member"]
+        if day not in result_dict or not member_str:
+            continue
+        try:
+            member_data = json.loads(member_str)
+        except json.JSONDecodeError:
+            continue
+        for key, names_list in member_data.items():
+            cleaned_names_list = [re.sub(r'\(.*?\)|（.*?）', '', n).strip() for n in names_list]
+            if cleaned_query_name in cleaned_names_list:
+                result_dict[day] = key
+                break
+
+    return result_dict
 
 @app.get("/ms", name="shift_page")
 async def shift_page(request: Request, slug: str = None):
