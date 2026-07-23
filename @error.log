@@ -8469,3 +8469,413 @@ Could not determine dtype for column 59, falling back to string
 [2026-07-23 09:07:36 +0900] [82108] [INFO] Started server process [82108]
 [2026-07-23 09:07:36 +0900] [82108] [INFO] Waiting for application startup.
 [2026-07-23 09:07:36 +0900] [82108] [INFO] Application startup complete.
+[2026-07-23 09:15:56 +0900] [82062] [INFO] Handling signal: term
+[2026-07-23 09:15:56 +0900] [82110] [INFO] Shutting down
+[2026-07-23 09:15:56 +0900] [82110] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:15:57 +0900] [82108] [INFO] Shutting down
+[2026-07-23 09:15:57 +0900] [82108] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:15:57 +0900] [82110] [INFO] Waiting for application shutdown.
+[2026-07-23 09:15:57 +0900] [82110] [INFO] Application shutdown complete.
+[2026-07-23 09:15:57 +0900] [82110] [INFO] Finished server process [82110]
+[2026-07-23 09:15:57 +0900] [82062] [ERROR] Worker (pid:82110) was sent SIGTERM!
+[2026-07-23 09:15:57 +0900] [82108] [INFO] Waiting for application shutdown.
+[2026-07-23 09:15:57 +0900] [82108] [INFO] Application shutdown complete.
+[2026-07-23 09:15:57 +0900] [82108] [INFO] Finished server process [82108]
+[2026-07-23 09:15:57 +0900] [82062] [ERROR] Worker (pid:82108) was sent SIGTERM!
+[2026-07-23 09:15:57 +0900] [82062] [INFO] Shutting down: Master
+[2026-07-23 09:15:57 +0900] [82268] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:15:57 +0900] [82268] [INFO] Listening at: http://0.0.0.0:9900 (82268)
+[2026-07-23 09:15:57 +0900] [82268] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:15:57 +0900] [82314] [INFO] Booting worker with pid: 82314
+[2026-07-23 09:15:57 +0900] [82316] [INFO] Booting worker with pid: 82316
+[2026-07-23 09:15:59 +0900] [82314] [INFO] Started server process [82314]
+[2026-07-23 09:15:59 +0900] [82314] [INFO] Waiting for application startup.
+[2026-07-23 09:15:59 +0900] [82314] [INFO] Application startup complete.
+[2026-07-23 09:15:59 +0900] [82316] [INFO] Started server process [82316]
+[2026-07-23 09:15:59 +0900] [82316] [INFO] Waiting for application startup.
+[2026-07-23 09:15:59 +0900] [82316] [INFO] Application startup complete.
+[2026-07-23 09:19:32 +0900] [82268] [INFO] Handling signal: term
+[2026-07-23 09:19:33 +0900] [82316] [INFO] Shutting down
+[2026-07-23 09:19:33 +0900] [82316] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:19:33 +0900] [82314] [INFO] Shutting down
+[2026-07-23 09:19:33 +0900] [82314] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:19:33 +0900] [82316] [INFO] Waiting for application shutdown.
+[2026-07-23 09:19:33 +0900] [82316] [INFO] Application shutdown complete.
+[2026-07-23 09:19:33 +0900] [82316] [INFO] Finished server process [82316]
+[2026-07-23 09:19:33 +0900] [82314] [INFO] Waiting for application shutdown.
+[2026-07-23 09:19:33 +0900] [82314] [INFO] Application shutdown complete.
+[2026-07-23 09:19:33 +0900] [82314] [INFO] Finished server process [82314]
+[2026-07-23 09:19:33 +0900] [82268] [ERROR] Worker (pid:82316) was sent SIGTERM!
+[2026-07-23 09:19:33 +0900] [82268] [ERROR] Worker (pid:82314) was sent SIGTERM!
+[2026-07-23 09:19:33 +0900] [82268] [INFO] Shutting down: Master
+[2026-07-23 09:19:33 +0900] [82391] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:19:33 +0900] [82391] [INFO] Listening at: http://0.0.0.0:9900 (82391)
+[2026-07-23 09:19:33 +0900] [82391] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:19:33 +0900] [82437] [INFO] Booting worker with pid: 82437
+[2026-07-23 09:19:33 +0900] [82439] [INFO] Booting worker with pid: 82439
+[2026-07-23 09:19:35 +0900] [82437] [INFO] Started server process [82437]
+[2026-07-23 09:19:35 +0900] [82437] [INFO] Waiting for application startup.
+[2026-07-23 09:19:35 +0900] [82437] [INFO] Application startup complete.
+[2026-07-23 09:19:35 +0900] [82439] [INFO] Started server process [82439]
+[2026-07-23 09:19:35 +0900] [82439] [INFO] Waiting for application startup.
+[2026-07-23 09:19:35 +0900] [82439] [INFO] Application startup complete.
+[2026-07-23 09:22:46 +0900] [82391] [INFO] Handling signal: term
+[2026-07-23 09:22:46 +0900] [82437] [INFO] Shutting down
+[2026-07-23 09:22:46 +0900] [82437] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:22:46 +0900] [82439] [INFO] Shutting down
+[2026-07-23 09:22:46 +0900] [82439] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:22:46 +0900] [82437] [INFO] Waiting for application shutdown.
+[2026-07-23 09:22:46 +0900] [82437] [INFO] Application shutdown complete.
+[2026-07-23 09:22:46 +0900] [82437] [INFO] Finished server process [82437]
+[2026-07-23 09:22:46 +0900] [82391] [ERROR] Worker (pid:82437) was sent SIGTERM!
+[2026-07-23 09:22:46 +0900] [82439] [INFO] Waiting for application shutdown.
+[2026-07-23 09:22:46 +0900] [82439] [INFO] Application shutdown complete.
+[2026-07-23 09:22:46 +0900] [82439] [INFO] Finished server process [82439]
+[2026-07-23 09:22:46 +0900] [82391] [ERROR] Worker (pid:82439) was sent SIGTERM!
+[2026-07-23 09:22:46 +0900] [82391] [INFO] Shutting down: Master
+[2026-07-23 09:22:47 +0900] [82504] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:22:47 +0900] [82504] [INFO] Listening at: http://0.0.0.0:9900 (82504)
+[2026-07-23 09:22:47 +0900] [82504] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:22:47 +0900] [82550] [INFO] Booting worker with pid: 82550
+[2026-07-23 09:22:47 +0900] [82552] [INFO] Booting worker with pid: 82552
+[2026-07-23 09:22:49 +0900] [82550] [INFO] Started server process [82550]
+[2026-07-23 09:22:49 +0900] [82550] [INFO] Waiting for application startup.
+[2026-07-23 09:22:49 +0900] [82550] [INFO] Application startup complete.
+[2026-07-23 09:22:49 +0900] [82552] [INFO] Started server process [82552]
+[2026-07-23 09:22:49 +0900] [82552] [INFO] Waiting for application startup.
+[2026-07-23 09:22:49 +0900] [82552] [INFO] Application startup complete.
+[2026-07-23 09:24:23 +0900] [82504] [INFO] Handling signal: term
+[2026-07-23 09:24:23 +0900] [82552] [INFO] Shutting down
+[2026-07-23 09:24:23 +0900] [82552] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:24:23 +0900] [82550] [INFO] Shutting down
+[2026-07-23 09:24:23 +0900] [82550] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:24:24 +0900] [82552] [INFO] Waiting for application shutdown.
+[2026-07-23 09:24:24 +0900] [82552] [INFO] Application shutdown complete.
+[2026-07-23 09:24:24 +0900] [82552] [INFO] Finished server process [82552]
+[2026-07-23 09:24:24 +0900] [82550] [INFO] Waiting for application shutdown.
+[2026-07-23 09:24:24 +0900] [82550] [INFO] Application shutdown complete.
+[2026-07-23 09:24:24 +0900] [82550] [INFO] Finished server process [82550]
+[2026-07-23 09:24:24 +0900] [82504] [ERROR] Worker (pid:82552) was sent SIGTERM!
+[2026-07-23 09:24:24 +0900] [82504] [ERROR] Worker (pid:82550) was sent SIGTERM!
+[2026-07-23 09:24:24 +0900] [82504] [INFO] Shutting down: Master
+[2026-07-23 09:24:24 +0900] [82617] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:24:24 +0900] [82617] [INFO] Listening at: http://0.0.0.0:9900 (82617)
+[2026-07-23 09:24:24 +0900] [82617] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:24:24 +0900] [82663] [INFO] Booting worker with pid: 82663
+[2026-07-23 09:24:24 +0900] [82665] [INFO] Booting worker with pid: 82665
+[2026-07-23 09:24:26 +0900] [82663] [INFO] Started server process [82663]
+[2026-07-23 09:24:26 +0900] [82663] [INFO] Waiting for application startup.
+[2026-07-23 09:24:26 +0900] [82663] [INFO] Application startup complete.
+[2026-07-23 09:24:26 +0900] [82665] [INFO] Started server process [82665]
+[2026-07-23 09:24:26 +0900] [82665] [INFO] Waiting for application startup.
+[2026-07-23 09:24:26 +0900] [82665] [INFO] Application startup complete.
+[2026-07-23 09:27:53 +0900] [82617] [INFO] Handling signal: term
+[2026-07-23 09:27:53 +0900] [82665] [INFO] Shutting down
+[2026-07-23 09:27:53 +0900] [82665] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:27:53 +0900] [82663] [INFO] Shutting down
+[2026-07-23 09:27:53 +0900] [82663] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:27:53 +0900] [82665] [INFO] Waiting for application shutdown.
+[2026-07-23 09:27:53 +0900] [82665] [INFO] Application shutdown complete.
+[2026-07-23 09:27:53 +0900] [82665] [INFO] Finished server process [82665]
+[2026-07-23 09:27:53 +0900] [82663] [INFO] Waiting for application shutdown.
+[2026-07-23 09:27:53 +0900] [82663] [INFO] Application shutdown complete.
+[2026-07-23 09:27:53 +0900] [82663] [INFO] Finished server process [82663]
+[2026-07-23 09:27:53 +0900] [82617] [ERROR] Worker (pid:82665) was sent SIGTERM!
+[2026-07-23 09:27:53 +0900] [82617] [ERROR] Worker (pid:82663) was sent SIGTERM!
+[2026-07-23 09:27:53 +0900] [82617] [INFO] Shutting down: Master
+[2026-07-23 09:27:54 +0900] [82735] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:27:54 +0900] [82735] [INFO] Listening at: http://0.0.0.0:9900 (82735)
+[2026-07-23 09:27:54 +0900] [82735] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:27:54 +0900] [82799] [INFO] Booting worker with pid: 82799
+[2026-07-23 09:27:54 +0900] [82801] [INFO] Booting worker with pid: 82801
+[2026-07-23 09:27:55 +0900] [82799] [INFO] Started server process [82799]
+[2026-07-23 09:27:55 +0900] [82799] [INFO] Waiting for application startup.
+[2026-07-23 09:27:55 +0900] [82799] [INFO] Application startup complete.
+[2026-07-23 09:27:55 +0900] [82801] [INFO] Started server process [82801]
+[2026-07-23 09:27:55 +0900] [82801] [INFO] Waiting for application startup.
+[2026-07-23 09:27:55 +0900] [82801] [INFO] Application startup complete.
+[2026-07-23 09:29:36 +0900] [82735] [INFO] Handling signal: term
+[2026-07-23 09:29:36 +0900] [82799] [INFO] Shutting down
+[2026-07-23 09:29:36 +0900] [82799] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:29:36 +0900] [82801] [INFO] Shutting down
+[2026-07-23 09:29:36 +0900] [82801] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:29:36 +0900] [82799] [INFO] Waiting for application shutdown.
+[2026-07-23 09:29:36 +0900] [82799] [INFO] Application shutdown complete.
+[2026-07-23 09:29:36 +0900] [82799] [INFO] Finished server process [82799]
+[2026-07-23 09:29:36 +0900] [82735] [ERROR] Worker (pid:82799) was sent SIGTERM!
+[2026-07-23 09:29:36 +0900] [82801] [INFO] Waiting for application shutdown.
+[2026-07-23 09:29:36 +0900] [82801] [INFO] Application shutdown complete.
+[2026-07-23 09:29:36 +0900] [82801] [INFO] Finished server process [82801]
+[2026-07-23 09:29:36 +0900] [82735] [ERROR] Worker (pid:82801) was sent SIGTERM!
+[2026-07-23 09:29:36 +0900] [82735] [INFO] Shutting down: Master
+[2026-07-23 09:29:37 +0900] [82895] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:29:37 +0900] [82895] [INFO] Listening at: http://0.0.0.0:9900 (82895)
+[2026-07-23 09:29:37 +0900] [82895] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:29:37 +0900] [82941] [INFO] Booting worker with pid: 82941
+[2026-07-23 09:29:37 +0900] [82942] [INFO] Booting worker with pid: 82942
+[2026-07-23 09:29:38 +0900] [82941] [INFO] Started server process [82941]
+[2026-07-23 09:29:38 +0900] [82941] [INFO] Waiting for application startup.
+[2026-07-23 09:29:38 +0900] [82941] [INFO] Application startup complete.
+[2026-07-23 09:29:39 +0900] [82942] [INFO] Started server process [82942]
+[2026-07-23 09:29:39 +0900] [82942] [INFO] Waiting for application startup.
+[2026-07-23 09:29:39 +0900] [82942] [INFO] Application startup complete.
+[2026-07-23 09:32:41 +0900] [82895] [INFO] Handling signal: term
+[2026-07-23 09:32:41 +0900] [82941] [INFO] Shutting down
+[2026-07-23 09:32:41 +0900] [82941] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:32:41 +0900] [82942] [INFO] Shutting down
+[2026-07-23 09:32:41 +0900] [82942] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:32:41 +0900] [82941] [INFO] Waiting for application shutdown.
+[2026-07-23 09:32:41 +0900] [82941] [INFO] Application shutdown complete.
+[2026-07-23 09:32:41 +0900] [82941] [INFO] Finished server process [82941]
+[2026-07-23 09:32:41 +0900] [82942] [INFO] Waiting for application shutdown.
+[2026-07-23 09:32:41 +0900] [82942] [INFO] Application shutdown complete.
+[2026-07-23 09:32:41 +0900] [82942] [INFO] Finished server process [82942]
+[2026-07-23 09:32:41 +0900] [82895] [ERROR] Worker (pid:82941) was sent SIGTERM!
+[2026-07-23 09:32:41 +0900] [82895] [ERROR] Worker (pid:82942) was sent SIGTERM!
+[2026-07-23 09:32:41 +0900] [82895] [INFO] Shutting down: Master
+[2026-07-23 09:32:42 +0900] [83097] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:32:42 +0900] [83097] [INFO] Listening at: http://0.0.0.0:9900 (83097)
+[2026-07-23 09:32:42 +0900] [83097] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:32:42 +0900] [83143] [INFO] Booting worker with pid: 83143
+[2026-07-23 09:32:42 +0900] [83144] [INFO] Booting worker with pid: 83144
+[2026-07-23 09:32:43 +0900] [83143] [INFO] Started server process [83143]
+[2026-07-23 09:32:43 +0900] [83143] [INFO] Waiting for application startup.
+[2026-07-23 09:32:43 +0900] [83143] [INFO] Application startup complete.
+[2026-07-23 09:32:43 +0900] [83144] [INFO] Started server process [83144]
+[2026-07-23 09:32:43 +0900] [83144] [INFO] Waiting for application startup.
+[2026-07-23 09:32:43 +0900] [83144] [INFO] Application startup complete.
+[2026-07-23 09:34:33 +0900] [83097] [INFO] Handling signal: term
+[2026-07-23 09:34:33 +0900] [83143] [INFO] Shutting down
+[2026-07-23 09:34:33 +0900] [83143] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:34:33 +0900] [83144] [INFO] Shutting down
+[2026-07-23 09:34:33 +0900] [83144] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:34:33 +0900] [83143] [INFO] Waiting for application shutdown.
+[2026-07-23 09:34:33 +0900] [83143] [INFO] Application shutdown complete.
+[2026-07-23 09:34:33 +0900] [83143] [INFO] Finished server process [83143]
+[2026-07-23 09:34:33 +0900] [83097] [ERROR] Worker (pid:83143) was sent SIGTERM!
+[2026-07-23 09:34:33 +0900] [83144] [INFO] Waiting for application shutdown.
+[2026-07-23 09:34:33 +0900] [83144] [INFO] Application shutdown complete.
+[2026-07-23 09:34:33 +0900] [83144] [INFO] Finished server process [83144]
+[2026-07-23 09:34:33 +0900] [83097] [ERROR] Worker (pid:83144) was sent SIGTERM!
+[2026-07-23 09:34:33 +0900] [83097] [INFO] Shutting down: Master
+[2026-07-23 09:34:34 +0900] [83291] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:34:34 +0900] [83291] [INFO] Listening at: http://0.0.0.0:9900 (83291)
+[2026-07-23 09:34:34 +0900] [83291] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:34:34 +0900] [83337] [INFO] Booting worker with pid: 83337
+[2026-07-23 09:34:34 +0900] [83339] [INFO] Booting worker with pid: 83339
+[2026-07-23 09:34:35 +0900] [83337] [INFO] Started server process [83337]
+[2026-07-23 09:34:35 +0900] [83337] [INFO] Waiting for application startup.
+[2026-07-23 09:34:35 +0900] [83337] [INFO] Application startup complete.
+[2026-07-23 09:34:35 +0900] [83339] [INFO] Started server process [83339]
+[2026-07-23 09:34:35 +0900] [83339] [INFO] Waiting for application startup.
+[2026-07-23 09:34:35 +0900] [83339] [INFO] Application startup complete.
+[2026-07-23 09:36:23 +0900] [83291] [INFO] Handling signal: term
+[2026-07-23 09:36:23 +0900] [83337] [INFO] Shutting down
+[2026-07-23 09:36:23 +0900] [83337] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:36:23 +0900] [83339] [INFO] Shutting down
+[2026-07-23 09:36:23 +0900] [83339] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:36:23 +0900] [83337] [INFO] Waiting for application shutdown.
+[2026-07-23 09:36:23 +0900] [83337] [INFO] Application shutdown complete.
+[2026-07-23 09:36:23 +0900] [83337] [INFO] Finished server process [83337]
+[2026-07-23 09:36:23 +0900] [83291] [ERROR] Worker (pid:83337) was sent SIGTERM!
+[2026-07-23 09:36:23 +0900] [83339] [INFO] Waiting for application shutdown.
+[2026-07-23 09:36:23 +0900] [83339] [INFO] Application shutdown complete.
+[2026-07-23 09:36:23 +0900] [83339] [INFO] Finished server process [83339]
+[2026-07-23 09:36:23 +0900] [83291] [ERROR] Worker (pid:83339) was sent SIGTERM!
+[2026-07-23 09:36:23 +0900] [83291] [INFO] Shutting down: Master
+[2026-07-23 09:36:24 +0900] [83403] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:36:24 +0900] [83403] [INFO] Listening at: http://0.0.0.0:9900 (83403)
+[2026-07-23 09:36:24 +0900] [83403] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:36:24 +0900] [83449] [INFO] Booting worker with pid: 83449
+[2026-07-23 09:36:24 +0900] [83451] [INFO] Booting worker with pid: 83451
+[2026-07-23 09:36:25 +0900] [83449] [INFO] Started server process [83449]
+[2026-07-23 09:36:25 +0900] [83449] [INFO] Waiting for application startup.
+[2026-07-23 09:36:25 +0900] [83449] [INFO] Application startup complete.
+[2026-07-23 09:36:25 +0900] [83451] [INFO] Started server process [83451]
+[2026-07-23 09:36:25 +0900] [83451] [INFO] Waiting for application startup.
+[2026-07-23 09:36:25 +0900] [83451] [INFO] Application startup complete.
+[2026-07-23 09:37:29 +0900] [83403] [INFO] Handling signal: term
+[2026-07-23 09:37:29 +0900] [83449] [INFO] Shutting down
+[2026-07-23 09:37:29 +0900] [83449] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:37:29 +0900] [83451] [INFO] Shutting down
+[2026-07-23 09:37:29 +0900] [83451] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:37:29 +0900] [83449] [INFO] Waiting for application shutdown.
+[2026-07-23 09:37:29 +0900] [83449] [INFO] Application shutdown complete.
+[2026-07-23 09:37:29 +0900] [83449] [INFO] Finished server process [83449]
+[2026-07-23 09:37:29 +0900] [83403] [ERROR] Worker (pid:83449) was sent SIGTERM!
+[2026-07-23 09:37:29 +0900] [83451] [INFO] Waiting for application shutdown.
+[2026-07-23 09:37:29 +0900] [83451] [INFO] Application shutdown complete.
+[2026-07-23 09:37:29 +0900] [83451] [INFO] Finished server process [83451]
+[2026-07-23 09:37:29 +0900] [83403] [ERROR] Worker (pid:83451) was sent SIGTERM!
+[2026-07-23 09:37:29 +0900] [83403] [INFO] Shutting down: Master
+[2026-07-23 09:37:30 +0900] [83514] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:37:30 +0900] [83514] [INFO] Listening at: http://0.0.0.0:9900 (83514)
+[2026-07-23 09:37:30 +0900] [83514] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:37:30 +0900] [83560] [INFO] Booting worker with pid: 83560
+[2026-07-23 09:37:30 +0900] [83562] [INFO] Booting worker with pid: 83562
+[2026-07-23 09:37:32 +0900] [83560] [INFO] Started server process [83560]
+[2026-07-23 09:37:32 +0900] [83560] [INFO] Waiting for application startup.
+[2026-07-23 09:37:32 +0900] [83560] [INFO] Application startup complete.
+[2026-07-23 09:37:32 +0900] [83562] [INFO] Started server process [83562]
+[2026-07-23 09:37:32 +0900] [83562] [INFO] Waiting for application startup.
+[2026-07-23 09:37:32 +0900] [83562] [INFO] Application startup complete.
+[2026-07-23 09:44:02 +0900] [83514] [INFO] Handling signal: term
+[2026-07-23 09:44:02 +0900] [83560] [INFO] Shutting down
+[2026-07-23 09:44:02 +0900] [83560] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:44:02 +0900] [83562] [INFO] Shutting down
+[2026-07-23 09:44:02 +0900] [83562] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:44:02 +0900] [83560] [INFO] Waiting for application shutdown.
+[2026-07-23 09:44:02 +0900] [83560] [INFO] Application shutdown complete.
+[2026-07-23 09:44:02 +0900] [83560] [INFO] Finished server process [83560]
+[2026-07-23 09:44:02 +0900] [83514] [ERROR] Worker (pid:83560) was sent SIGTERM!
+[2026-07-23 09:44:02 +0900] [83562] [INFO] Waiting for application shutdown.
+[2026-07-23 09:44:02 +0900] [83562] [INFO] Application shutdown complete.
+[2026-07-23 09:44:02 +0900] [83562] [INFO] Finished server process [83562]
+[2026-07-23 09:44:02 +0900] [83514] [ERROR] Worker (pid:83562) was sent SIGTERM!
+[2026-07-23 09:44:02 +0900] [83514] [INFO] Shutting down: Master
+[2026-07-23 09:44:03 +0900] [83710] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:44:03 +0900] [83710] [INFO] Listening at: http://0.0.0.0:9900 (83710)
+[2026-07-23 09:44:03 +0900] [83710] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:44:03 +0900] [83756] [INFO] Booting worker with pid: 83756
+[2026-07-23 09:44:03 +0900] [83757] [INFO] Booting worker with pid: 83757
+[2026-07-23 09:44:04 +0900] [83756] [INFO] Started server process [83756]
+[2026-07-23 09:44:04 +0900] [83756] [INFO] Waiting for application startup.
+[2026-07-23 09:44:04 +0900] [83756] [INFO] Application startup complete.
+[2026-07-23 09:44:04 +0900] [83757] [INFO] Started server process [83757]
+[2026-07-23 09:44:04 +0900] [83757] [INFO] Waiting for application startup.
+[2026-07-23 09:44:04 +0900] [83757] [INFO] Application startup complete.
+[2026-07-23 09:47:17 +0900] [83710] [INFO] Handling signal: term
+[2026-07-23 09:47:17 +0900] [83756] [INFO] Shutting down
+[2026-07-23 09:47:17 +0900] [83756] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:47:17 +0900] [83757] [INFO] Shutting down
+[2026-07-23 09:47:17 +0900] [83757] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:47:17 +0900] [83756] [INFO] Waiting for application shutdown.
+[2026-07-23 09:47:17 +0900] [83756] [INFO] Application shutdown complete.
+[2026-07-23 09:47:17 +0900] [83756] [INFO] Finished server process [83756]
+[2026-07-23 09:47:17 +0900] [83757] [INFO] Waiting for application shutdown.
+[2026-07-23 09:47:17 +0900] [83757] [INFO] Application shutdown complete.
+[2026-07-23 09:47:17 +0900] [83757] [INFO] Finished server process [83757]
+[2026-07-23 09:47:17 +0900] [83710] [ERROR] Worker (pid:83757) was sent SIGTERM!
+--- Logging error ---
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 223, in run
+    handler()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 256, in handle_term
+    raise StopIteration
+StopIteration
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1114, in emit
+    self.flush()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1094, in flush
+    self.stream.flush()
+RuntimeError: reentrant call inside <_io.BufferedWriter name='/home/pi/API/@error.log'>
+Call stack:
+  File "/home/pi/.pyenv/versions/3.11.13/bin/gunicorn", line 7, in <module>
+    sys.exit(run())
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 66, in run
+    WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]", prog=prog).run()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 235, in run
+    super().run()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/app/base.py", line 71, in run
+    Arbiter(self).run()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 226, in run
+    self.halt()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 341, in halt
+    self.stop()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 395, in stop
+    time.sleep(0.1)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 241, in handle_chld
+    self.reap_workers()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 553, in reap_workers
+    self.log.error(msg)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/glogging.py", line 271, in error
+    self.error_log.error(msg, *args, **kwargs)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1518, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1634, in _log
+    self.handle(record)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1644, in handle
+    self.callHandlers(record)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1706, in callHandlers
+    hdlr.handle(record)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 978, in handle
+    self.emit(record)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1230, in emit
+    StreamHandler.emit(self, record)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1114, in emit
+    self.flush()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/logging/__init__.py", line 1094, in flush
+    self.stream.flush()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 241, in handle_chld
+    self.reap_workers()
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/arbiter.py", line 553, in reap_workers
+    self.log.error(msg)
+  File "/home/pi/.pyenv/versions/3.11.13/lib/python3.11/site-packages/gunicorn/glogging.py", line 271, in error
+    self.error_log.error(msg, *args, **kwargs)
+Message: 'Worker (pid:83756) was sent SIGTERM!'
+Arguments: ()
+[2026-07-23 09:47:17 +0900] [83710] [INFO] Shutting down: Master
+[2026-07-23 09:47:17 +0900] [83902] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:47:17 +0900] [83902] [INFO] Listening at: http://0.0.0.0:9900 (83902)
+[2026-07-23 09:47:17 +0900] [83902] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:47:17 +0900] [83948] [INFO] Booting worker with pid: 83948
+[2026-07-23 09:47:18 +0900] [83950] [INFO] Booting worker with pid: 83950
+[2026-07-23 09:47:19 +0900] [83948] [INFO] Started server process [83948]
+[2026-07-23 09:47:19 +0900] [83948] [INFO] Waiting for application startup.
+[2026-07-23 09:47:19 +0900] [83948] [INFO] Application startup complete.
+[2026-07-23 09:47:19 +0900] [83950] [INFO] Started server process [83950]
+[2026-07-23 09:47:19 +0900] [83950] [INFO] Waiting for application startup.
+[2026-07-23 09:47:19 +0900] [83950] [INFO] Application startup complete.
+[2026-07-23 09:54:03 +0900] [83902] [INFO] Handling signal: term
+[2026-07-23 09:54:03 +0900] [83950] [INFO] Shutting down
+[2026-07-23 09:54:03 +0900] [83950] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:54:03 +0900] [83948] [INFO] Shutting down
+[2026-07-23 09:54:03 +0900] [83948] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 09:54:03 +0900] [83950] [INFO] Waiting for application shutdown.
+[2026-07-23 09:54:03 +0900] [83950] [INFO] Application shutdown complete.
+[2026-07-23 09:54:03 +0900] [83950] [INFO] Finished server process [83950]
+[2026-07-23 09:54:03 +0900] [83902] [ERROR] Worker (pid:83950) was sent SIGTERM!
+[2026-07-23 09:54:03 +0900] [83948] [INFO] Waiting for application shutdown.
+[2026-07-23 09:54:03 +0900] [83948] [INFO] Application shutdown complete.
+[2026-07-23 09:54:03 +0900] [83948] [INFO] Finished server process [83948]
+[2026-07-23 09:54:03 +0900] [83902] [ERROR] Worker (pid:83948) was sent SIGTERM!
+[2026-07-23 09:54:03 +0900] [83902] [INFO] Shutting down: Master
+[2026-07-23 09:54:04 +0900] [84098] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 09:54:04 +0900] [84098] [INFO] Listening at: http://0.0.0.0:9900 (84098)
+[2026-07-23 09:54:04 +0900] [84098] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 09:54:04 +0900] [84144] [INFO] Booting worker with pid: 84144
+[2026-07-23 09:54:04 +0900] [84146] [INFO] Booting worker with pid: 84146
+[2026-07-23 09:54:05 +0900] [84144] [INFO] Started server process [84144]
+[2026-07-23 09:54:05 +0900] [84144] [INFO] Waiting for application startup.
+[2026-07-23 09:54:05 +0900] [84144] [INFO] Application startup complete.
+[2026-07-23 09:54:05 +0900] [84146] [INFO] Started server process [84146]
+[2026-07-23 09:54:05 +0900] [84146] [INFO] Waiting for application startup.
+[2026-07-23 09:54:05 +0900] [84146] [INFO] Application startup complete.
+[2026-07-23 10:15:37 +0900] [84098] [INFO] Handling signal: term
+[2026-07-23 10:15:37 +0900] [84144] [INFO] Shutting down
+[2026-07-23 10:15:37 +0900] [84144] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 10:15:37 +0900] [84146] [INFO] Shutting down
+[2026-07-23 10:15:37 +0900] [84146] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-07-23 10:15:37 +0900] [84144] [INFO] Waiting for application shutdown.
+[2026-07-23 10:15:37 +0900] [84144] [INFO] Application shutdown complete.
+[2026-07-23 10:15:37 +0900] [84144] [INFO] Finished server process [84144]
+[2026-07-23 10:15:37 +0900] [84098] [ERROR] Worker (pid:84144) was sent SIGTERM!
+[2026-07-23 10:15:37 +0900] [84146] [INFO] Waiting for application shutdown.
+[2026-07-23 10:15:37 +0900] [84146] [INFO] Application shutdown complete.
+[2026-07-23 10:15:37 +0900] [84146] [INFO] Finished server process [84146]
+[2026-07-23 10:15:37 +0900] [84098] [ERROR] Worker (pid:84146) was sent SIGTERM!
+[2026-07-23 10:15:37 +0900] [84098] [INFO] Shutting down: Master
+[2026-07-23 10:15:38 +0900] [84317] [INFO] Starting gunicorn 23.0.0
+[2026-07-23 10:15:38 +0900] [84317] [INFO] Listening at: http://0.0.0.0:9900 (84317)
+[2026-07-23 10:15:38 +0900] [84317] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-07-23 10:15:38 +0900] [84363] [INFO] Booting worker with pid: 84363
+[2026-07-23 10:15:38 +0900] [84365] [INFO] Booting worker with pid: 84365
+[2026-07-23 10:15:39 +0900] [84363] [INFO] Started server process [84363]
+[2026-07-23 10:15:39 +0900] [84363] [INFO] Waiting for application startup.
+[2026-07-23 10:15:39 +0900] [84363] [INFO] Application startup complete.
+[2026-07-23 10:15:39 +0900] [84365] [INFO] Started server process [84365]
+[2026-07-23 10:15:39 +0900] [84365] [INFO] Waiting for application startup.
+[2026-07-23 10:15:39 +0900] [84365] [INFO] Application startup complete.

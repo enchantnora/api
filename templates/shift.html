@@ -69,6 +69,7 @@
         .name {
             display: inline-block;
             padding: 2px 15px;
+            touch-action: manipulation;
         }
         #button {
             z-index: 5;
@@ -193,13 +194,13 @@
         .cal-cell-inner {
             position: relative;
             width: 100%;
-            height: clamp(32px, 9vh, 52px);
+            height: clamp(38px, 9vh, 54px);
         }
         .cal-date {
             position: absolute;
             top: 2px;
             left: 3px;
-            font-size: clamp(1em, 3vw, 1.2em);
+            font-size: clamp(1.3em, 4vw, 1.5em);
             color: #aaa;
             line-height: 1;
         }
@@ -208,7 +209,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(1.2em, 4.5vw, 1.8em);
+            font-size: clamp(1.7em, 6vw, 2.3em);
             font-weight: bold;
             color: #fff;
             line-height: 1;
@@ -475,7 +476,8 @@
             mainWrite(G_current);
         };
 
-        buttonLayer.addEventListener('pointerup', handlePress);
+        buttonLayer.addEventListener('mouseup', handlePress);
+        buttonLayer.addEventListener('touchend', handlePress);
     }
 
     function renderModalCalendar(data, name) {
@@ -574,11 +576,72 @@
 
     (function() {
         let isSwiping = false, startX, currentX, longPressTimer = null, hasMoved = false, startTime = 0, tappedElement = null, isLongPress = false;
-        const threshold = 50, LONG_PRESS_DURATION = 1000, MOVE_THRESHOLD = 10, TAP_TIME_THRESHOLD = 400;
+        const threshold = 30, LONG_PRESS_DURATION = 1000, MOVE_THRESHOLD = 10, TAP_TIME_THRESHOLD = 300;
 
         let lastTapTime = 0;
         let lastTappedElement = null;
         const DOUBLE_TAP_THRESHOLD = 300;
+
+        // ダブルタップによるブラウザの拡大(ズーム)を抑制する。
+        // 「時間が近い」だけで判定すると、モーダル内で連続スクロールした際の
+        // 素早い再タッチまでダブルタップ扱いしてしまい、スクロールが止まる原因になる。
+        // そのため「位置がほぼ同じ」かつ「直前のタッチが動きのないタップだった」
+        // 場合のみズームを抑制する。
+        const DOUBLE_TAP_ZOOM_WINDOW = 350;
+        const DOUBLE_TAP_ZOOM_Y_TOLERANCE = 25;
+
+        let zoomTouchStart = { x: 0, y: 0, moved: false };
+        let lastStationaryTap = { time: 0, y: 0, valid: false };
+
+        document.addEventListener('touchstart', function(e) {
+            const t = e.touches[0];
+            if (!t) return;
+
+            zoomTouchStart.x = t.clientX;
+            zoomTouchStart.y = t.clientY;
+            zoomTouchStart.moved = false;
+
+            const now = Date.now();
+            const dy = Math.abs(t.clientY - lastStationaryTap.y);
+
+            if (lastStationaryTap.valid &&
+                (now - lastStationaryTap.time) <= DOUBLE_TAP_ZOOM_WINDOW &&
+                dy <= DOUBLE_TAP_ZOOM_Y_TOLERANCE) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchmove', function(e) {
+            const t = e.touches[0];
+            if (!t) return;
+            // 縦方向の移動だけを見る。横スワイプ(ページ送り)は意図的な動きなので
+            // ここでは「動いた」に含めず、引き続きズーム防止の対象にする。
+            if (Math.abs(t.clientY - zoomTouchStart.y) > 10) {
+                zoomTouchStart.moved = true;
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', function(e) {
+            const t = e.changedTouches[0];
+            if (!t) return;
+
+            if (zoomTouchStart.moved) {
+                // 縦スクロールだった場合は「タップ」として扱わない
+                lastStationaryTap.valid = false;
+                return;
+            }
+
+            const now = Date.now();
+            const dy = Math.abs(t.clientY - lastStationaryTap.y);
+
+            if (lastStationaryTap.valid &&
+                (now - lastStationaryTap.time) <= DOUBLE_TAP_ZOOM_WINDOW &&
+                dy <= DOUBLE_TAP_ZOOM_Y_TOLERANCE) {
+                e.preventDefault();
+            }
+
+            lastStationaryTap = { time: now, y: t.clientY, valid: true };
+        }, { passive: false });
 
         mainWrite();
         initButtons();
@@ -646,10 +709,10 @@
             }
         }
 
-        function handlePointerStart(e) {
+        function handleStart(e) {
             if (document.body.classList.contains('no-scroll')) return;
 
-            startX = e.clientX;
+            startX = e.touches ? e.touches[0].clientX : e.clientX;
             currentX = startX;
             startTime = Date.now();
             isSwiping = true;
@@ -666,9 +729,9 @@
             }, LONG_PRESS_DURATION);
         }
 
-        function handlePointerMove(e) {
+        function handleMove(e) {
             if (!isSwiping) return;
-            currentX = e.clientX;
+            currentX = e.touches ? e.touches[0].clientX : e.clientX;
             const distance = Math.abs(currentX - startX);
 
             if (distance > MOVE_THRESHOLD && !hasMoved) {
@@ -681,7 +744,7 @@
             inPresent.style.transform = `translateX(${currentX - startX}px)`;
         }
 
-        function handlePointerEnd(e) {
+        function handleEnd(e) {
             if (longPressTimer) {
                 clearTimeout(longPressTimer);
                 longPressTimer = null;
@@ -689,7 +752,7 @@
             if (!isSwiping) return;
 
             isSwiping = false;
-            currentX = e.clientX;
+            currentX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
             const distance = Math.abs(currentX - startX);
             const duration = Date.now() - startTime;
 
@@ -721,32 +784,39 @@
             }
         }
 
-        document.addEventListener('pointerdown', handlePointerStart, { passive: true });
-        document.addEventListener('pointermove', handlePointerMove, { passive: true });
-        document.addEventListener('pointerup', handlePointerEnd, { passive: true });
-        document.addEventListener('pointercancel', resetSwipeState, { passive: true });
+        document.addEventListener('mousedown', handleStart, { passive: true });
+        document.addEventListener('mousemove', handleMove, { passive: true });
+        document.addEventListener('mouseup', handleEnd, { passive: true });
+        document.addEventListener('mouseleave', resetSwipeState, { passive: true });
+
+        document.addEventListener('touchstart', handleStart, { passive: true });
+        document.addEventListener('touchmove', handleMove, { passive: true });
+        document.addEventListener('touchend', handleEnd, { passive: true });
+        document.addEventListener('touchcancel', resetSwipeState, { passive: true });
 
         let modalStartX, modalStartY, modalStartTime, modalMoved = false;
         const MODAL_MOVE_THRESHOLD = 10;
-        const MODAL_TAP_TIME_THRESHOLD = 400;
+        const MODAL_TAP_TIME_THRESHOLD = 300;
 
-        modalOverlay.addEventListener('pointerdown', function(e) {
-            modalStartX = e.clientX;
-            modalStartY = e.clientY;
+        function modalHandleStart(e) {
+            modalStartX = e.touches ? e.touches[0].clientX : e.clientX;
+            modalStartY = e.touches ? e.touches[0].clientY : e.clientY;
             modalStartTime = Date.now();
             modalMoved = false;
-        }, { passive: true });
+        }
 
-        modalOverlay.addEventListener('pointermove', function(e) {
+        function modalHandleMove(e) {
             if (modalStartX === undefined) return;
-            const dx = Math.abs(e.clientX - modalStartX);
-            const dy = Math.abs(e.clientY - modalStartY);
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            const dx = Math.abs(cx - modalStartX);
+            const dy = Math.abs(cy - modalStartY);
             if (dx > MODAL_MOVE_THRESHOLD || dy > MODAL_MOVE_THRESHOLD) {
                 modalMoved = true;
             }
-        }, { passive: true });
+        }
 
-        modalOverlay.addEventListener('pointerup', function(e) {
+        function modalHandleEnd(e) {
             if (modalStartX === undefined) return;
             const duration = Date.now() - modalStartTime;
             const justOpened = Date.now() - modalOpenTime < MODAL_OPEN_GUARD_MS;
@@ -756,12 +826,22 @@
                 document.body.classList.remove('no-scroll');
             }
             modalStartX = undefined;
-        }, { passive: true });
+        }
 
-        modalOverlay.addEventListener('pointercancel', function() {
+        function modalHandleCancel() {
             modalStartX = undefined;
             modalMoved = false;
-        }, { passive: true });
+        }
+
+        modalOverlay.addEventListener('mousedown', modalHandleStart, { passive: true });
+        modalOverlay.addEventListener('mousemove', modalHandleMove, { passive: true });
+        modalOverlay.addEventListener('mouseup', modalHandleEnd, { passive: true });
+        modalOverlay.addEventListener('mouseleave', modalHandleCancel, { passive: true });
+
+        modalOverlay.addEventListener('touchstart', modalHandleStart, { passive: true });
+        modalOverlay.addEventListener('touchmove', modalHandleMove, { passive: true });
+        modalOverlay.addEventListener('touchend', modalHandleEnd, { passive: true });
+        modalOverlay.addEventListener('touchcancel', modalHandleCancel, { passive: true });
 
     })();
     </script>
