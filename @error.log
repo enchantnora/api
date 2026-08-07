@@ -9583,3 +9583,28 @@ Could not determine dtype for column 7, falling back to string
 [2026-08-07 20:19:21 +0900] [10775] [INFO] Started server process [10775]
 [2026-08-07 20:19:21 +0900] [10775] [INFO] Waiting for application startup.
 [2026-08-07 20:19:21 +0900] [10775] [INFO] Application startup complete.
+[2026-08-07 20:36:56 +0900] [10706] [INFO] Handling signal: term
+[2026-08-07 20:36:56 +0900] [10773] [INFO] Shutting down
+[2026-08-07 20:36:56 +0900] [10773] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-07 20:36:56 +0900] [10775] [INFO] Shutting down
+[2026-08-07 20:36:56 +0900] [10775] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-07 20:36:56 +0900] [10773] [INFO] Waiting for application shutdown.
+[2026-08-07 20:36:56 +0900] [10773] [INFO] Application shutdown complete.
+[2026-08-07 20:36:56 +0900] [10773] [INFO] Finished server process [10773]
+[2026-08-07 20:36:56 +0900] [10706] [ERROR] Worker (pid:10773) was sent SIGTERM!
+[2026-08-07 20:36:56 +0900] [10775] [INFO] Waiting for application shutdown.
+[2026-08-07 20:36:56 +0900] [10775] [INFO] Application shutdown complete.
+[2026-08-07 20:36:56 +0900] [10775] [INFO] Finished server process [10775]
+[2026-08-07 20:36:56 +0900] [10706] [ERROR] Worker (pid:10775) was sent SIGTERM!
+[2026-08-07 20:36:56 +0900] [10706] [INFO] Shutting down: Master
+[2026-08-07 20:36:57 +0900] [10989] [INFO] Starting gunicorn 23.0.0
+[2026-08-07 20:36:57 +0900] [10989] [INFO] Listening at: http://0.0.0.0:9900 (10989)
+[2026-08-07 20:36:57 +0900] [10989] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-08-07 20:36:57 +0900] [11035] [INFO] Booting worker with pid: 11035
+[2026-08-07 20:36:57 +0900] [11036] [INFO] Booting worker with pid: 11036
+[2026-08-07 20:36:58 +0900] [11036] [INFO] Started server process [11036]
+[2026-08-07 20:36:58 +0900] [11036] [INFO] Waiting for application startup.
+[2026-08-07 20:36:58 +0900] [11036] [INFO] Application startup complete.
+[2026-08-07 20:36:58 +0900] [11035] [INFO] Started server process [11035]
+[2026-08-07 20:36:58 +0900] [11035] [INFO] Waiting for application startup.
+[2026-08-07 20:36:58 +0900] [11035] [INFO] Application startup complete.

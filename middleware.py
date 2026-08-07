@@ -1,4 +1,5 @@
 import logging
+import ipaddress
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import unquote
@@ -32,20 +33,20 @@ file_handler.setFormatter(log_format)
 access_logger = logging.getLogger("fastapi_access_logger")
 access_logger.setLevel(logging.INFO)
 access_logger.addHandler(file_handler)
-access_logger.propagate = False # Uvicorn標準ログOFF
+access_logger.propagate = False
 
-# 管理者IP(ログ無し)
-ADMIN_IPS = {
-    "120.50.246.183",
-    "172.20.10.3",
-    "192.168.0.157",
-    "127.0.0.1"
-}
+ADMIN_NETWORKS = [
+    ipaddress.ip_network("120.50.246.183", strict=False),
+    ipaddress.ip_network("172.20.10.3", strict=False),
+    ipaddress.ip_network("192.168.0.157", strict=False),
+    ipaddress.ip_network("127.0.0.1", strict=False),
+    ipaddress.ip_network("240a:61:4162:a147::/64", strict=False)
+]
 
-BLOCKED_IPS = {
-    "104.199.178.69",
-    "34.28.216.15"
-}
+BLOCKED_NETWORKS = [
+    ipaddress.ip_network("104.199.178.69", strict=False),
+    ipaddress.ip_network("34.28.216.15", strict=False)
+]
 
 BLOCKED_KEYWORDS = (
     "wp-includes",
@@ -57,6 +58,16 @@ BLOCKED_KEYWORDS = (
 
 def write_log(message: str):
     access_logger.info(message)
+
+def is_ip_in_networks(ip_str: str, networks: list) -> bool:
+    if not ip_str or ip_str == "Unknown":
+        return False
+    real_ip = ip_str.split(",")[0].strip()
+    try:
+        ip_obj = ipaddress.ip_address(real_ip)
+        return any(ip_obj in net for net in networks)
+    except ValueError:
+        return False
 
 async def requests_control(request: Request, call_next):
     client_ip = request.headers.get("cf-connecting-ip")
@@ -72,7 +83,7 @@ async def requests_control(request: Request, call_next):
     method = request.method
     user_agent = request.headers.get("user-agent", "-")
 
-    if client_ip in BLOCKED_IPS:
+    if is_ip_in_networks(client_ip, BLOCKED_NETWORKS):
         return Response(status_code=403)
     elif any(keyword in path for keyword in BLOCKED_KEYWORDS):
         return Response(status_code=404)
@@ -80,7 +91,7 @@ async def requests_control(request: Request, call_next):
     response = await call_next(request)
     status = response.status_code
 
-    if client_ip not in ADMIN_IPS:
+    if not is_ip_in_networks(client_ip, ADMIN_NETWORKS):
         now = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         log_message = f'[{now}] {client_ip} "{method} {full_path}" {status} "{user_agent}"'
         await anyio.to_thread.run_sync(write_log, log_message)
