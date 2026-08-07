@@ -37,6 +37,8 @@ access_logger.propagate = False # Uvicorn標準ログOFF
 # 管理者IP(ログ無し)
 ADMIN_IPS = {
     "120.50.246.183",
+    "172.20.10.3",
+    "192.168.0.157",
     "127.0.0.1"
 }
 
