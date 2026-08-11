@@ -347,24 +347,21 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
             raise HTTPException(status_code=500, detail=str(e))
         return {"shift": dict(row) if row else None}
 
-    cleaned_query_name = re.sub(r'\(.*?\)|（.*?）', '', name).strip()
-
     try:
         dt = datetime.datetime.strptime(index_day, "%Y%m%d")
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date format")
 
-    def add_month(year: int, month: int, delta: int) -> tuple[int, int]:
-        total = year * 12 + (month - 1) + delta
-        return total // 12, total % 12 + 1
+    pattern = re.compile(r'\(.*?\)|（.*?）')
+    cleaned_query_name = pattern.sub('', name).strip()
 
     if dt.day >= 16:
         start_date = dt.replace(day=16)
-        y, m = add_month(dt.year, dt.month, 1)
+        y, m = (dt.year + 1, 1) if dt.month == 12 else (dt.year, dt.month + 1)
         end_date = datetime.datetime(y, m, 15)
     else:
         end_date = dt.replace(day=15)
-        y, m = add_month(dt.year, dt.month, -1)
+        y, m = (dt.year - 1, 12) if dt.month == 1 else (dt.year, dt.month - 1)
         start_date = datetime.datetime(y, m, 16)
 
     days = (end_date - start_date).days + 1
@@ -386,13 +383,14 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
         day, member_str = row["index_day"], row["member"]
         if day not in result_dict or not member_str:
             continue
+
         try:
             member_data = json.loads(member_str)
         except json.JSONDecodeError:
             continue
+
         for key, names_list in member_data.items():
-            cleaned_names_list = [re.sub(r'\(.*?\)|（.*?）', '', n).strip() for n in names_list]
-            if cleaned_query_name in cleaned_names_list:
+            if any(cleaned_query_name == pattern.sub('', n).strip() for n in names_list):
                 result_dict[day] = key
                 break
 

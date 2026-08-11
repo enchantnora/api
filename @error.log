@@ -9608,3 +9608,52 @@ Could not determine dtype for column 7, falling back to string
 [2026-08-07 20:36:58 +0900] [11035] [INFO] Started server process [11035]
 [2026-08-07 20:36:58 +0900] [11035] [INFO] Waiting for application startup.
 [2026-08-07 20:36:58 +0900] [11035] [INFO] Application startup complete.
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+[2026-08-07 23:52:36 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-08 15:55:00 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-08 15:55:06 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-08 15:56:27 +0900] [11036] [WARNING] Invalid HTTP request received.
+[2026-08-09 09:32:36 +0900] [11036] [WARNING] Invalid HTTP request received.
+[2026-08-09 14:22:52 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-09 14:22:52 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-09 16:55:36 +0900] [11036] [WARNING] Invalid HTTP request received.
+[2026-08-09 16:55:43 +0900] [11036] [WARNING] Invalid HTTP request received.
+[2026-08-09 16:56:33 +0900] [11036] [WARNING] Invalid HTTP request received.
+[2026-08-10 16:22:24 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-10 16:22:31 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-10 16:22:32 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-10 16:22:36 +0900] [11035] [WARNING] Invalid HTTP request received.
+[2026-08-11 14:10:35 +0900] [10989] [INFO] Handling signal: term
+[2026-08-11 14:10:35 +0900] [11036] [INFO] Shutting down
+[2026-08-11 14:10:35 +0900] [11036] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-11 14:10:35 +0900] [11035] [INFO] Shutting down
+[2026-08-11 14:10:35 +0900] [11035] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-11 14:10:35 +0900] [11036] [INFO] Waiting for application shutdown.
+[2026-08-11 14:10:35 +0900] [11036] [INFO] Application shutdown complete.
+[2026-08-11 14:10:35 +0900] [11036] [INFO] Finished server process [11036]
+[2026-08-11 14:10:35 +0900] [10989] [ERROR] Worker (pid:11036) was sent SIGTERM!
+[2026-08-11 14:10:35 +0900] [11035] [INFO] Waiting for application shutdown.
+[2026-08-11 14:10:35 +0900] [11035] [INFO] Application shutdown complete.
+[2026-08-11 14:10:35 +0900] [11035] [INFO] Finished server process [11035]
+[2026-08-11 14:10:35 +0900] [10989] [ERROR] Worker (pid:11035) was sent SIGTERM!
+[2026-08-11 14:10:35 +0900] [10989] [INFO] Shutting down: Master
+[2026-08-11 14:10:36 +0900] [18191] [INFO] Starting gunicorn 23.0.0
+[2026-08-11 14:10:36 +0900] [18191] [INFO] Listening at: http://0.0.0.0:9900 (18191)
+[2026-08-11 14:10:36 +0900] [18191] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-08-11 14:10:36 +0900] [18255] [INFO] Booting worker with pid: 18255
+[2026-08-11 14:10:36 +0900] [18256] [INFO] Booting worker with pid: 18256
+[2026-08-11 14:10:37 +0900] [18255] [INFO] Started server process [18255]
+[2026-08-11 14:10:37 +0900] [18255] [INFO] Waiting for application startup.
+[2026-08-11 14:10:37 +0900] [18255] [INFO] Application startup complete.
+[2026-08-11 14:10:37 +0900] [18256] [INFO] Started server process [18256]
+[2026-08-11 14:10:37 +0900] [18256] [INFO] Waiting for application startup.
+[2026-08-11 14:10:37 +0900] [18256] [INFO] Application startup complete.
