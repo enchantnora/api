@@ -352,8 +352,8 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date format")
 
-    pattern = re.compile(r'\(.*?\)|（.*?）')
-    cleaned_query_name = pattern.sub('', name).strip()
+    pattern = re.compile(r'\(.*?\)|（.*?）|\s+')
+    cleaned_query_name = pattern.sub('', name)
 
     if dt.day >= 16:
         start_date = dt.replace(day=16)
@@ -390,7 +390,7 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
             continue
 
         for key, names_list in member_data.items():
-            if any(cleaned_query_name == pattern.sub('', n).strip() for n in names_list):
+            if any(cleaned_query_name == pattern.sub('', n) for n in names_list):
                 result_dict[day] = key
                 break
 

@@ -9657,3 +9657,28 @@ Could not determine dtype for column 59, falling back to string
 [2026-08-11 14:10:37 +0900] [18256] [INFO] Started server process [18256]
 [2026-08-11 14:10:37 +0900] [18256] [INFO] Waiting for application startup.
 [2026-08-11 14:10:37 +0900] [18256] [INFO] Application startup complete.
+[2026-08-11 14:18:42 +0900] [18191] [INFO] Handling signal: term
+[2026-08-11 14:18:42 +0900] [18256] [INFO] Shutting down
+[2026-08-11 14:18:42 +0900] [18256] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-11 14:18:42 +0900] [18255] [INFO] Shutting down
+[2026-08-11 14:18:42 +0900] [18255] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-11 14:18:42 +0900] [18256] [INFO] Waiting for application shutdown.
+[2026-08-11 14:18:42 +0900] [18255] [INFO] Waiting for application shutdown.
+[2026-08-11 14:18:42 +0900] [18256] [INFO] Application shutdown complete.
+[2026-08-11 14:18:42 +0900] [18256] [INFO] Finished server process [18256]
+[2026-08-11 14:18:42 +0900] [18255] [INFO] Application shutdown complete.
+[2026-08-11 14:18:42 +0900] [18255] [INFO] Finished server process [18255]
+[2026-08-11 14:18:42 +0900] [18191] [ERROR] Worker (pid:18256) was sent SIGTERM!
+[2026-08-11 14:18:42 +0900] [18191] [ERROR] Worker (pid:18255) was sent SIGTERM!
+[2026-08-11 14:18:42 +0900] [18191] [INFO] Shutting down: Master
+[2026-08-11 14:18:43 +0900] [18452] [INFO] Starting gunicorn 23.0.0
+[2026-08-11 14:18:43 +0900] [18452] [INFO] Listening at: http://0.0.0.0:9900 (18452)
+[2026-08-11 14:18:43 +0900] [18452] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-08-11 14:18:43 +0900] [18498] [INFO] Booting worker with pid: 18498
+[2026-08-11 14:18:43 +0900] [18500] [INFO] Booting worker with pid: 18500
+[2026-08-11 14:18:44 +0900] [18498] [INFO] Started server process [18498]
+[2026-08-11 14:18:44 +0900] [18498] [INFO] Waiting for application startup.
+[2026-08-11 14:18:44 +0900] [18498] [INFO] Application startup complete.
+[2026-08-11 14:18:45 +0900] [18500] [INFO] Started server process [18500]
+[2026-08-11 14:18:45 +0900] [18500] [INFO] Waiting for application startup.
+[2026-08-11 14:18:45 +0900] [18500] [INFO] Application startup complete.
