@@ -30,7 +30,7 @@ from utils import (
     templates, CABINET_DIR, RE_CHART_FILE, RE_CHART_DATE
 )
 from cabinet import router as cabinet_router, init_cabinet_db
-from middleware import requests_control
+from middleware import requests_control, lowercase_specific_path
 
 dbfile = 'dbfile.db'
 
@@ -57,6 +57,7 @@ app = FastAPI(debug=False, docs_url=None, redoc_url=None, openapi_url=None, life
 
 # ミドルウェア
 app.add_middleware(BaseHTTPMiddleware, dispatch=requests_control)
+app.add_middleware(BaseHTTPMiddleware, dispatch=lowercase_specific_path)
 # ファイラールーター
 app.include_router(cabinet_router)
 

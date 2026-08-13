@@ -98,3 +98,16 @@ async def requests_control(request: Request, call_next):
         await anyio.to_thread.run_sync(write_log, log_message)
 
     return response
+
+# ------------------------------------
+
+target_paths = {"/item", "/user"}
+
+async def lowercase_specific_path(request: Request, call_next):
+    path_lower = request.scope["path"].lower()
+    
+    if path_lower in target_paths:
+        request.scope["path"] = path_lower
+        
+    response = await call_next(request)
+    return response
