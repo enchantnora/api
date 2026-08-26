@@ -438,7 +438,7 @@ def work_process(data_list: list, decision_csv_path: str):
         sheets_dict[row[0]].append(row)
 
     result_dict = {}
-    exclude_shifts = {'☓', 'X', 'x', '×', '停'}
+    exclude_shifts = {'Ｘ', '☓', 'X', 'x', '×', '停'}
     base_date = datetime.date(2001, 1, 1)
 
     for sheet_name, sheet_data in sheets_dict.items():
