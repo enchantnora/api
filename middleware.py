@@ -101,13 +101,16 @@ async def requests_control(request: Request, call_next):
 
 # ------------------------------------
 
-target_paths = {"/docs", "/cc"}
+target_prefixes = ("/item", "/user")
 
 async def lowercase_specific_path(request: Request, call_next):
-    path_lower = request.scope["path"].lower()
+    original_path = request.scope["path"]
+    path_lower = original_path.lower()
     
-    if path_lower in target_paths:
-        request.scope["path"] = path_lower
-        
+    for prefix in target_prefixes:
+        if path_lower == prefix or path_lower.startswith(prefix + "/"):
+            request.scope["path"] = prefix + original_path[len(prefix):]
+            break
+            
     response = await call_next(request)
     return response
