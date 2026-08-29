@@ -714,7 +714,7 @@ const ToolsController = {
             let html = data.stopcode.map(v => {
                 let liabilityHtml = v.liability ? `<span class="annotation inline">責任 [${v.liability}]</span>` : '';
                 let reasonHtml = v.reason ? `<p class="annotation">${v.reason}</p>` : '';
-                let detailsHtml = v.details ? `<p class="annotation">${v.details}</p>` : '';
+                let detailsHtml = v.details ? `<p class="annotation2">${v.details}</p>` : '';
                 
                 return `<div class="wh_balloon kr l_b"><span class="pick_up">【${v.code}】${v.pattern}</span>${liabilityHtml}${reasonHtml}${detailsHtml}</div>`;
             }).join('');

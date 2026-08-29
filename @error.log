@@ -11551,3 +11551,55 @@ Could not determine dtype for column 7, falling back to string
 [2026-08-30 07:44:20 +0900] [56554] [INFO] Started server process [56554]
 [2026-08-30 07:44:20 +0900] [56554] [INFO] Waiting for application startup.
 [2026-08-30 07:44:20 +0900] [56554] [INFO] Application startup complete.
+[2026-08-30 07:48:07 +0900] [56506] [INFO] Handling signal: term
+[2026-08-30 07:48:07 +0900] [56552] [INFO] Shutting down
+[2026-08-30 07:48:07 +0900] [56552] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-30 07:48:07 +0900] [56554] [INFO] Shutting down
+[2026-08-30 07:48:07 +0900] [56554] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-30 07:48:07 +0900] [56552] [INFO] Waiting for application shutdown.
+[2026-08-30 07:48:07 +0900] [56552] [INFO] Application shutdown complete.
+[2026-08-30 07:48:07 +0900] [56552] [INFO] Finished server process [56552]
+[2026-08-30 07:48:07 +0900] [56506] [ERROR] Worker (pid:56552) was sent SIGTERM!
+[2026-08-30 07:48:07 +0900] [56554] [INFO] Waiting for application shutdown.
+[2026-08-30 07:48:07 +0900] [56554] [INFO] Application shutdown complete.
+[2026-08-30 07:48:07 +0900] [56554] [INFO] Finished server process [56554]
+[2026-08-30 07:48:07 +0900] [56506] [ERROR] Worker (pid:56554) was sent SIGTERM!
+[2026-08-30 07:48:07 +0900] [56506] [INFO] Shutting down: Master
+[2026-08-30 07:48:08 +0900] [56760] [INFO] Starting gunicorn 23.0.0
+[2026-08-30 07:48:08 +0900] [56760] [INFO] Listening at: http://0.0.0.0:9900 (56760)
+[2026-08-30 07:48:08 +0900] [56760] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-08-30 07:48:08 +0900] [56806] [INFO] Booting worker with pid: 56806
+[2026-08-30 07:48:08 +0900] [56808] [INFO] Booting worker with pid: 56808
+[2026-08-30 07:48:09 +0900] [56806] [INFO] Started server process [56806]
+[2026-08-30 07:48:09 +0900] [56806] [INFO] Waiting for application startup.
+[2026-08-30 07:48:09 +0900] [56806] [INFO] Application startup complete.
+[2026-08-30 07:48:09 +0900] [56808] [INFO] Started server process [56808]
+[2026-08-30 07:48:09 +0900] [56808] [INFO] Waiting for application startup.
+[2026-08-30 07:48:09 +0900] [56808] [INFO] Application startup complete.
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 6, falling back to string
+[2026-08-30 08:14:18 +0900] [56760] [INFO] Handling signal: term
+[2026-08-30 08:14:18 +0900] [56806] [INFO] Shutting down
+[2026-08-30 08:14:18 +0900] [56806] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-30 08:14:18 +0900] [56808] [INFO] Shutting down
+[2026-08-30 08:14:18 +0900] [56808] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-08-30 08:14:19 +0900] [56806] [INFO] Waiting for application shutdown.
+[2026-08-30 08:14:19 +0900] [56806] [INFO] Application shutdown complete.
+[2026-08-30 08:14:19 +0900] [56806] [INFO] Finished server process [56806]
+[2026-08-30 08:14:19 +0900] [56760] [ERROR] Worker (pid:56806) was sent SIGTERM!
+[2026-08-30 08:14:19 +0900] [56808] [INFO] Waiting for application shutdown.
+[2026-08-30 08:14:19 +0900] [56808] [INFO] Application shutdown complete.
+[2026-08-30 08:14:19 +0900] [56808] [INFO] Finished server process [56808]
+[2026-08-30 08:14:19 +0900] [56760] [ERROR] Worker (pid:56808) was sent SIGTERM!
+[2026-08-30 08:14:19 +0900] [56760] [INFO] Shutting down: Master
+[2026-08-30 08:14:19 +0900] [57046] [INFO] Starting gunicorn 23.0.0
+[2026-08-30 08:14:19 +0900] [57046] [INFO] Listening at: http://0.0.0.0:9900 (57046)
+[2026-08-30 08:14:19 +0900] [57046] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-08-30 08:14:19 +0900] [57092] [INFO] Booting worker with pid: 57092
+[2026-08-30 08:14:19 +0900] [57094] [INFO] Booting worker with pid: 57094
+[2026-08-30 08:14:21 +0900] [57092] [INFO] Started server process [57092]
+[2026-08-30 08:14:21 +0900] [57092] [INFO] Waiting for application startup.
+[2026-08-30 08:14:21 +0900] [57092] [INFO] Application startup complete.
+[2026-08-30 08:14:21 +0900] [57094] [INFO] Started server process [57094]
+[2026-08-30 08:14:21 +0900] [57094] [INFO] Waiting for application startup.
+[2026-08-30 08:14:21 +0900] [57094] [INFO] Application startup complete.
