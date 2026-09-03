@@ -13,16 +13,21 @@
             color: blue;
             text-decoration: underline;
         }
+        #hide-link {
+            display: none;
+        }
     </style> 
 </head>
 <body>
-    <h1>enchantnora</h1>
-    <p>>> <span class="js-link" data-href="./ms">SHIFT</span></p>
-    <p>>> <span class="js-link" data-href="./data">DATA</span></p>
-    <p>>> <span class="js-link" data-href="./cc">CYBER CABINET</span></p>
+    <div id="hide-link">
+        <h1>enchantnora</h1>
+        <p>>> <span class="js-link" data-href="./ms">SHIFT</span></p>
+        <p>>> <span class="js-link" data-href="./data">DATA</span></p>
+        <p>>> <span class="js-link" data-href="./cc">CYBER CABINET</span></p>
+    </div>
     Let me give you an analogy.<br>
     If I were to eat meat and potatoes, and I was asked to answer what kind of seasoning was in it, I would have a rather hard time. I would probably only be able to answer "salt" or something like that.<br>
-    But what if it was your mother or someone who cooks?<br>
+    But what if it was your mother or someone who <span id="secret-trigger">cooks?</span><br>
     Surprisingly, they can tell what seasonings are in the meat and potatoes just by eating them.<br>
     <br>
     Why on earth would that be?<br>
@@ -59,6 +64,10 @@
                     window.location.href = targetUrl;
                 }
             });
+        });
+
+        document.getElementById('secret-trigger').addEventListener('click', function() {
+            document.getElementById('hide-link').style.display = 'block';
         });
     </script>
 </body>

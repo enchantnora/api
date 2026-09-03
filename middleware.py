@@ -46,7 +46,8 @@ ADMIN_NETWORKS = [
 BLOCKED_NETWORKS = [
     ipaddress.ip_network("104.199.178.69", strict=False),
     ipaddress.ip_network("195.178.110.199", strict=False),
-    ipaddress.ip_network("34.28.216.15", strict=False)
+    ipaddress.ip_network("34.28.216.15", strict=False),
+    ipaddress.ip_network("195.178.110.22", strict=False)
 ]
 
 BLOCKED_KEYWORDS = (

@@ -11603,3 +11603,94 @@ Could not determine dtype for column 6, falling back to string
 [2026-08-30 08:14:21 +0900] [57094] [INFO] Started server process [57094]
 [2026-08-30 08:14:21 +0900] [57094] [INFO] Waiting for application startup.
 [2026-08-30 08:14:21 +0900] [57094] [INFO] Application startup complete.
+[2026-08-30 14:49:28 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-30 18:41:43 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-30 18:41:44 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-30 20:17:13 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-30 20:51:05 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-30 20:51:07 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-30 20:52:15 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-30 21:47:44 +0900] [57092] [WARNING] Invalid HTTP request received.
+[2026-08-31 01:28:50 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-31 01:28:57 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-31 01:28:58 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-08-31 01:29:02 +0900] [57094] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+[2026-09-01 01:47:26 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-01 01:47:28 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-01 01:47:39 +0900] [57092] [WARNING] Invalid HTTP request received.
+[2026-09-02 03:26:42 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-02 03:26:54 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-02 03:28:15 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-03 03:49:41 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-03 03:49:43 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-03 03:50:07 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-03 12:27:05 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-03 12:27:12 +0900] [57092] [WARNING] Invalid HTTP request received.
+[2026-09-03 12:27:49 +0900] [57094] [WARNING] Invalid HTTP request received.
+[2026-09-03 21:14:51 +0900] [57046] [INFO] Handling signal: term
+[2026-09-03 21:14:51 +0900] [57092] [INFO] Shutting down
+[2026-09-03 21:14:51 +0900] [57092] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-03 21:14:51 +0900] [57094] [INFO] Shutting down
+[2026-09-03 21:14:51 +0900] [57094] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-03 21:14:51 +0900] [57092] [INFO] Waiting for application shutdown.
+[2026-09-03 21:14:51 +0900] [57092] [INFO] Application shutdown complete.
+[2026-09-03 21:14:51 +0900] [57092] [INFO] Finished server process [57092]
+[2026-09-03 21:14:51 +0900] [57094] [INFO] Waiting for application shutdown.
+[2026-09-03 21:14:51 +0900] [57046] [ERROR] Worker (pid:57092) was sent SIGTERM!
+[2026-09-03 21:14:51 +0900] [57094] [INFO] Application shutdown complete.
+[2026-09-03 21:14:51 +0900] [57094] [INFO] Finished server process [57094]
+[2026-09-03 21:14:51 +0900] [57046] [ERROR] Worker (pid:57094) was sent SIGTERM!
+[2026-09-03 21:14:51 +0900] [57046] [INFO] Shutting down: Master
+[2026-09-03 21:14:51 +0900] [65803] [INFO] Starting gunicorn 23.0.0
+[2026-09-03 21:14:51 +0900] [65803] [INFO] Listening at: http://0.0.0.0:9900 (65803)
+[2026-09-03 21:14:51 +0900] [65803] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-09-03 21:14:51 +0900] [65849] [INFO] Booting worker with pid: 65849
+[2026-09-03 21:14:51 +0900] [65850] [INFO] Booting worker with pid: 65850
+[2026-09-03 21:14:53 +0900] [65850] [INFO] Started server process [65850]
+[2026-09-03 21:14:53 +0900] [65850] [INFO] Waiting for application startup.
+[2026-09-03 21:14:53 +0900] [65850] [INFO] Application startup complete.
+[2026-09-03 21:14:53 +0900] [65849] [INFO] Started server process [65849]
+[2026-09-03 21:14:53 +0900] [65849] [INFO] Waiting for application startup.
+[2026-09-03 21:14:53 +0900] [65849] [INFO] Application startup complete.
