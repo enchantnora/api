@@ -760,7 +760,7 @@ async def apply(request: Request, db: aiosqlite.Connection = Depends(get_db)):
     except Exception as e:
         return {'status': '02' + str(e)}
 
-@app.get("/wgtcsv", name="wgtcsv")
+@app.get("/wg", name="wgtcsv")
 async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
     async def iter_csv():
         yield "ＳＫ番号,商品ＣＤ,商品名,重量(g)\n".encode('utf-8-sig')
