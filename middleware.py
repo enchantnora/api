@@ -102,7 +102,7 @@ async def requests_control(request: Request, call_next):
 
 # ------------------------------------
 
-target_prefixes = ("/item", "/ms", "/cc", "/docs")
+target_prefixes = ("/item", "/ms", "/cc", "/docs", "/wg")
 
 async def lowercase_specific_path(request: Request, call_next):
     original_path = request.scope["path"]
