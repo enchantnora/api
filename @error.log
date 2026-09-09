@@ -12119,3 +12119,28 @@ Could not determine dtype for column 7, falling back to string
 [2026-09-09 12:50:50 +0900] [77145] [INFO] Started server process [77145]
 [2026-09-09 12:50:50 +0900] [77145] [INFO] Waiting for application startup.
 [2026-09-09 12:50:50 +0900] [77145] [INFO] Application startup complete.
+[2026-09-09 12:53:44 +0900] [77076] [INFO] Handling signal: term
+[2026-09-09 12:53:44 +0900] [77145] [INFO] Shutting down
+[2026-09-09 12:53:44 +0900] [77145] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-09 12:53:44 +0900] [77143] [INFO] Shutting down
+[2026-09-09 12:53:44 +0900] [77143] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-09 12:53:44 +0900] [77145] [INFO] Waiting for application shutdown.
+[2026-09-09 12:53:44 +0900] [77145] [INFO] Application shutdown complete.
+[2026-09-09 12:53:44 +0900] [77145] [INFO] Finished server process [77145]
+[2026-09-09 12:53:44 +0900] [77076] [ERROR] Worker (pid:77145) was sent SIGTERM!
+[2026-09-09 12:53:44 +0900] [77143] [INFO] Waiting for application shutdown.
+[2026-09-09 12:53:44 +0900] [77143] [INFO] Application shutdown complete.
+[2026-09-09 12:53:44 +0900] [77143] [INFO] Finished server process [77143]
+[2026-09-09 12:53:44 +0900] [77076] [ERROR] Worker (pid:77143) was sent SIGTERM!
+[2026-09-09 12:53:44 +0900] [77076] [INFO] Shutting down: Master
+[2026-09-09 12:53:45 +0900] [77326] [INFO] Starting gunicorn 23.0.0
+[2026-09-09 12:53:45 +0900] [77326] [INFO] Listening at: http://0.0.0.0:9900 (77326)
+[2026-09-09 12:53:45 +0900] [77326] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-09-09 12:53:45 +0900] [77372] [INFO] Booting worker with pid: 77372
+[2026-09-09 12:53:45 +0900] [77374] [INFO] Booting worker with pid: 77374
+[2026-09-09 12:53:46 +0900] [77372] [INFO] Started server process [77372]
+[2026-09-09 12:53:46 +0900] [77372] [INFO] Waiting for application startup.
+[2026-09-09 12:53:46 +0900] [77372] [INFO] Application startup complete.
+[2026-09-09 12:53:46 +0900] [77374] [INFO] Started server process [77374]
+[2026-09-09 12:53:46 +0900] [77374] [INFO] Waiting for application startup.
+[2026-09-09 12:53:46 +0900] [77374] [INFO] Application startup complete.

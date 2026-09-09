@@ -6978,3 +6978,5 @@
 [2026/09/09 11:42:12] 120.50.232.228 "GET /shift/20260922" 200 "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1"
 [2026/09/09 11:42:12] 120.50.232.228 "GET /shift/20260916" 200 "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1"
 [2026/09/09 11:42:12] 120.50.232.228 "GET /shift/20260924" 200 "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1"
+[2026/09/09 12:51:56] 38.242.226.127 "GET /robots.txt" 404 "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)"
+[2026/09/09 12:52:00] 38.242.226.127 "GET /" 200 "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)"
