@@ -28,8 +28,8 @@ TABLE_CONFIGS = [
 ]
 
 replace_dict = {
-    ' ': ' ', '　': ' ', '-': ' ', '.': ' ', '/': ' ', '／': ' ',
-    '#': 'syaapu', '＃': 'syaapu', 'シャープ': 'syaapu', 'φ': 'phi',
+    ' ': ' ', ' ': ' ', '-': ' ', '.': ' ', '/': ' ', '／': ' ',
+    '#': ' syaapu ', '＃': ' syaapu ', 'シャープ': ' syaapu ', 'φ': 'phi',
     '中蓋': 'nakafuta', '型': 'gata',
     '長側': 'chousoku', '短側': 'tansoku', r'(?<=\w)板': 'ban',
     'ぁ': 'a', 'ぃ': 'i', 'ぅ': 'u', 'ぇ': 'e', 'ぉ': 'o',
@@ -60,7 +60,7 @@ KKS_PATTERNS = [
 ZEN = "".join(chr(0xff01 + idx) for idx in range(94))
 HAN = "".join(chr(0x21 + idx) for idx in range(94))
 ZEN2HAN_TABLE = str.maketrans(ZEN, HAN)
-CLEAN_TABLE = str.maketrans({'\n': '', ' ': '', '　': '', '-': '', '.': '', '•': '', '・': '', '/': '', '／': ''})
+CLEAN_TABLE = str.maketrans({'\n': '', ' ': '', ' ': '', '-': '', '.': '', '•': '', '・': '', '/': '', '／': ''})
 
 RE_CYCLE = re.compile(r'\d+(?:\.\d+)?')
 RE_MFR_KEY = re.compile(r'^[A-Za-z]+-\d+$')
@@ -76,7 +76,7 @@ RE_PAREN = re.compile(r'[（\(](.*?)[）\)]')
 _ZEN2HAN_MAP: dict[int, str] = {0x3000: ' ', 0xFFE5: '\\'}
 for i in range(0xFF01, 0xFF5F): _ZEN2HAN_MAP[i] = chr(i - 0xFEE0)
 _KANA_MAP = {'ア': 'ｱ', 'イ': 'ｲ', 'ウ': 'ｳ', 'エ': 'ｴ', 'オ': 'ｵ', 'カ': 'ｶ', 'キ': 'ｷ', 'ク': 'ｸ', 'ケ': 'ｹ', 'コ': 'ｺ', 'サ': 'ｻ', 'シ': 'ｼ', 'ス': 'ｽ', 'セ': 'ｾ', 'ソ': 'ｿ', 'タ': 'ﾀ', 'チ': 'ﾁ', 'ツ': 'ﾂ', 'テ': 'ﾃ', 'ト': 'ﾄ', 'ナ': 'ﾅ', 'ニ': 'ﾆ', 'ヌ': 'ﾇ', 'ネ': 'ﾈ', 'ノ': 'ﾉ', 'ハ': 'ﾊ', 'ヒ': 'ﾋ', 'フ': 'ﾌ', 'ヘ': 'ﾍ', 'ホ': 'ﾎ', 'マ': 'ﾏ', 'ミ': 'ﾐ', 'ム': 'ﾑ', 'メ': 'ﾒ', 'モ': 'ﾓ', 'ヤ': 'ﾔ', 'ユ': 'ﾕ', 'ヨ': 'ﾖ', 'ラ': 'ﾗ', 'リ': 'ﾘ', 'ル': 'ﾙ', 'レ': 'ﾚ', 'ロ': 'ﾛ', 'ワ': 'ﾜ', 'ヲ': 'ｦ', 'ン': 'ﾝ', 'ァ': 'ｧ', 'ィ': 'ｨ', 'ゥ': 'ｩ', 'ェ': 'ｪ', 'ォ': 'ｫ', 'ッ': 'ｯ', 'ャ': 'ｬ', 'ュ': 'ｭ', 'ョ': 'ｮ', 'ー': 'ｰ', '、': '､', '。': '｡', '・': '･', '「': '｢', '」': '｣', '゛': 'ﾞ', '゜': 'ﾟ'}
-_KANA_DAKUTEN_MAP = {'ガ': 'ｶﾞ', 'ギ': 'ｷﾞ', 'グ': 'ｸﾞ', 'ゲ': 'ｹﾞ', 'ゴ': 'ｺﾞ', 'ザ': 'ｻﾞ', 'ジ': 'ｼﾞ', 'ズ': 'ｽﾞ', 'ゼ': 'ｾﾞ', 'ゾ': 'ｿﾞ', 'ダ': 'ﾀﾞ', 'ヂ': 'ﾁﾞ', 'ヅ': 'ﾂﾞ', 'デ': 'ﾃﾞ', 'ド': 'ﾄﾞ', 'バ': 'ﾊﾞ', 'ビ': 'ﾋﾞ', 'ブ': 'ﾌﾞ', 'ベ': 'ﾍﾞ', 'ボ': 'ﾎﾞ', 'パ': 'ﾊﾟ', 'ピ': 'ﾋﾟ', 'プ': 'ﾌﾟ', 'ペ': 'ﾍﾟ', 'ポ': 'ﾎﾟ', 'ヴ': 'ｳﾞ'}
+_KANA_DAKUTEN_MAP = {'ガ': 'ｶﾞ', 'ギ': 'ｷﾞ', 'グ': 'ｸﾞ', 'ゲ': 'ｹﾞ', 'ゴ': 'ｺﾞ', 'ザ': 'ｻﾞ', 'ジ': 'ｼﾞ', 'ズ': 'ｽﾞ', 'ゼ': 'ｾﾞ', 'ゾ': 'ｿﾞ', 'ダ': 'ﾀﾞ', 'ヂ': 'チﾞ', 'ヅ': 'ﾂﾞ', 'デ': 'ﾃﾞ', 'ド': 'ﾄﾞ', 'バ': 'ﾊﾞ', 'ビ': 'ﾋﾞ', 'ブ': 'ﾌﾞ', 'ベ': 'ﾍﾞ', 'ボ': 'ﾎﾞ', 'パ': 'ﾊﾟ', 'ピ': 'ﾋﾟ', 'プ': 'ﾌﾟ', 'ペ': 'ﾍﾟ', 'ポ': 'ﾎﾟ', 'ヴ': 'ｳﾞ'}
 for k, v in _KANA_MAP.items(): _ZEN2HAN_MAP[ord(k)] = v
 for k, v in _KANA_DAKUTEN_MAP.items(): _ZEN2HAN_MAP[ord(k)] = v
 
@@ -121,7 +121,7 @@ def normalize_text(text: str) -> str:
         return ""
     normalized = pattern.sub(lambda m: replace_dict[m.group()], text)
     converted = KAKASI_INST.convert(normalized)
-    return ''.join([c['hepburn'] for c in converted])
+    return ' '.join(''.join([c['hepburn'] for c in converted]).split())
 
 def process_csv_and_schema(csv_path: str, table_name: str):
     if not Path(csv_path).is_file():
@@ -412,7 +412,7 @@ def zen_to_han_fast_single(text: str) -> str:
 # ------------------------------------
 
 def normalize_name(raw: str) -> str:
-    return re.sub(r'　{2,}', '　', raw.strip().replace(' ', '　'))
+    return re.sub(r' {2,}', ' ', raw.strip().replace(' ', ' '))
 
 def name_set(name: str, ope: dict) -> str:
     val = ope.get(name, 0)
@@ -494,7 +494,7 @@ def work_process(data_list: list, decision_csv_path: str):
             delta       = current_date - base_date
 
             days_str = f'<span class="blur">{current_year}年</span><br>{current_month}月 {day}日（{weekday_str}）'
-            color    = '　<span id="b_hakui">【青】</span>' if delta.days % 14 > 6 else '　<span id="w_hakui">【白】</span>'
+            color    = ' <span id="b_hakui">【青】</span>' if delta.days % 14 > 6 else ' <span id="w_hakui">【白】</span>'
 
             member_dict_raw: dict[str, list] = defaultdict(list)
             for row in sheet_data[2:]:

@@ -12093,3 +12093,29 @@ Could not determine dtype for column 7, falling back to string
 [2026-09-09 02:49:32 +0900] [76179] [INFO] Started server process [76179]
 [2026-09-09 02:49:32 +0900] [76179] [INFO] Waiting for application startup.
 [2026-09-09 02:49:32 +0900] [76179] [INFO] Application startup complete.
+[2026-09-09 04:36:56 +0900] [76179] [WARNING] Invalid HTTP request received.
+[2026-09-09 12:50:48 +0900] [76131] [INFO] Handling signal: term
+[2026-09-09 12:50:48 +0900] [76177] [INFO] Shutting down
+[2026-09-09 12:50:48 +0900] [76177] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-09 12:50:48 +0900] [76179] [INFO] Shutting down
+[2026-09-09 12:50:48 +0900] [76179] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-09 12:50:48 +0900] [76177] [INFO] Waiting for application shutdown.
+[2026-09-09 12:50:48 +0900] [76177] [INFO] Application shutdown complete.
+[2026-09-09 12:50:48 +0900] [76177] [INFO] Finished server process [76177]
+[2026-09-09 12:50:48 +0900] [76179] [INFO] Waiting for application shutdown.
+[2026-09-09 12:50:48 +0900] [76179] [INFO] Application shutdown complete.
+[2026-09-09 12:50:48 +0900] [76131] [ERROR] Worker (pid:76177) was sent SIGTERM!
+[2026-09-09 12:50:48 +0900] [76179] [INFO] Finished server process [76179]
+[2026-09-09 12:50:48 +0900] [76131] [ERROR] Worker (pid:76179) was sent SIGTERM!
+[2026-09-09 12:50:48 +0900] [76131] [INFO] Shutting down: Master
+[2026-09-09 12:50:49 +0900] [77076] [INFO] Starting gunicorn 23.0.0
+[2026-09-09 12:50:49 +0900] [77076] [INFO] Listening at: http://0.0.0.0:9900 (77076)
+[2026-09-09 12:50:49 +0900] [77076] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-09-09 12:50:49 +0900] [77143] [INFO] Booting worker with pid: 77143
+[2026-09-09 12:50:49 +0900] [77145] [INFO] Booting worker with pid: 77145
+[2026-09-09 12:50:50 +0900] [77143] [INFO] Started server process [77143]
+[2026-09-09 12:50:50 +0900] [77143] [INFO] Waiting for application startup.
+[2026-09-09 12:50:50 +0900] [77143] [INFO] Application startup complete.
+[2026-09-09 12:50:50 +0900] [77145] [INFO] Started server process [77145]
+[2026-09-09 12:50:50 +0900] [77145] [INFO] Waiting for application startup.
+[2026-09-09 12:50:50 +0900] [77145] [INFO] Application startup complete.

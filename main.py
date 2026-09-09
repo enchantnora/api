@@ -185,9 +185,13 @@ async def index(request: Request, db: aiosqlite.Connection = Depends(get_db)):
     response.set_cookie(key="user_uuid", value=user_uuid, max_age=180*24*3600)
     return response
 
-def build_search_query(keys: list[str], base_query: str, q: str) -> tuple[str, list]:
+def build_search_query(keys: list[str], base_query: str, q: str, normalized_q: str = '') -> tuple[str, list]:
+    match_targets = list(dict.fromkeys([v for v in (q, normalized_q) if v]))
+    kw_conditions = " OR ".join(["keyword LIKE ?"] * len(match_targets))
+    kw_params = [f"%{v}%" for v in match_targets]
+
     if not keys:
-        return f"{base_query} WHERE keyword LIKE ?", [f"%{q}%"]
+        return f"{base_query} WHERE {kw_conditions}", kw_params
     
     conds_list = []
     params = []
@@ -196,8 +200,8 @@ def build_search_query(keys: list[str], base_query: str, q: str) -> tuple[str, l
         params.extend([f"%{k}%", f"%{k}%", f"%{k}%"])
     conds = " AND ".join(conds_list)
     
-    query = f"{base_query} WHERE ({conds}) OR keyword LIKE ?"
-    params.append(f"%{q}%")
+    query = f"{base_query} WHERE ({conds}) OR {kw_conditions}"
+    params.extend(kw_params)
     return query, params
 
 @app.get("/search/", name="search")
@@ -206,7 +210,8 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
     if not q:
         return {"products": [], "count": 0}
         
-    keys = normalize_text(q).split()
+    normalized_q = normalize_text(q)
+    keys = normalized_q.split()
     use_fts = all(len(k) >= 3 for k in keys) if keys else False
     base_query = "SELECT slug, sk, code, name FROM product"
     
@@ -220,6 +225,10 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
                 conds_list.append("(name LIKE ? OR code LIKE ?)")
                 params.extend([f"%{k}%", f"%{k}%"])
             name_code_cond = " AND ".join(conds_list) if conds_list else "0"
+
+            match_targets = list(dict.fromkeys([v for v in (q, normalized_q) if v]))
+            kw_conditions = " OR ".join(["keyword LIKE ?"] * len(match_targets))
+            kw_params = [f"%{v}%" for v in match_targets]
             
             query = f"""
                 {base_query} 
@@ -228,14 +237,14 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
                     WHERE product_fts MATCH ?
                 ))
                 OR ({name_code_cond})
-                OR keyword LIKE ?
+                OR ({kw_conditions})
             """
-            params.append(f"%{q}%")
+            params.extend(kw_params)
             
             async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()
         else:
-            query, params = build_search_query(keys, base_query, q)
+            query, params = build_search_query(keys, base_query, q, normalized_q)
             async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()
                 
@@ -245,7 +254,7 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
     except aiosqlite.Error as e:
         if use_fts:
             try:
-                query, params = build_search_query(keys, base_query, q)
+                query, params = build_search_query(keys, base_query, q, normalized_q)
                 async with db.execute(query, params) as cursor:
                     rows = await cursor.fetchall()
                 results = [dict(row) for row in rows]
@@ -708,8 +717,9 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
                 result = f"{len(rows)}種類Hit\n\n" + result
 
         elif status == 2:
-            keys = normalize_text(q).split()
-            query, params = build_search_query(keys, "SELECT sk, name, code, slug FROM product", q)
+            normalized_q = normalize_text(q)
+            keys = normalized_q.split()
+            query, params = build_search_query(keys, "SELECT sk, name, code, slug FROM product", q, normalized_q)
             query += " ORDER BY rowid DESC LIMIT 50"
 
             async with db.execute(query, params) as cursor:
