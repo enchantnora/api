@@ -452,35 +452,8 @@ fetchData: function(slug) {
             .done(async (data) => {
                 let product = data.product;
                 let memo = await UserDataController.fetchMemo(slug);
-                let infoHtml = "";
+                let infoHtml = product.infoHtml;
                 let product_name = product.name;
-                product.items.forEach((item, index) => {
-                    let gw = item.grossWeight.replace('ｇ', '');
-                    if (item.sk) infoHtml += `■■${item.sk}■■<br>`;
-                    if (item.code) infoHtml += `${item.code}<br>`;
-                    if (item.name) infoHtml += `${item.name}<br>`;
-                    const etcHtml = item.etc ? `【備考】${item.etc.trim().replace(/\n/g, '<br>')}<br>` : '';
-                    infoHtml += `
-                        【仕上時間】${item.time_val || ''}<br>
-                        【仕上単位】${item.unit || ''}<br>
-                        【人工】${item.skill || ''}<br>
-                        【異常作業】${item.abnormal || ''}<br>
-                        【総重量】${item.grossWeight || ''}<span class="span_data" data-weight="${gw || ''}" data-quantity="${item.spawn || ''}">原料調整</span><br>
-                        【重量公差】${item.wgt || ''}<br>
-                        【取数】${item.spawn || ''}<br>
-                        【実ｻｲｸﾙ】${item.cycle_val || ''}<br>
-                        【標準ｻｲｸﾙ】${item.standard || ''}<br>
-                        【材質】${item.material || ''}<br>
-                        【原料】${item.raw || ''}<br>
-                        【MFR】${item.raw_mfr || ''}<br>
-                        【梱包】${item.one_box || ''}<br>
-                        【積載】${item.pallet || ''}<br>
-                        【テープ】${item.tape || ''}<br>
-                        【ﾀﾞﾝﾎﾞｰﾙ】${item.box || ''}<br>
-                        【袋】${item.bag || ''}<br>
-                        ${etcHtml}
-                        ______________________<br>`;
-                });
                 
                 $('.temp_elem').hide();
                 let len = product.count;

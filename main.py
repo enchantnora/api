@@ -25,7 +25,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from utils import (
     TABLE_CONFIGS, get_db, normalize_text, process_csv_and_schema,
     get_file_timestamp, write_csv_sync, write_and_process,
-    get_val, _normalize_param, generate_mobile_block,
+    get_val, _normalize_param, generate_product_block,
     process_data_sync, parse_wgt, zen_to_han_fast_single,
     templates, CABINET_DIR, RE_CHART_FILE, RE_CHART_DATE
 )
@@ -277,11 +277,14 @@ async def read_data_slug(request: Request, slug: str, db: aiosqlite.Connection =
         
         names = list(dict.fromkeys([str(r.get("name", "")) for r in results if r.get("name")]))
         joined_names = " / ".join(names)
+
+        info_html = "".join(generate_product_block(r, is_html=True) for r in results)
         
         product_data = {
             "slug": slug,
             "name": joined_names,
             "count": len(results),
+            "infoHtml": info_html,
             "items": results
         }
             
@@ -708,7 +711,7 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
                 memo_row = await cursor.fetchone()
                 memo_text = memo_row["memo"] if memo_row else ""
 
-            result = "".join(generate_mobile_block(dict(row)) for row in rows)
+            result = "".join(generate_product_block(dict(row), is_html=False) for row in rows)
             
             if memo_text:
                 result += f"【メモ】\n{memo_text}\n"

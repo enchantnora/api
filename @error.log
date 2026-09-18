@@ -12281,3 +12281,28 @@ Could not determine dtype for column 7, falling back to string
 [2026-09-18 16:27:15 +0900] [95363] [INFO] Started server process [95363]
 [2026-09-18 16:27:15 +0900] [95363] [INFO] Waiting for application startup.
 [2026-09-18 16:27:15 +0900] [95363] [INFO] Application startup complete.
+[2026-09-18 17:19:20 +0900] [95316] [INFO] Handling signal: term
+[2026-09-18 17:19:20 +0900] [95363] [INFO] Shutting down
+[2026-09-18 17:19:20 +0900] [95363] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-18 17:19:20 +0900] [95362] [INFO] Shutting down
+[2026-09-18 17:19:20 +0900] [95362] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-18 17:19:20 +0900] [95363] [INFO] Waiting for application shutdown.
+[2026-09-18 17:19:20 +0900] [95363] [INFO] Application shutdown complete.
+[2026-09-18 17:19:20 +0900] [95363] [INFO] Finished server process [95363]
+[2026-09-18 17:19:20 +0900] [95316] [ERROR] Worker (pid:95363) was sent SIGTERM!
+[2026-09-18 17:19:20 +0900] [95362] [INFO] Waiting for application shutdown.
+[2026-09-18 17:19:20 +0900] [95362] [INFO] Application shutdown complete.
+[2026-09-18 17:19:20 +0900] [95362] [INFO] Finished server process [95362]
+[2026-09-18 17:19:20 +0900] [95316] [ERROR] Worker (pid:95362) was sent SIGTERM!
+[2026-09-18 17:19:20 +0900] [95316] [INFO] Shutting down: Master
+[2026-09-18 17:19:21 +0900] [95604] [INFO] Starting gunicorn 23.0.0
+[2026-09-18 17:19:21 +0900] [95604] [INFO] Listening at: http://0.0.0.0:9900 (95604)
+[2026-09-18 17:19:21 +0900] [95604] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-09-18 17:19:21 +0900] [95650] [INFO] Booting worker with pid: 95650
+[2026-09-18 17:19:21 +0900] [95651] [INFO] Booting worker with pid: 95651
+[2026-09-18 17:19:22 +0900] [95650] [INFO] Started server process [95650]
+[2026-09-18 17:19:22 +0900] [95650] [INFO] Waiting for application startup.
+[2026-09-18 17:19:22 +0900] [95650] [INFO] Application startup complete.
+[2026-09-18 17:19:22 +0900] [95651] [INFO] Started server process [95651]
+[2026-09-18 17:19:22 +0900] [95651] [INFO] Waiting for application startup.
+[2026-09-18 17:19:22 +0900] [95651] [INFO] Application startup complete.

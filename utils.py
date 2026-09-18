@@ -185,15 +185,26 @@ def _normalize_param(val: str | None) -> str | None:
 def _safe_float(val, default: float = 0.0) -> float:
     return float(val) if is_numeric(val) else default
 
-def generate_mobile_block(item: dict) -> str:
+def generate_product_block(item: dict, is_html: bool = False) -> str:
     parts = []
+
+    br = "<br>" if is_html else "\n"
+    
     if sk   := item.get("sk"):   parts.append(f"■■{sk}■■")
     if code := item.get("code"): parts.append(code)
     if name := item.get("name"): parts.append(name)
+
+    gw_val = get_val(item, 'grossWeight')
+    gw_display = f"【総重量】{gw_val}"
+    if is_html:
+        gw_num = gw_val.replace('ｇ', '')
+        spawn = get_val(item, 'spawn')
+        gw_display += f'<span class="span_data" data-weight="{gw_num}" data-quantity="{spawn}">原料調整</span>'
+
     parts += [
         f"【仕上時間】{get_val(item, 'time_val')}",  f"【仕上単位】{get_val(item, 'unit')}",
         f"【人工】{get_val(item, 'skill')}",          f"【異常作業】{get_val(item, 'abnormal')}",
-        f"【総重量】{get_val(item, 'grossWeight')}",  f"【重量公差】{get_val(item, 'wgt')}",
+        gw_display,                                f"【重量公差】{get_val(item, 'wgt')}",
         f"【取数】{get_val(item, 'spawn')}",          f"【実ｻｲｸﾙ】{get_val(item, 'cycle_val')}",
         f"【標準ｻｲｸﾙ】{get_val(item, 'standard')}", f"【材質】{get_val(item, 'material')}",
         f"【原料】{get_val(item, 'raw')}",            f"【MFR】{get_val(item, 'raw_mfr')}",
@@ -201,9 +212,16 @@ def generate_mobile_block(item: dict) -> str:
         f"【テープ】{get_val(item, 'tape')}",         f"【ﾀﾞﾝﾎﾞｰﾙ】{get_val(item, 'box')}",
         f"【袋】{get_val(item, 'bag')}",
     ]
-    if etc_val := get_val(item, 'etc'): parts.append(f"【備考】{etc_val}")
-    parts.append("__________________")
-    return "\n".join(parts) + "\n"
+    
+    if etc_val := get_val(item, 'etc'):
+        if is_html:
+            etc_val = etc_val.strip().replace('\n', '<br>')
+        parts.append(f"【備考】{etc_val}")
+        
+    delimiter = "______________________" if is_html else "__________________"
+    parts.append(delimiter)
+    
+    return br.join(parts) + br
 
 
 def generate_keyword(goods, resource, sk, i_2, i_4):
