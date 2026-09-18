@@ -27,7 +27,7 @@ class MonthlyFileHandler(logging.FileHandler):
         super().emit(record)
 
 log_format = logging.Formatter('%(message)s')
-file_handler = MonthlyFileHandler("./log", "@access")
+file_handler = MonthlyFileHandler("./log", "access")
 file_handler.setFormatter(log_format)
 
 access_logger = logging.getLogger("fastapi_access_logger")
@@ -102,7 +102,7 @@ async def requests_control(request: Request, call_next):
 
 # ------------------------------------
 
-target_prefixes = ("/item", "/ms", "/cc", "/docs", "/wg")
+target_prefixes = ("/data", "/item", "/ms", "/cc", "/docs", "/wg")
 
 async def lowercase_specific_path(request: Request, call_next):
     original_path = request.scope["path"]
