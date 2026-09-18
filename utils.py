@@ -187,37 +187,59 @@ def _safe_float(val, default: float = 0.0) -> float:
 
 def generate_product_block(item: dict, is_html: bool = False) -> str:
     parts = []
-
+    
     br = "<br>" if is_html else "\n"
     
-    if sk   := item.get("sk"):   parts.append(f"■■{sk}■■")
-    if code := item.get("code"): parts.append(code)
-    if name := item.get("name"): parts.append(name)
+    if sk := item.get("sk"):
+        parts.append(f"■■{sk}■■")
+    if code := item.get("code"):
+        parts.append(code)
+    if name := item.get("name"):
+        parts.append(name)
 
-    gw_val = get_val(item, 'grossWeight')
-    gw_display = f"【総重量】{gw_val}"
-    if is_html:
-        gw_num = gw_val.replace('ｇ', '')
-        spawn = get_val(item, 'spawn')
-        gw_display += f'<span class="span_data" data-weight="{gw_num}" data-quantity="{spawn}">原料調整</span>'
-
-    parts += [
-        f"【仕上時間】{get_val(item, 'time_val')}",  f"【仕上単位】{get_val(item, 'unit')}",
-        f"【人工】{get_val(item, 'skill')}",          f"【異常作業】{get_val(item, 'abnormal')}",
-        gw_display,                                f"【重量公差】{get_val(item, 'wgt')}",
-        f"【取数】{get_val(item, 'spawn')}",          f"【実ｻｲｸﾙ】{get_val(item, 'cycle_val')}",
-        f"【標準ｻｲｸﾙ】{get_val(item, 'standard')}", f"【材質】{get_val(item, 'material')}",
-        f"【原料】{get_val(item, 'raw')}",            f"【MFR】{get_val(item, 'raw_mfr')}",
-        f"【梱包】{get_val(item, 'one_box')}",        f"【積載】{get_val(item, 'pallet')}",
-        f"【テープ】{get_val(item, 'tape')}",         f"【ﾀﾞﾝﾎﾞｰﾙ】{get_val(item, 'box')}",
-        f"【袋】{get_val(item, 'bag')}",
+    info_keys = [ # 内容が無い時非表示 = True
+        ("【仕上時間】", "time_val", False),
+        ("【仕上単位】", "unit", False),
+        ("【人工】", "skill", False),
+        ("【異常作業】", "abnormal", True),
+        ("【総重量】", "grossWeight", False),
+        ("【重量公差】", "wgt", False),
+        ("【取数】", "spawn", False),
+        ("【実ｻｲｸﾙ】", "cycle_val", False),
+        ("【標準ｻｲｸﾙ】", "standard", False),
+        ("【材質】", "material", False),
+        ("【原料】", "raw", False),
+        ("【MFR】", "raw_mfr", False),
+        ("【梱包】", "one_box", True),
+        ("【積載】", "pallet", True),
+        ("【テープ】", "tape", True),
+        ("【ﾀﾞﾝﾎﾞｰﾙ】", "box", True),
+        ("【袋】", "bag", True),
+        ("【備考】", "etc", True)
     ]
-    
-    if etc_val := get_val(item, 'etc'):
-        if is_html:
-            etc_val = etc_val.strip().replace('\n', '<br>')
-        parts.append(f"【備考】{etc_val}")
+
+    for label, key, hide_if_empty in info_keys:
+        val = get_val(item, key).strip()
         
+        if hide_if_empty and val in ("", "0", "無し", "未登録"):
+            continue
+            
+        if key == "grossWeight":
+            gw_display = f"{label}{val}"
+            if is_html:
+                gw_num = val.replace('ｇ', '')
+                spawn = get_val(item, 'spawn')
+                gw_display += f'<span class="span_data" data-weight="{gw_num}" data-quantity="{spawn}">原料調整</span>'
+            parts.append(gw_display)
+            
+        elif key == "etc":
+            if is_html and val:
+                val = val.replace('\n', '<br>')
+            parts.append(f"{label}{val}")
+            
+        else:
+            parts.append(f"{label}{val}")
+
     delimiter = "______________________" if is_html else "__________________"
     parts.append(delimiter)
     

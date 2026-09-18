@@ -12306,3 +12306,53 @@ Could not determine dtype for column 7, falling back to string
 [2026-09-18 17:19:22 +0900] [95651] [INFO] Started server process [95651]
 [2026-09-18 17:19:22 +0900] [95651] [INFO] Waiting for application startup.
 [2026-09-18 17:19:22 +0900] [95651] [INFO] Application startup complete.
+[2026-09-18 17:30:54 +0900] [95604] [INFO] Handling signal: term
+[2026-09-18 17:30:54 +0900] [95650] [INFO] Shutting down
+[2026-09-18 17:30:54 +0900] [95650] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-18 17:30:54 +0900] [95651] [INFO] Shutting down
+[2026-09-18 17:30:54 +0900] [95651] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-18 17:30:54 +0900] [95650] [INFO] Waiting for application shutdown.
+[2026-09-18 17:30:54 +0900] [95650] [INFO] Application shutdown complete.
+[2026-09-18 17:30:54 +0900] [95650] [INFO] Finished server process [95650]
+[2026-09-18 17:30:54 +0900] [95604] [ERROR] Worker (pid:95650) was sent SIGTERM!
+[2026-09-18 17:30:54 +0900] [95651] [INFO] Waiting for application shutdown.
+[2026-09-18 17:30:54 +0900] [95651] [INFO] Application shutdown complete.
+[2026-09-18 17:30:54 +0900] [95651] [INFO] Finished server process [95651]
+[2026-09-18 17:30:54 +0900] [95604] [ERROR] Worker (pid:95651) was sent SIGTERM!
+[2026-09-18 17:30:54 +0900] [95604] [INFO] Shutting down: Master
+[2026-09-18 17:30:55 +0900] [95817] [INFO] Starting gunicorn 23.0.0
+[2026-09-18 17:30:55 +0900] [95817] [INFO] Listening at: http://0.0.0.0:9900 (95817)
+[2026-09-18 17:30:55 +0900] [95817] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-09-18 17:30:55 +0900] [95863] [INFO] Booting worker with pid: 95863
+[2026-09-18 17:30:55 +0900] [95865] [INFO] Booting worker with pid: 95865
+[2026-09-18 17:30:56 +0900] [95863] [INFO] Started server process [95863]
+[2026-09-18 17:30:56 +0900] [95863] [INFO] Waiting for application startup.
+[2026-09-18 17:30:56 +0900] [95863] [INFO] Application startup complete.
+[2026-09-18 17:30:56 +0900] [95865] [INFO] Started server process [95865]
+[2026-09-18 17:30:56 +0900] [95865] [INFO] Waiting for application startup.
+[2026-09-18 17:30:56 +0900] [95865] [INFO] Application startup complete.
+[2026-09-18 17:33:08 +0900] [95817] [INFO] Handling signal: term
+[2026-09-18 17:33:08 +0900] [95865] [INFO] Shutting down
+[2026-09-18 17:33:08 +0900] [95865] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-18 17:33:08 +0900] [95863] [INFO] Shutting down
+[2026-09-18 17:33:08 +0900] [95863] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-09-18 17:33:08 +0900] [95865] [INFO] Waiting for application shutdown.
+[2026-09-18 17:33:08 +0900] [95865] [INFO] Application shutdown complete.
+[2026-09-18 17:33:08 +0900] [95865] [INFO] Finished server process [95865]
+[2026-09-18 17:33:08 +0900] [95817] [ERROR] Worker (pid:95865) was sent SIGTERM!
+[2026-09-18 17:33:08 +0900] [95863] [INFO] Waiting for application shutdown.
+[2026-09-18 17:33:08 +0900] [95863] [INFO] Application shutdown complete.
+[2026-09-18 17:33:08 +0900] [95863] [INFO] Finished server process [95863]
+[2026-09-18 17:33:08 +0900] [95817] [ERROR] Worker (pid:95863) was sent SIGTERM!
+[2026-09-18 17:33:08 +0900] [95817] [INFO] Shutting down: Master
+[2026-09-18 17:33:09 +0900] [96012] [INFO] Starting gunicorn 23.0.0
+[2026-09-18 17:33:09 +0900] [96012] [INFO] Listening at: http://0.0.0.0:9900 (96012)
+[2026-09-18 17:33:09 +0900] [96012] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-09-18 17:33:09 +0900] [96058] [INFO] Booting worker with pid: 96058
+[2026-09-18 17:33:09 +0900] [96060] [INFO] Booting worker with pid: 96060
+[2026-09-18 17:33:11 +0900] [96058] [INFO] Started server process [96058]
+[2026-09-18 17:33:11 +0900] [96058] [INFO] Waiting for application startup.
+[2026-09-18 17:33:11 +0900] [96058] [INFO] Application startup complete.
+[2026-09-18 17:33:11 +0900] [96060] [INFO] Started server process [96060]
+[2026-09-18 17:33:11 +0900] [96060] [INFO] Waiting for application startup.
+[2026-09-18 17:33:11 +0900] [96060] [INFO] Application startup complete.
