@@ -29,7 +29,9 @@ TABLE_CONFIGS = [
 
 replace_dict = {
     ' ': ' ', ' ': ' ', '-': ' ', '.': ' ', '/': ' ', '／': ' ',
-    '#': ' syaapu', '＃': ' syaapu', 'シャープ': ' syaapu', 'φ': 'phi',
+    '#': ' syaapu', '＃': ' syaapu', 'シャープ': ' syaapu',
+    'φ': ' phi', 'Φ': ' phi',
+    'No.': ' no', 'NO.': ' no', 'no.': ' no', 'Ｎｏ．': ' no',
     '中蓋': 'nakafuta', '型': 'gata',
     '長側': 'chousoku', '短側': 'tansoku', r'(?<=\w)板': 'ban',
     'ぁ': 'a', 'ぃ': 'i', 'ぅ': 'u', 'ぇ': 'e', 'ぉ': 'o',
@@ -183,7 +185,7 @@ def _normalize_param(val: str | None) -> str | None:
 def _safe_float(val, default: float = 0.0) -> float:
     return float(val) if is_numeric(val) else default
 
-def generate_mobile_html_block(item: dict) -> str:
+def generate_mobile_block(item: dict) -> str:
     parts = []
     if sk   := item.get("sk"):   parts.append(f"■■{sk}■■")
     if code := item.get("code"): parts.append(code)

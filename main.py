@@ -25,7 +25,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from utils import (
     TABLE_CONFIGS, get_db, normalize_text, process_csv_and_schema,
     get_file_timestamp, write_csv_sync, write_and_process,
-    get_val, _normalize_param, generate_mobile_html_block,
+    get_val, _normalize_param, generate_mobile_block,
     process_data_sync, parse_wgt, zen_to_han_fast_single,
     templates, CABINET_DIR, RE_CHART_FILE, RE_CHART_DATE
 )
@@ -708,7 +708,7 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
                 memo_row = await cursor.fetchone()
                 memo_text = memo_row["memo"] if memo_row else ""
 
-            result = "".join(generate_mobile_html_block(dict(row)) for row in rows)
+            result = "".join(generate_mobile_block(dict(row)) for row in rows)
             
             if memo_text:
                 result += f"【メモ】\n{memo_text}\n"

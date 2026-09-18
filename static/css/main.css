@@ -1413,6 +1413,7 @@ h3 {
     display: flex;
 }
 .banner {
+    display: block;
     width: 70px;
     height: 70px;
     flex-shrink: 0;

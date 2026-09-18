@@ -9,6 +9,7 @@ const explicit = [
      c: ['シフトを日別で表示。',
         '左右にスワイプで日を遷移します。',
         '長押しすると[現在][+7日][-7日]ボタンが出現し、一週間単位でジャンプできます。',
+        '名前をダブルタップで月単位で表示。',
         '2021年12月16日から記録。']},
     {n: '時間計算', u: 'https://www.icloud.com/shortcuts/ed150fd8c98544aebc57811a8eb351af',
      c: ['入力欄に [残りショット数] と [サイクル(秒)] を入力します。',
@@ -36,7 +37,7 @@ if (targetElement) {
         return `                            <div class="sho_t"><h5 class="mezzo">${item.n}</h5>
                                 <div class="gline"></div>
                                 <div class="d">
-                                    <a class="banner" href="${item.u}" target="_blank" rel="noopener noreferrer"></a>
+                                    <a class="banner" href="${item.u}"><span style="display:none;">開く</span></a>
                                     <div class="dd">
 ${spanElements}
                                     </div>
