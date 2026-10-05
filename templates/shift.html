@@ -593,6 +593,8 @@
                 const dateKey = fmtYMD(currentDate);
                 const innerDiv = document.createElement('div');
                 innerDiv.className = 'cal-cell-inner';
+                
+                innerDiv.dataset.date = dateKey;
 
                 if (data.hasOwnProperty(dateKey)) {
                     const dateDiv = document.createElement('div');
@@ -939,7 +941,7 @@
             const justOpened = Date.now() - modalOpenTime < MODAL_OPEN_GUARD_MS;
             const cx = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
             const realDistance = cx - modalStartX;
-
+    
             if (!e.target.closest('#modal-content')) {
                 if (!modalMoved && duration < MODAL_TAP_TIME_THRESHOLD && !justOpened) {
                     modalOverlay.style.display = 'none';
@@ -950,7 +952,7 @@
                 modalStartX = undefined;
                 return;
             }
-
+    
             if (isModalSwiping) {
                 if (realDistance > MODAL_SWIPE_THRESHOLD) {
                     currentModalBaseDate.setMonth(currentModalBaseDate.getMonth() - 1);
@@ -962,8 +964,26 @@
                     modalContent.style.transition = 'transform 0.2s cubic-bezier(0, 1.17, 0.86, 0.99)';
                     modalContent.style.transform = 'translateX(-50%)';
                 }
+            } else if (!isModalVerticalScroll && !modalMoved && duration < MODAL_TAP_TIME_THRESHOLD && !justOpened) {
+                const cell = e.target.closest('.cal-cell-inner');
+                if (cell && cell.dataset.date) {
+                    const targetDateStr = cell.dataset.date;
+                    const todayStr = getPresent(0);
+                    const targetDate = parseDateStr(targetDateStr);
+                    const todayDate = parseDateStr(todayStr);
+                    
+                    const diffDays = Math.round((targetDate - todayDate) / 86400000);
+    
+                    modalOverlay.style.display = 'none';
+                    document.body.classList.remove('no-scroll');
+                    modalContent.style.transition = 'none';
+                    modalContent.style.transform = 'translateX(-50%)';
+                    
+                    G_current = diffDays;
+                    mainWrite(G_current);
+                }
             }
-
+    
             isModalSwiping = false;
             isModalVerticalScroll = false;
             modalStartX = undefined;
