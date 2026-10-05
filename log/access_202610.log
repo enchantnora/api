@@ -2971,3 +2971,6 @@
 [2026/10/05 09:09:00] 205.169.39.26 "GET /" 200 "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
 [2026/10/05 09:41:51] 138.246.253.45 "GET /robots.txt" 404 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
 [2026/10/05 09:45:37] 184.82.245.142 "GET /" 200 "RealCyber-enricher/0.2 (+internal research; contact via RealCyber operator)"
+[2026/10/05 10:42:49] 198.235.24.83 "GET /.well-known/security.txt" 404 "Hello from Palo Alto Networks, find out more about our scans in https://docs-cortex.paloaltonetworks.com/r/1/Cortex-Xpanse/Scanning-activity"
+[2026/10/05 10:46:34] 198.235.24.107 "GET /.well-known/security.txt" 404 "Hello from Palo Alto Networks, find out more about our scans in https://docs-cortex.paloaltonetworks.com/r/1/Cortex-Xpanse/Scanning-activity"
+[2026/10/05 10:49:52] 223.233.73.43 "GET /" 200 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
