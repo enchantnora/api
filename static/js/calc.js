@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const calcHtml = `
-        <input type="radio" id="normal_calc" class="calc_type" name="calc_type" checked>
-        <input type="radio" id="time_calc" class="calc_type" name="calc_type">
         ※ 入力順に計算されます
         <div id="normal_monitor" class="monitor">0</div>
         <div id="button_type">
@@ -23,8 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="calculate" onclick="calc(this)">＝</span>
             <span class="bs" onclick="calc(this)">←</span>
             <span class="clear font_s" onclick="calc(this)">AC</span>
-            <label for="normal_calc" class="fx font_s label_normal">通常計算</label>
-            <label for="time_calc" class="fx font_s label_time">時間計算</label>
+            <span class="fx font_s label_normal" onclick="switchCalcMode('normal')">通常計算</span>
+            <span class="fx font_s label_time" onclick="switchCalcMode('time')">時間計算</span>
         </div>
         <div id="time_monitor" class="monitor">0</div>
         <div id="button_type2">
@@ -46,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="calculate" onclick="calcTime(this)">＝</span>
             <span class="bs" onclick="calcTime(this)">←</span>
             <span class="clear font_s" onclick="calcTime(this)">AC</span>
-            <label for="normal_calc" class="fx font_s label_normal">通常計算</label>
-            <label for="time_calc" class="fx font_s label_time">時間計算</label>
+            <span class="fx font_s label_normal" onclick="switchCalcMode('normal')">通常計算</span>
+            <span class="fx font_s label_time" onclick="switchCalcMode('time')">時間計算</span>
             <span class="now_time disabled" onclick="calcTime(this)">＋現在時間</span>
             <span class="time_unit font_s" onclick="calcTime(this)">秒</span>
             <span class="time_unit font_s" onclick="calcTime(this)">分</span>
@@ -59,7 +57,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const calcRay = document.getElementById('calc_ray');
     if (calcRay) {
         calcRay.innerHTML = calcHtml;
+        calcRay.classList.add('is-normal'); // 初期状態を「通常計算」にセット
     }
+
+    // モード切り替え関数
+    window.switchCalcMode = function(mode) {
+        if (!calcRay) return;
+        if (mode === 'normal') {
+            calcRay.classList.remove('is-time');
+            calcRay.classList.add('is-normal');
+        } else {
+            calcRay.classList.remove('is-normal');
+            calcRay.classList.add('is-time');
+        }
+    };
 
     class Calculator {
         constructor() {
@@ -110,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clear() { 
             this.display.textContent = '0'; 
             this.error = false; 
-            // 現在時間が表示されているかどうかのフラグをリセット
             this.isDateTimeDisplayed = false; 
         }
         showErr() { this.display.textContent = 'Error'; this.error = true; }
@@ -131,24 +141,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         parseTime(str) {
-                    if (!/[日時分秒]/.test(str)) return parseFloat(str) || 0;
-                    let sec = 0;
-                    const matches = str.match(/(\d+(\.\d+)?)([日時分秒]?)/g);
-                    if (matches) {
-                        matches.forEach(match => {
-                            if (!match) return;
-                            const valMatch = match.match(/\d+(\.\d+)?/);
-                            if (!valMatch) return;
-                            const val = parseFloat(valMatch[0]);
-                            
-                            if (match.includes('日')) sec += val * 86400;
-                            else if (match.includes('時')) sec += val * 3600;
-                            else if (match.includes('分')) sec += val * 60;
-                            else sec += val;
-                        });
-                    }
-                    return sec;
-                }
+            if (!/[日時分秒]/.test(str)) return parseFloat(str) || 0;
+            let sec = 0;
+            const matches = str.match(/(\d+(\.\d+)?)([日時分秒]?)/g);
+            if (matches) {
+                matches.forEach(match => {
+                    if (!match) return;
+                    const valMatch = match.match(/\d+(\.\d+)?/);
+                    if (!valMatch) return;
+                    const val = parseFloat(valMatch[0]);
+                    
+                    if (match.includes('日')) sec += val * 86400;
+                    else if (match.includes('時')) sec += val * 3600;
+                    else if (match.includes('分')) sec += val * 60;
+                    else sec += val;
+                });
+            }
+            return sec;
+        }
 
         formatTime(sec) {
             if (!isFinite(sec)) throw new Error("Invalid");
@@ -169,58 +179,54 @@ document.addEventListener('DOMContentLoaded', () => {
             return res === '' ? '0' : res;
         }
 
-    calculate() {
-                if (this.error) this.clear();
-                try {
-                    const tokens = this.display.textContent.match(/((\d+(\.\d+)?[日時分秒]*)+|[+\-*/])/g);
-                    if (!tokens) return;
-    
-                    let res = this.parseTime(tokens[0]);
-                    // 最初に入力された値が時間（単位あり）かどうかを判定
-                    let isTimeResult = /[日時分秒]/.test(tokens[0]);
-    
-                    for (let i = 1; i < tokens.length; i += 2) {
-                        const nextStr = tokens[i + 1];
-                        const next = this.parseTime(nextStr);
-                        const nextIsTime = /[日時分秒]/.test(nextStr);
-    
-                        switch (tokens[i]) {
-                            case '+': 
-                                res += next; 
+        calculate() {
+            if (this.error) this.clear();
+            try {
+                const tokens = this.display.textContent.match(/((\d+(\.\d+)?[日時分秒]*)+|[+\-*/])/g);
+                if (!tokens) return;
+
+                let res = this.parseTime(tokens[0]);
+                let isTimeResult = /[日時分秒]/.test(tokens[0]);
+
+                for (let i = 1; i < tokens.length; i += 2) {
+                    const nextStr = tokens[i + 1];
+                    const next = this.parseTime(nextStr);
+                    const nextIsTime = /[日時分秒]/.test(nextStr);
+
+                    switch (tokens[i]) {
+                        case '+': 
+                            res += next; 
+                            isTimeResult = isTimeResult || nextIsTime;
+                            break;
+                        case '-': 
+                            res -= next; 
+                            isTimeResult = isTimeResult || nextIsTime;
+                            break;
+                        case '*': 
+                            res *= next; 
+                            isTimeResult = isTimeResult || nextIsTime;
+                            break;
+                        case '/': 
+                            res /= next; 
+                            if (isTimeResult && nextIsTime) {
+                                isTimeResult = false; 
+                            } else {
                                 isTimeResult = isTimeResult || nextIsTime;
-                                break;
-                            case '-': 
-                                res -= next; 
-                                isTimeResult = isTimeResult || nextIsTime;
-                                break;
-                            case '*': 
-                                res *= next; 
-                                isTimeResult = isTimeResult || nextIsTime;
-                                break;
-                            case '/': 
-                                res /= next; 
-                                if (isTimeResult && nextIsTime) {
-                                    // 時間 ÷ 時間 の場合は単位が相殺されて「純粋な数値」になる
-                                    isTimeResult = false; 
-                                } else {
-                                    isTimeResult = isTimeResult || nextIsTime;
-                                }
-                                break;
-                        }
+                            }
+                            break;
                     }
-    
-                    if (isTimeResult) {
-                        // 結果が時間の場合は通常通りフォーマットして表示
-                        this.display.textContent = this.formatTime(res);
-                    } else {
-                        // 単位のない純粋な数値（比率など）の場合はそのまま表示（小数第3位程度で丸める）
-                        this.display.textContent = (Math.round(res * 1000) / 1000).toString();
-                    }
-                    this.display.scrollLeft = 0;
-                } catch {
-                    this.showErr();
                 }
+
+                if (isTimeResult) {
+                    this.display.textContent = this.formatTime(res);
+                } else {
+                    this.display.textContent = (Math.round(res * 1000) / 1000).toString();
+                }
+                this.display.scrollLeft = 0;
+            } catch {
+                this.showErr();
             }
+        }
     }
 
     const calcInstance = new Calculator();
@@ -228,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function updateTimeOperatorsState() {
         const displayStr = timeCalcInstance.display.textContent;
-        // 現在時刻が表示されている間は四則演算子も無効化を維持する
         const isEnabled = /[日時分秒+\-*/]$/.test(displayStr) && !timeCalcInstance.isDateTimeDisplayed;
         const opes = document.querySelectorAll('#button_type2 .ope');
         opes.forEach(ope => {
@@ -257,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const v = btn.textContent;
         const nowTimeBtn = document.querySelector('#button_type2 .now_time');
 
-        // 「＋現在時間」の結果が表示されている場合、次の入力が来たら一旦クリアする
         if (timeCalcInstance.isDateTimeDisplayed) {
             timeCalcInstance.clear();
         }
@@ -266,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (v === '←') timeCalcInstance.del();
         else if (v === '＋現在時間') {
             const now = new Date();
-            // 上部でクリア処理が入った場合、displayは'0'になっているので addedSec は 0 になる
             const addedSec = timeCalcInstance.parseTime(timeCalcInstance.display.textContent);
             
             now.setTime(now.getTime() + addedSec * 1000);
@@ -305,7 +308,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else if (!isNaN(v)) timeCalcInstance.append(v);
 
-        // 「＝」以外のボタンが押されたら「＋現在時間」を無効化する
         if (v !== '＝') {
             nowTimeBtn.classList.add('disabled');
         }

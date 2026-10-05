@@ -1272,8 +1272,8 @@ h3 {
 #button_type span:nth-child(16) {grid-area: eq;}
 #button_type span:nth-child(17) {grid-area: bs;}
 #button_type span:nth-child(18) {grid-area: ac;}
-#button_type label:nth-child(19) {grid-area: kk;}
-#button_type label:nth-child(20) {grid-area: ti;}
+#button_type span:nth-child(19) {grid-area: kk;}
+#button_type span:nth-child(20) {grid-area: ti;}
 
 #button_type2 span:nth-child(1) {grid-area: n1;}
 #button_type2 span:nth-child(2) {grid-area: n2;}
@@ -1293,16 +1293,16 @@ h3 {
 #button_type2 span:nth-child(16) {grid-area: eq;}
 #button_type2 span:nth-child(17) {grid-area: bs;}
 #button_type2 span:nth-child(18) {grid-area: ac;}
-#button_type2 label:nth-child(19) {grid-area: kk;}
-#button_type2 label:nth-child(20) {grid-area: ti;}
+#button_type2 span:nth-child(19) {grid-area: kk;}
+#button_type2 span:nth-child(20) {grid-area: ti;}
 #button_type2 span:nth-child(21) {grid-area: nw;}
 #button_type2 span:nth-child(22) {grid-area: se;}
 #button_type2 span:nth-child(23) {grid-area: mi;}
 #button_type2 span:nth-child(24) {grid-area: ho;}
 #button_type2 span:nth-child(25) {grid-area: da;}
 
-#button_type span, #button_type label,
-#button_type2 span, #button_type2 label {
+#button_type span,
+#button_type2 span {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1313,17 +1313,19 @@ h3 {
     cursor: pointer;
     white-space: nowrap;
     padding: .4vw 0;
+    -webkit-tap-highlight-color: transparent;
 }
 @media screen and (max-width: 700px) {
-    #button_type label, #button_type2 label {
+    #button_type .label_normal, #button_type .label_time,
+    #button_type2 .label_normal, #button_type2 .label_time {
         padding: 3vh 0;
     }
 }
 .font_s {
     font-size: min(3vw, 26px);
 }
-#button_type span:not(.font_s), #button_type label:not(.font_s),
-#button_type2 span:not(.font_s), #button_type2 label:not(.font_s) {
+#button_type span:not(.font_s),
+#button_type2 span:not(.font_s) {
     font-size: clamp(30px, 6vw, 50px);
 }
 .num {
@@ -1375,25 +1377,22 @@ h3 {
 #button_type span:hover, #button_type2 span:hover {
     background-color: #ddd;
 }
-.calc_type {
-    display: none;
-}
 .label_normal, .label_time {
     opacity: .5;
 }
-#normal_calc:checked ~ div .label_normal,
-#time_calc:checked ~ div .label_time {
+#calc_ray.is-normal .label_normal,
+#calc_ray.is-time .label_time {
     opacity: 1;
 }
-#normal_calc:checked ~ #button_type,
-#time_calc:checked ~ #button_type2 {
+#calc_ray.is-normal #button_type,
+#calc_ray.is-time #button_type2 {
     display: grid;
 }
 #normal_monitor, #time_monitor {
     display: none;
 }
-#normal_calc:checked ~ #normal_monitor,
-#time_calc:checked ~ #time_monitor {
+#calc_ray.is-normal #normal_monitor,
+#calc_ray.is-time #time_monitor {
     display: block;
 }
 /* -------------------------------------------------------------------- */
