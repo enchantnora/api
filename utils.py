@@ -482,6 +482,7 @@ def work_process(data_list: list, decision_csv_path: str):
     result_dict = {}
     exclude_shifts = {'Ｘ', '☓', 'X', 'x', '×', '停'}
     base_date = datetime.date(2001, 1, 1)
+    annotation_marker = "@"
 
     for sheet_name, sheet_data in sheets_dict.items():
         if len(sheet_data) < 3:
@@ -502,6 +503,8 @@ def work_process(data_list: list, decision_csv_path: str):
         if target_work_days is not None:
             for row in sheet_data[2:]:
                 if len(row) > 1:
+                    if row[1].strip() == annotation_marker:
+                        continue
                     name = normalize_name(row[1])
                     work_count = sum(
                         1 for col_idx in range(3, len(first_row))
@@ -539,14 +542,23 @@ def work_process(data_list: list, decision_csv_path: str):
             color    = ' <span id="b_hakui">【青】</span>' if delta.days % 14 > 6 else ' <span id="w_hakui">【白】</span>'
 
             member_dict_raw: dict[str, list] = defaultdict(list)
+            annotation = ""
             for row in sheet_data[2:]:
                 if len(row) > col_idx:
+                    raw_name = row[1].strip()
+                    cell_val = row[col_idx].strip()
+                    
+                    if raw_name == annotation_marker:
+                        if cell_val:
+                            annotation = cell_val
+                        continue
+
                     name  = normalize_name(row[1])
-                    shift = row[col_idx].strip()
+                    shift = cell_val
                     if name and shift and shift not in exclude_shifts:
                         member_dict_raw[shift].append(name)
 
-            result_dict[index_day] = [index_day, days_str, color, dict(member_dict_raw)]
+            result_dict[index_day] = [index_day, days_str, color, dict(member_dict_raw), annotation]
             sheet_days_keys.append(index_day)
 
         for idx_day in sorted(sheet_days_keys, reverse=True):
@@ -557,7 +569,7 @@ def work_process(data_list: list, decision_csv_path: str):
             )
 
     result_data = sorted(result_dict.values(), key=lambda x: x[0])
-    result_data.insert(0, ["index_day", "days", "color", "member"])
+    result_data.insert(0, ["index_day", "days", "color", "member", "annotation"])
 
     with open(decision_csv_path, mode='w', newline='', encoding='utf-8') as f:
         csv.writer(f).writerows(result_data)

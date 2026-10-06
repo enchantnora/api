@@ -2807,3 +2807,53 @@ Could not determine dtype for column 7, falling back to string
 [2026-10-05 22:51:03 +0900] [128786] [WARNING] Invalid HTTP request received.
 [2026-10-05 22:51:50 +0900] [128784] [WARNING] Invalid HTTP request received.
 [2026-10-05 22:54:08 +0900] [128786] [WARNING] Invalid HTTP request received.
+[2026-10-06 17:19:53 +0900] [128738] [INFO] Handling signal: term
+[2026-10-06 17:19:53 +0900] [128786] [INFO] Shutting down
+[2026-10-06 17:19:53 +0900] [128786] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-06 17:19:53 +0900] [128784] [INFO] Shutting down
+[2026-10-06 17:19:53 +0900] [128784] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-06 17:19:53 +0900] [128786] [INFO] Waiting for application shutdown.
+[2026-10-06 17:19:53 +0900] [128786] [INFO] Application shutdown complete.
+[2026-10-06 17:19:53 +0900] [128786] [INFO] Finished server process [128786]
+[2026-10-06 17:19:53 +0900] [128738] [ERROR] Worker (pid:128786) was sent SIGTERM!
+[2026-10-06 17:19:53 +0900] [128784] [INFO] Waiting for application shutdown.
+[2026-10-06 17:19:53 +0900] [128784] [INFO] Application shutdown complete.
+[2026-10-06 17:19:53 +0900] [128784] [INFO] Finished server process [128784]
+[2026-10-06 17:19:53 +0900] [128738] [ERROR] Worker (pid:128784) was sent SIGTERM!
+[2026-10-06 17:19:53 +0900] [128738] [INFO] Shutting down: Master
+[2026-10-06 17:19:53 +0900] [131464] [INFO] Starting gunicorn 23.0.0
+[2026-10-06 17:19:53 +0900] [131464] [INFO] Listening at: http://0.0.0.0:9900 (131464)
+[2026-10-06 17:19:53 +0900] [131464] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-06 17:19:53 +0900] [131510] [INFO] Booting worker with pid: 131510
+[2026-10-06 17:19:53 +0900] [131512] [INFO] Booting worker with pid: 131512
+[2026-10-06 17:19:55 +0900] [131510] [INFO] Started server process [131510]
+[2026-10-06 17:19:55 +0900] [131510] [INFO] Waiting for application startup.
+[2026-10-06 17:19:55 +0900] [131510] [INFO] Application startup complete.
+[2026-10-06 17:19:55 +0900] [131512] [INFO] Started server process [131512]
+[2026-10-06 17:19:55 +0900] [131512] [INFO] Waiting for application startup.
+[2026-10-06 17:19:55 +0900] [131512] [INFO] Application startup complete.
+[2026-10-06 17:38:32 +0900] [131464] [INFO] Handling signal: term
+[2026-10-06 17:38:32 +0900] [131512] [INFO] Shutting down
+[2026-10-06 17:38:32 +0900] [131512] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-06 17:38:32 +0900] [131510] [INFO] Shutting down
+[2026-10-06 17:38:32 +0900] [131510] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-06 17:38:32 +0900] [131512] [INFO] Waiting for application shutdown.
+[2026-10-06 17:38:32 +0900] [131512] [INFO] Application shutdown complete.
+[2026-10-06 17:38:32 +0900] [131512] [INFO] Finished server process [131512]
+[2026-10-06 17:38:32 +0900] [131464] [ERROR] Worker (pid:131512) was sent SIGTERM!
+[2026-10-06 17:38:32 +0900] [131510] [INFO] Waiting for application shutdown.
+[2026-10-06 17:38:32 +0900] [131510] [INFO] Application shutdown complete.
+[2026-10-06 17:38:32 +0900] [131510] [INFO] Finished server process [131510]
+[2026-10-06 17:38:32 +0900] [131464] [ERROR] Worker (pid:131510) was sent SIGTERM!
+[2026-10-06 17:38:32 +0900] [131464] [INFO] Shutting down: Master
+[2026-10-06 17:38:33 +0900] [131709] [INFO] Starting gunicorn 23.0.0
+[2026-10-06 17:38:33 +0900] [131709] [INFO] Listening at: http://0.0.0.0:9900 (131709)
+[2026-10-06 17:38:33 +0900] [131709] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-06 17:38:33 +0900] [131755] [INFO] Booting worker with pid: 131755
+[2026-10-06 17:38:33 +0900] [131757] [INFO] Booting worker with pid: 131757
+[2026-10-06 17:38:35 +0900] [131755] [INFO] Started server process [131755]
+[2026-10-06 17:38:35 +0900] [131755] [INFO] Waiting for application startup.
+[2026-10-06 17:38:35 +0900] [131755] [INFO] Application startup complete.
+[2026-10-06 17:38:35 +0900] [131757] [INFO] Started server process [131757]
+[2026-10-06 17:38:35 +0900] [131757] [INFO] Waiting for application startup.
+[2026-10-06 17:38:35 +0900] [131757] [INFO] Application startup complete.

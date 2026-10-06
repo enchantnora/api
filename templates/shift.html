@@ -28,6 +28,14 @@
             z-index: 105; font-size: 1.3em; font-weight: normal;
             pointer-events: none; transition: opacity 0.5s ease;
         }
+        #annotationBox {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+            margin: 0; padding: 3px 10px;
+            background-color: rgba(25, 50, 120, 0.85); color: #fff;
+            z-index: 103; font-size: 1.5em; font-weight: normal;
+            pointer-events: none; display: none;
+            border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
+        }
         /* --- 告知ボックス --- */
 
         #scrollframe { display: block; width: 100%; }
@@ -130,6 +138,7 @@
 <body>
     <!-- --- 告知ボックス --- -->
     <div id="notificationBox">名前をダブルタップすると・・・</div>
+    <div id="annotationBox"></div>
     <!-- --- 告知ボックス --- -->
 
     <div id="button">
@@ -167,7 +176,7 @@
         const cache = new Map();
         const maxCacheSize = 30;
         const CACHE_EXPIRE_MS = 60 * 60 * 1000;
-        const STOCK_DAYS = 9;
+        const STOCK_DAYS = 7;
         const MODAL_OPEN_GUARD_MS = 350;
         const DOUBLE_TAP_ZOOM_WINDOW = 350;
         const DOUBLE_TAP_ZOOM_Y_TOLERANCE = 25;
@@ -196,6 +205,7 @@
         const modalTbody = document.querySelector('#modal-calendar tbody');
         const modalCloseBtn = document.getElementById('modal-close');
         const inPresent = document.getElementById('content');
+        const annBox = document.getElementById('annotationBox');
         const parseTpl = document.createElement('template');
 
         const appendParsedHTML = (target, html) => {
@@ -308,10 +318,23 @@
             const currentTimeNum = parseInt(getPresent(0, 1), 10);
 
             const shiftArray = await fetchShift(getPresent(current));
+
+            if (current !== G_current) return;
+
             if (shiftArray === 'shift not found' || shiftArray === 'error') {
                 dateArea.textContent = '';
                 contentArea.textContent = shiftArray === 'error' ? 'Error loading shift data' : 'データがありません';
+                annBox.style.display = 'none';
                 return;
+            }
+
+            const annText = (typeof shiftArray.annotation === 'string') ? shiftArray.annotation.trim() : '';
+            if (annText) {
+                annBox.textContent = annText;
+                annBox.style.display = 'block';
+            } else {
+                annBox.style.display = 'none';
+                annBox.textContent = '';
             }
 
             dateArea.innerHTML = '';
