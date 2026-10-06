@@ -2804,3 +2804,6 @@ Could not determine dtype for column 7, falling back to string
 [2026-10-05 10:03:33 +0900] [128786] [INFO] Started server process [128786]
 [2026-10-05 10:03:33 +0900] [128786] [INFO] Waiting for application startup.
 [2026-10-05 10:03:33 +0900] [128786] [INFO] Application startup complete.
+[2026-10-05 22:51:03 +0900] [128786] [WARNING] Invalid HTTP request received.
+[2026-10-05 22:51:50 +0900] [128784] [WARNING] Invalid HTTP request received.
+[2026-10-05 22:54:08 +0900] [128786] [WARNING] Invalid HTTP request received.
