@@ -185,22 +185,41 @@ async def index(request: Request, db: aiosqlite.Connection = Depends(get_db)):
     response.set_cookie(key="user_uuid", value=user_uuid, max_age=180*24*3600)
     return response
 
-def build_search_query(keys: list[str], base_query: str, q: str, normalized_q: str = '') -> tuple[str, list]:
+def build_search_query(q_keys: list[str], norm_keys: list[str], base_query: str, q: str, normalized_q: str = '') -> tuple[str, list]:
     match_targets = list(dict.fromkeys([v for v in (q, normalized_q) if v]))
     kw_conditions = " OR ".join(["keyword LIKE ?"] * len(match_targets))
     kw_params = [f"%{v}%" for v in match_targets]
 
-    if not keys:
+    if not q_keys and not norm_keys:
         return f"{base_query} WHERE {kw_conditions}", kw_params
     
     conds_list = []
     params = []
-    for k in keys:
-        conds_list.append("(keyword LIKE ? OR name LIKE ? OR code LIKE ?)")
-        params.extend([f"%{k}%", f"%{k}%", f"%{k}%"])
-    conds = " AND ".join(conds_list)
+
+    if len(q_keys) == len(norm_keys):
+        for q_k, n_k in zip(q_keys, norm_keys):
+            conds_list.append("((keyword LIKE ? OR name LIKE ? OR code LIKE ?) OR (keyword LIKE ? OR name LIKE ? OR code LIKE ?))")
+            params.extend([f"%{q_k}%", f"%{q_k}%", f"%{q_k}%", f"%{n_k}%", f"%{n_k}%", f"%{n_k}%"])
+        conds = " AND ".join(conds_list)
+    else:
+        q_conds_list = []
+        q_params = []
+        for q_k in q_keys:
+            q_conds_list.append("(keyword LIKE ? OR name LIKE ? OR code LIKE ?)")
+            q_params.extend([f"%{q_k}%", f"%{q_k}%", f"%{q_k}%"])
+        q_conds = " AND ".join(q_conds_list) if q_conds_list else "0"
+
+        n_conds_list = []
+        n_params = []
+        for n_k in norm_keys:
+            n_conds_list.append("(keyword LIKE ? OR name LIKE ? OR code LIKE ?)")
+            n_params.extend([f"%{n_k}%", f"%{n_k}%", f"%{n_k}%"])
+        n_conds = " AND ".join(n_conds_list) if n_conds_list else "0"
+
+        conds = f"(({q_conds}) OR ({n_conds}))"
+        params.extend(q_params + n_params)
     
-    query = f"{base_query} WHERE ({conds}) OR {kw_conditions}"
+    query = f"{base_query} WHERE ({conds}) OR ({kw_conditions})"
     params.extend(kw_params)
     return query, params
 
@@ -211,20 +230,40 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
         return {"products": [], "count": 0}
         
     normalized_q = normalize_text(q)
-    keys = normalized_q.split()
-    use_fts = all(len(k) >= 3 for k in keys) if keys else False
+    norm_keys = normalized_q.split()
+    q_keys = q.replace(' ', ' ').split()
+    use_fts = all(len(k) >= 3 for k in norm_keys) if norm_keys else False
     base_query = "SELECT slug, sk, code, name FROM product"
     
     try:
         if use_fts:
-            fts_query = " AND ".join([f'"{k}"' for k in keys])
+            fts_query = " AND ".join([f'"{k}"' for k in norm_keys])
             
             conds_list = []
             params = [fts_query]
-            for k in keys:
-                conds_list.append("(name LIKE ? OR code LIKE ?)")
-                params.extend([f"%{k}%", f"%{k}%"])
-            name_code_cond = " AND ".join(conds_list) if conds_list else "0"
+            
+            if len(q_keys) == len(norm_keys):
+                for q_k, n_k in zip(q_keys, norm_keys):
+                    conds_list.append("((name LIKE ? OR code LIKE ?) OR (name LIKE ? OR code LIKE ?))")
+                    params.extend([f"%{q_k}%", f"%{q_k}%", f"%{n_k}%", f"%{n_k}%"])
+                name_code_cond = " AND ".join(conds_list) if conds_list else "0"
+            else:
+                q_conds_list = []
+                q_params = []
+                for q_k in q_keys:
+                    q_conds_list.append("(name LIKE ? OR code LIKE ?)")
+                    q_params.extend([f"%{q_k}%", f"%{q_k}%"])
+                q_conds = " AND ".join(q_conds_list) if q_conds_list else "0"
+
+                n_conds_list = []
+                n_params = []
+                for n_k in norm_keys:
+                    n_conds_list.append("(name LIKE ? OR code LIKE ?)")
+                    n_params.extend([f"%{n_k}%", f"%{n_k}%"])
+                n_conds = " AND ".join(n_conds_list) if n_conds_list else "0"
+
+                name_code_cond = f"(({q_conds}) OR ({n_conds}))"
+                params.extend(q_params + n_params)
 
             match_targets = list(dict.fromkeys([v for v in (q, normalized_q) if v]))
             kw_conditions = " OR ".join(["keyword LIKE ?"] * len(match_targets))
@@ -244,7 +283,7 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
             async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()
         else:
-            query, params = build_search_query(keys, base_query, q, normalized_q)
+            query, params = build_search_query(q_keys, norm_keys, base_query, q, normalized_q)
             async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()
                 
@@ -254,7 +293,7 @@ async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db
     except aiosqlite.Error as e:
         if use_fts:
             try:
-                query, params = build_search_query(keys, base_query, q, normalized_q)
+                query, params = build_search_query(q_keys, norm_keys, base_query, q, normalized_q)
                 async with db.execute(query, params) as cursor:
                     rows = await cursor.fetchall()
                 results = [dict(row) for row in rows]
@@ -721,8 +760,9 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
 
         elif status == 2:
             normalized_q = normalize_text(q)
-            keys = normalized_q.split()
-            query, params = build_search_query(keys, "SELECT sk, name, code, slug FROM product", q, normalized_q)
+            norm_keys = normalized_q.split()
+            q_keys = q.replace(' ', ' ').split()
+            query, params = build_search_query(q_keys, norm_keys, "SELECT sk, name, code, slug FROM product", q, normalized_q)
             query += " ORDER BY rowid DESC LIMIT 50"
 
             async with db.execute(query, params) as cursor:

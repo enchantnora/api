@@ -31,8 +31,8 @@
         #annotationBox {
             position: fixed; top: 0; left: 50%; transform: translateX(-50%);
             margin: 0; padding: 3px 10px;
-            background-color: rgba(25, 50, 120, 0.85); color: #fff;
-            z-index: 103; font-size: 1.5em; font-weight: normal;
+            background-color: rgba(240, 230, 140, 0.85); color: #333;
+            z-index: 103; font-size: 1.5em; font-weight: bold;
             pointer-events: none; display: none;
             border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
         }
@@ -43,7 +43,7 @@
             display: block; width: 100%; text-align: center;
             will-change: transform; padding-bottom: 50px;
         }
-        #dateData { font-size: clamp(1.1em, 5vw, 1.8em); line-height: 0.9; padding-top: 20px; }
+        #dateData { font-size: clamp(1.1em, 5vw, 1.8em); line-height: 0.9; padding-top: 22px; }
         #shiftData { display: inline-block; text-align: left; font-size: clamp(1.3em, 6vw, 2em); line-height: 1.2; }
         
         .group { margin-top: 8px; }
@@ -126,6 +126,7 @@
         .cal-today { background-color: #333; box-shadow: inset 0 0 12px rgba(255, 125, 129, 0.8); }
         .cal-today .cal-date { color: #FF7D81; font-weight: bold; }
         .cal-out-of-range { background-color: #121212; }
+        .cal-annotated { background-color: rgba(240, 230, 140, 0.2) !important; }
         
         #modal-close {
             position: absolute; top: 5px; right: 15px; font-size: 26px;
@@ -445,6 +446,14 @@
                         const shiftText = data[dateKey];
                         innerDiv.innerHTML = `<div class="cal-date">${currentDate.getDate()}</div>
                                               <div class="cal-shift ${Array.from(shiftText).length >= 4 ? 'micro-text' : Array.from(shiftText).length >= 2 ? 'small-text' : ''}">${shiftText}</div>`;
+
+                        if (cache.has(dateKey)) {
+                            const dayData = cache.get(dateKey);
+                            if (typeof dayData.annotation === 'string' && dayData.annotation.trim() !== '') {
+                                td.classList.add('cal-annotated');
+                            }
+                        }
+
                     } else {
                         td.classList.add('cal-out-of-range');
                     }

@@ -482,7 +482,7 @@ def work_process(data_list: list, decision_csv_path: str):
     result_dict = {}
     exclude_shifts = {'Ｘ', '☓', 'X', 'x', '×', '停'}
     base_date = datetime.date(2001, 1, 1)
-    annotation_marker = "@"
+    annotation_marker = "!"
 
     for sheet_name, sheet_data in sheets_dict.items():
         if len(sheet_data) < 3:
