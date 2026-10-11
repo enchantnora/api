@@ -656,7 +656,7 @@
                         trimCache(direction > 0);
                         animateSwipe(direction);
                     } else {
-                        showToast("これ以上データがありません");
+                        showToast("これ以降のデータがありません");
                         resetTransform(inPresent, '0px');
                     }
                 } else {
@@ -724,7 +724,7 @@
                         currentModalBaseDate = testDate;
                         await animateModalSwipe(direction, modalData);
                     } else {
-                        showToast("これ以上データがありません");
+                        showToast("これ以降のデータがありません");
                         resetTransform(modalContent, '-50%');
                     }
                 } else {
