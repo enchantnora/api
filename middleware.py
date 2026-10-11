@@ -55,7 +55,20 @@ BLOCKED_KEYWORDS = (
     "xmlrpc.php",
     "wp-admin",
     "wp-login",
-    "wlwmanifest.xml"
+    "wlwmanifest.xml",
+    "https://about.censys.io",
+    "https://infrawat.ch",
+    "https://modat.io",
+    "https://x.ai",
+    "http://www.baidu.com",
+    "http://yandex.com",
+    "https://www.deepseek.com",
+    "https://cloud.google.com",
+    "https://docs-cortex.paloaltonetworks.com",
+    "http://mj12bot.com",
+    "https://serpstatbot.com",
+    "https://openai.com",
+    "https://flowiq-labs.com"
 )
 
 def write_log(message: str):
