@@ -25,14 +25,14 @@
         #notificationBox {
             position: fixed; top: 0; left: 0; margin: 0; padding: 6px 10px;
             background-color: rgba(68, 68, 68, 0.7); color: #fff;
-            z-index: 105; font-size: 1.3em; font-weight: normal;
+            z-index: 100; font-size: 1.3em; font-weight: normal;
             pointer-events: none; transition: opacity 0.5s ease;
         }
         #annotationBox {
             position: fixed; top: 0; left: 50%; transform: translateX(-50%);
             margin: 0; padding: 3px 10px;
             background-color: rgba(240, 230, 140, 0.85); color: #333;
-            z-index: 103; font-size: 1.5em; font-weight: bold;
+            z-index: 1; font-size: 1.5em; font-weight: bold;
             pointer-events: none; display: none;
             border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
         }
@@ -54,7 +54,7 @@
         .name { display: inline-block; padding: 2px 15px; touch-action: manipulation; }
         
         #button {
-            z-index: 5; position: fixed; top: 70vh; left: 50%;
+            z-index: 13; position: fixed; top: 70vh; left: 50%;
             height: 100vh; transform: translate(-50%, -50%); display: none;
         }
         .circle {
@@ -64,17 +64,17 @@
             font-weight: bold; transform: translate(-50%, -50%); touch-action: manipulation;
         }
         .now {
-            z-index: 3; position: relative; top: 0; left: 0;
+            z-index: 12; position: relative; top: 0; left: 0;
             width: min(50vh, 50vw); height: min(50vh, 50vw);
             transform: none; background: #FFA733; font-size: min(21vh, 21vw);
         }
         .r_b {
-            z-index: 2; top: min(70vh, 70vw); left: min(60vh, 60vw);
+            z-index: 11; top: min(70vh, 70vw); left: min(60vh, 60vw);
             width: min(50vh, 50vw); height: min(50vh, 50vw);
             background: #F0F0F0; font-size: min(17vh, 17vw);
         }
         .l_b {
-            z-index: 1; top: min(70vh, 70vw); left: calc(100% - min(60vh, 60vw));
+            z-index: 10; top: min(70vh, 70vw); left: calc(100% - min(60vh, 60vw));
             width: min(50vh, 50vw); height: min(50vh, 50vw);
             background: #F0F0F0; font-size: min(17vh, 17vw);
         }
@@ -83,10 +83,10 @@
         #modal-overlay {
             display: none; position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh; height: 100dvh;
-            background: rgba(0, 0, 0, 0.7); z-index: 100;
+            background: rgba(0, 0, 0, 0.7); z-index: 20;
         }
         #modal-content {
-            position: absolute; top: 10vh; top: 10dvh; left: 50%;
+            position: absolute; top: 5vh; top: 5dvh; left: 50%;
             width: 94vw; max-width: 630px; max-height: 80vh; max-height: 80dvh;
             transform: translateX(-50%); background: #222; border-radius: 10px;
             box-sizing: border-box; box-shadow: 0 0 15px rgba(0,0,0,0.8);
@@ -131,7 +131,7 @@
         #modal-close {
             position: absolute; top: 5px; right: 15px; font-size: 26px;
             color: #f00; cursor: pointer; padding: 0 10px; line-height: 1;
-            z-index: 10; touch-action: manipulation;
+            z-index: 21; touch-action: manipulation;
         }
         #modal-close:active { color: #fff; }
     </style>
