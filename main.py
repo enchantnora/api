@@ -418,13 +418,13 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
 
     days = (end_date - start_date).days + 1
     result_dict = {
-        (start_date + datetime.timedelta(days=i)).strftime("%Y%m%d"): ""
+        (start_date + datetime.timedelta(days=i)).strftime("%Y%m%d"): {"shift": "", "annotated": False}
         for i in range(days)
     }
 
     try:
         async with db.execute(
-            "SELECT index_day, member FROM shift WHERE index_day BETWEEN ? AND ?",
+            "SELECT index_day, member, annotation FROM shift WHERE index_day BETWEEN ? AND ?",
             (start_date.strftime("%Y%m%d"), end_date.strftime("%Y%m%d")),
         ) as cursor:
             rows = await cursor.fetchall()
@@ -432,9 +432,16 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
         raise HTTPException(status_code=500, detail=str(e))
 
     for row in rows:
-        day, member_str = row["index_day"], row["member"]
+        row_dict = dict(row)
+        day = row_dict.get("index_day")
+        member_str = row_dict.get("member")
+        annotation = row_dict.get("annotation", "")
+
         if day not in result_dict or not member_str:
             continue
+
+        if annotation and str(annotation).strip():
+            result_dict[day]["annotated"] = True
 
         try:
             member_data = json.loads(member_str)
@@ -443,7 +450,7 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
 
         for key, names_list in member_data.items():
             if any(cleaned_query_name == pattern.sub('', n) for n in names_list):
-                result_dict[day] = key
+                result_dict[day]["shift"] = key
                 break
 
     return result_dict

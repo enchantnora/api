@@ -443,17 +443,15 @@
                     innerDiv.dataset.date = dateKey;
 
                     if (data.hasOwnProperty(dateKey)) {
-                        const shiftText = data[dateKey];
+                        const shiftText = data[dateKey].shift || "";
+                        const isAnnotated = data[dateKey].annotated;
+
                         innerDiv.innerHTML = `<div class="cal-date">${currentDate.getDate()}</div>
                                               <div class="cal-shift ${Array.from(shiftText).length >= 4 ? 'micro-text' : Array.from(shiftText).length >= 2 ? 'small-text' : ''}">${shiftText}</div>`;
-
-                        if (cache.has(dateKey)) {
-                            const dayData = cache.get(dateKey);
-                            if (typeof dayData.annotation === 'string' && dayData.annotation.trim() !== '') {
-                                td.classList.add('cal-annotated');
-                            }
+                        
+                        if (isAnnotated) {
+                            td.classList.add('cal-annotated');
                         }
-
                     } else {
                         td.classList.add('cal-out-of-range');
                     }

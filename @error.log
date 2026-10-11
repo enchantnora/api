@@ -2928,3 +2928,26 @@ Could not determine dtype for column 7, falling back to string
 [2026-10-09 20:23:16 +0900] [137990] [INFO] Started server process [137990]
 [2026-10-09 20:23:16 +0900] [137990] [INFO] Waiting for application startup.
 [2026-10-09 20:23:16 +0900] [137990] [INFO] Application startup complete.
+[2026-10-09 21:54:32 +0900] [137990] [WARNING] Invalid HTTP request received.
+[2026-10-09 21:54:39 +0900] [137990] [WARNING] Invalid HTTP request received.
+[2026-10-09 21:55:21 +0900] [137990] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+[2026-10-10 16:17:14 +0900] [137990] [WARNING] Invalid HTTP request received.
+[2026-10-10 16:17:22 +0900] [137990] [WARNING] Invalid HTTP request received.
+[2026-10-10 16:17:23 +0900] [137989] [WARNING] Invalid HTTP request received.
+[2026-10-10 16:17:28 +0900] [137990] [WARNING] Invalid HTTP request received.
+[2026-10-11 10:10:04 +0900] [137943] [INFO] Handling signal: term
+[2026-10-11 10:10:04 +0900] [137990] [INFO] Shutting down
+[2026-10-11 10:10:04 +0900] [137990] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-11 10:10:04 +0900] [137989] [INFO] Shutting down
+[2026-10-11 10:10:04 +0900] [137989] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-11 10:10:04 +0900] [137990] [INFO] Waiting for application shutdown.
+[2026-10-11 10:10:04 +0900] [137990] [INFO] Application shutdown complete.
+[2026-10-11 10:10:04 +0900] [137990] [INFO] Finished server process [137990]
+[2026-10-11 10:10:04 +0900] [137943] [ERROR] Worker (pid:137990) was sent SIGTERM!
+[2026-10-11 10:10:05 +0900] [137989] [INFO] Waiting for application shutdown.
+[2026-10-11 10:10:05 +0900] [137989] [INFO] Application shutdown complete.
+[2026-10-11 10:10:05 +0900] [137989] [INFO] Finished server process [137989]
+[2026-10-11 10:10:05 +0900] [137943] [ERROR] Worker (pid:137989) was sent SIGTERM!
+[2026-10-11 10:10:05 +0900] [137943] [INFO] Shutting down: Master
