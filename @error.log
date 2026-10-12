@@ -3040,3 +3040,33 @@ Could not determine dtype for column 7, falling back to string
 [2026-10-11 21:02:13 +0900] [142787] [INFO] Started server process [142787]
 [2026-10-11 21:02:13 +0900] [142787] [INFO] Waiting for application startup.
 [2026-10-11 21:02:13 +0900] [142787] [INFO] Application startup complete.
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string
+[2026-10-12 17:56:47 +0900] [142787] [WARNING] Invalid HTTP request received.
+[2026-10-12 17:56:58 +0900] [142787] [WARNING] Invalid HTTP request received.
+[2026-10-12 17:57:53 +0900] [142787] [WARNING] Invalid HTTP request received.
+[2026-10-12 23:06:45 +0900] [142719] [INFO] Handling signal: term
+[2026-10-12 23:06:45 +0900] [142785] [INFO] Shutting down
+[2026-10-12 23:06:45 +0900] [142785] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-12 23:06:45 +0900] [142787] [INFO] Shutting down
+[2026-10-12 23:06:45 +0900] [142787] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-12 23:06:45 +0900] [142785] [INFO] Waiting for application shutdown.
+[2026-10-12 23:06:45 +0900] [142785] [INFO] Application shutdown complete.
+[2026-10-12 23:06:45 +0900] [142785] [INFO] Finished server process [142785]
+[2026-10-12 23:06:45 +0900] [142719] [ERROR] Worker (pid:142785) was sent SIGTERM!
+[2026-10-12 23:06:45 +0900] [142787] [INFO] Waiting for application shutdown.
+[2026-10-12 23:06:45 +0900] [142787] [INFO] Application shutdown complete.
+[2026-10-12 23:06:45 +0900] [142787] [INFO] Finished server process [142787]
+[2026-10-12 23:06:45 +0900] [142719] [ERROR] Worker (pid:142787) was sent SIGTERM!
+[2026-10-12 23:06:45 +0900] [142719] [INFO] Shutting down: Master
+[2026-10-12 23:06:46 +0900] [145061] [INFO] Starting gunicorn 23.0.0
+[2026-10-12 23:06:46 +0900] [145061] [INFO] Listening at: http://0.0.0.0:9900 (145061)
+[2026-10-12 23:06:46 +0900] [145061] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-12 23:06:46 +0900] [145107] [INFO] Booting worker with pid: 145107
+[2026-10-12 23:06:46 +0900] [145108] [INFO] Booting worker with pid: 145108
+[2026-10-12 23:06:47 +0900] [145108] [INFO] Started server process [145108]
+[2026-10-12 23:06:47 +0900] [145108] [INFO] Waiting for application startup.
+[2026-10-12 23:06:47 +0900] [145108] [INFO] Application startup complete.
+[2026-10-12 23:06:47 +0900] [145107] [INFO] Started server process [145107]
+[2026-10-12 23:06:47 +0900] [145107] [INFO] Waiting for application startup.
+[2026-10-12 23:06:47 +0900] [145107] [INFO] Application startup complete.

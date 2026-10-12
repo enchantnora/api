@@ -50,12 +50,15 @@ BLOCKED_NETWORKS = [
     ipaddress.ip_network("195.178.110.22", strict=False)
 ]
 
-BLOCKED_KEYWORDS = (
+BLOCKED_PATHS = (
     "wp-includes",
     "xmlrpc.php",
     "wp-admin",
     "wp-login",
-    "wlwmanifest.xml",
+    "wlwmanifest.xml"
+)
+
+BLOCKED_USER_AGENTS = (
     "https://about.censys.io",
     "https://infrawat.ch",
     "https://modat.io",
@@ -68,7 +71,8 @@ BLOCKED_KEYWORDS = (
     "http://mj12bot.com",
     "https://serpstatbot.com",
     "https://openai.com",
-    "https://flowiq-labs.com"
+    "https://flowiq-labs.com",
+    "https://opensiteexplorer.org/dotbot"
 )
 
 def write_log(message: str):
@@ -100,7 +104,9 @@ async def requests_control(request: Request, call_next):
 
     if is_ip_in_networks(client_ip, BLOCKED_NETWORKS):
         return Response(status_code=403)
-    elif any(keyword in path for keyword in BLOCKED_KEYWORDS):
+    elif any(keyword in path for keyword in BLOCKED_PATHS):
+        return Response(status_code=404)
+    elif any(keyword in user_agent for keyword in BLOCKED_USER_AGENTS):
         return Response(status_code=404)
 
     response = await call_next(request)
