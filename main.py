@@ -470,6 +470,8 @@ async def shift_page(request: Request, slug: str = None):
 class UuidData(BaseModel):
     value: str
 
+# ------------------------------------
+
 @app.get("/uuid/{user_uuid}/{req_type}", name="read_uuid_data")
 async def read_uuid_data(user_uuid: str, req_type: str, db: aiosqlite.Connection = Depends(get_db)):
     if req_type not in ("f", "h"):
@@ -858,7 +860,7 @@ async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
 
 @app.get('/mat', name="mat")
 async def material(request: Request):
-    return templates.TemplateResponse(request, 'code_artifact.html')
+    return templates.TemplateResponse(request, 'mat.html')
 
 # ------------------------------------
 
