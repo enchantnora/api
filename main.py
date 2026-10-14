@@ -389,6 +389,14 @@ async def output_table(table_name: str, page: int = 1, db: aiosqlite.Connection 
     except aiosqlite.Error as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# ------------------------------------
+
+NAME_CLEAN_PATTERN = re.compile(r'\(.*?\)|（.*?）|\s+')
+
+@lru_cache(maxsize=512)
+def clean_name(text: str) -> str:
+    return NAME_CLEAN_PATTERN.sub('', text)
+
 @app.get("/shift/{index_day}", name="shift")
 async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = Depends(get_db)):
     if not name:
@@ -400,27 +408,22 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
         return {"shift": dict(row) if row else None}
 
     try:
-        dt = datetime.datetime.strptime(index_day, "%Y%m%d")
+        dt = datetime.datetime.strptime(index_day, "%Y%m%d").date()
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date format")
 
-    pattern = re.compile(r'\(.*?\)|（.*?）|\s+')
-    cleaned_query_name = pattern.sub('', name)
+    cleaned_query_name = clean_name(name)
+    if not cleaned_query_name:
+        return {}
 
     if dt.day >= 16:
         start_date = dt.replace(day=16)
         y, m = (dt.year + 1, 1) if dt.month == 12 else (dt.year, dt.month + 1)
-        end_date = datetime.datetime(y, m, 15)
+        end_date = datetime.date(y, m, 15)
     else:
         end_date = dt.replace(day=15)
         y, m = (dt.year - 1, 12) if dt.month == 1 else (dt.year, dt.month - 1)
-        start_date = datetime.datetime(y, m, 16)
-
-    days = (end_date - start_date).days + 1
-    result_dict = {
-        (start_date + datetime.timedelta(days=i)).strftime("%Y%m%d"): {"shift": "", "annotated": False}
-        for i in range(days)
-    }
+        start_date = datetime.date(y, m, 16)
 
     try:
         async with db.execute(
@@ -431,17 +434,22 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
     except aiosqlite.Error as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    for row in rows:
-        row_dict = dict(row)
-        day = row_dict.get("index_day")
-        member_str = row_dict.get("member")
-        annotation = row_dict.get("annotation", "")
+    if not rows:
+        return {}
 
-        if day not in result_dict or not member_str:
+    days = (end_date - start_date).days + 1
+    result_dict = {
+        (start_date + datetime.timedelta(days=i)).strftime("%Y%m%d"): {"shift": "", "annotated": False}
+        for i in range(days)
+    }
+
+    for day, member_str, annotation in rows:
+        target = result_dict.get(day)
+        if target is None or not member_str:
             continue
 
         if annotation and str(annotation).strip():
-            result_dict[day]["annotated"] = True
+            target["annotated"] = True
 
         try:
             member_data = json.loads(member_str)
@@ -449,8 +457,8 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
             continue
 
         for key, names_list in member_data.items():
-            if any(cleaned_query_name == pattern.sub('', n) for n in names_list):
-                result_dict[day]["shift"] = key
+            if any(cleaned_query_name == clean_name(n) for n in names_list):
+                target["shift"] = key
                 break
 
     return result_dict
