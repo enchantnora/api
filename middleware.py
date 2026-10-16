@@ -72,6 +72,7 @@ BLOCKED_USER_AGENTS = (
     "https://serpstatbot.com",
     "https://openai.com",
     "https://flowiq-labs.com",
+    "https://leakix.net",
     "https://opensiteexplorer.org/dotbot"
 )
 

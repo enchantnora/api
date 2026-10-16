@@ -3127,3 +3127,63 @@ Could not determine dtype for column 7, falling back to string
 [2026-10-14 10:54:17 +0900] [148357] [INFO] Started server process [148357]
 [2026-10-14 10:54:17 +0900] [148357] [INFO] Waiting for application startup.
 [2026-10-14 10:54:17 +0900] [148357] [INFO] Application startup complete.
+[2026-10-14 17:03:40 +0900] [148357] [WARNING] Invalid HTTP request received.
+[2026-10-14 17:03:48 +0900] [148357] [WARNING] Invalid HTTP request received.
+[2026-10-14 17:03:49 +0900] [148357] [WARNING] Invalid HTTP request received.
+[2026-10-14 17:03:56 +0900] [148355] [WARNING] Invalid HTTP request received.
+[2026-10-15 18:04:19 +0900] [148357] [WARNING] Invalid HTTP request received.
+[2026-10-15 18:04:22 +0900] [148357] [WARNING] Invalid HTTP request received.
+[2026-10-15 18:05:26 +0900] [148355] [WARNING] Invalid HTTP request received.
+[2026-10-16 05:03:24 +0900] [148291] [INFO] Handling signal: term
+[2026-10-16 05:03:24 +0900] [148355] [INFO] Shutting down
+[2026-10-16 05:03:24 +0900] [148355] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-16 05:03:24 +0900] [148357] [INFO] Shutting down
+[2026-10-16 05:03:24 +0900] [148357] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-16 05:03:24 +0900] [148355] [INFO] Waiting for application shutdown.
+[2026-10-16 05:03:24 +0900] [148355] [INFO] Application shutdown complete.
+[2026-10-16 05:03:24 +0900] [148355] [INFO] Finished server process [148355]
+[2026-10-16 05:03:24 +0900] [148357] [INFO] Waiting for application shutdown.
+[2026-10-16 05:03:24 +0900] [148357] [INFO] Application shutdown complete.
+[2026-10-16 05:03:24 +0900] [148357] [INFO] Finished server process [148357]
+[2026-10-16 05:03:24 +0900] [148291] [ERROR] Worker (pid:148355) was sent SIGTERM!
+[2026-10-16 05:03:24 +0900] [148291] [ERROR] Worker (pid:148357) was sent SIGTERM!
+[2026-10-16 05:03:24 +0900] [148291] [INFO] Shutting down: Master
+[2026-10-16 05:03:25 +0900] [151763] [INFO] Starting gunicorn 23.0.0
+[2026-10-16 05:03:25 +0900] [151763] [INFO] Listening at: http://0.0.0.0:9900 (151763)
+[2026-10-16 05:03:25 +0900] [151763] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-16 05:03:25 +0900] [151809] [INFO] Booting worker with pid: 151809
+[2026-10-16 05:03:25 +0900] [151811] [INFO] Booting worker with pid: 151811
+[2026-10-16 05:03:26 +0900] [151809] [INFO] Started server process [151809]
+[2026-10-16 05:03:26 +0900] [151809] [INFO] Waiting for application startup.
+[2026-10-16 05:03:26 +0900] [151809] [INFO] Application startup complete.
+[2026-10-16 05:03:26 +0900] [151811] [INFO] Started server process [151811]
+[2026-10-16 05:03:26 +0900] [151811] [INFO] Waiting for application startup.
+[2026-10-16 05:03:26 +0900] [151811] [INFO] Application startup complete.
+[2026-10-16 19:04:42 +0900] [151811] [WARNING] Invalid HTTP request received.
+[2026-10-16 19:04:49 +0900] [151811] [WARNING] Invalid HTTP request received.
+[2026-10-16 19:06:08 +0900] [151809] [WARNING] Invalid HTTP request received.
+[2026-10-17 02:56:17 +0900] [151763] [INFO] Handling signal: term
+[2026-10-17 02:56:17 +0900] [151809] [INFO] Shutting down
+[2026-10-17 02:56:17 +0900] [151809] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-17 02:56:17 +0900] [151811] [INFO] Shutting down
+[2026-10-17 02:56:17 +0900] [151811] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-17 02:56:17 +0900] [151809] [INFO] Waiting for application shutdown.
+[2026-10-17 02:56:17 +0900] [151809] [INFO] Application shutdown complete.
+[2026-10-17 02:56:17 +0900] [151809] [INFO] Finished server process [151809]
+[2026-10-17 02:56:17 +0900] [151763] [ERROR] Worker (pid:151809) was sent SIGTERM!
+[2026-10-17 02:56:17 +0900] [151811] [INFO] Waiting for application shutdown.
+[2026-10-17 02:56:17 +0900] [151811] [INFO] Application shutdown complete.
+[2026-10-17 02:56:17 +0900] [151811] [INFO] Finished server process [151811]
+[2026-10-17 02:56:17 +0900] [151763] [ERROR] Worker (pid:151811) was sent SIGTERM!
+[2026-10-17 02:56:17 +0900] [151763] [INFO] Shutting down: Master
+[2026-10-17 02:56:18 +0900] [153845] [INFO] Starting gunicorn 23.0.0
+[2026-10-17 02:56:18 +0900] [153845] [INFO] Listening at: http://0.0.0.0:9900 (153845)
+[2026-10-17 02:56:18 +0900] [153845] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-17 02:56:18 +0900] [153892] [INFO] Booting worker with pid: 153892
+[2026-10-17 02:56:18 +0900] [153893] [INFO] Booting worker with pid: 153893
+[2026-10-17 02:56:19 +0900] [153893] [INFO] Started server process [153893]
+[2026-10-17 02:56:19 +0900] [153893] [INFO] Waiting for application startup.
+[2026-10-17 02:56:19 +0900] [153893] [INFO] Application startup complete.
+[2026-10-17 02:56:19 +0900] [153892] [INFO] Started server process [153892]
+[2026-10-17 02:56:19 +0900] [153892] [INFO] Waiting for application startup.
+[2026-10-17 02:56:19 +0900] [153892] [INFO] Application startup complete.

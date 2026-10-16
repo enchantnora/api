@@ -483,6 +483,7 @@ def work_process(data_list: list, decision_csv_path: str):
     exclude_shifts = {'Ｘ', '☓', 'X', 'x', '×', '停'}
     base_date = datetime.date(2001, 1, 1)
     annotation_marker = "!"
+    no_count_prefixes = ('-', '－', 'ー')
 
     for sheet_name, sheet_data in sheets_dict.items():
         if len(sheet_data) < 3:
@@ -506,6 +507,8 @@ def work_process(data_list: list, decision_csv_path: str):
                     if row[1].strip() == annotation_marker:
                         continue
                     name = normalize_name(row[1])
+                    if name.startswith(no_count_prefixes):
+                        continue
                     work_count = sum(
                         1 for col_idx in range(3, len(first_row))
                         if len(row) > col_idx
@@ -553,7 +556,7 @@ def work_process(data_list: list, decision_csv_path: str):
                             annotation = cell_val
                         continue
 
-                    name  = normalize_name(row[1])
+                    name = normalize_name(row[1].lstrip('-－ー'))
                     shift = cell_val
                     if name and shift and shift not in exclude_shifts:
                         member_dict_raw[shift].append(name)
