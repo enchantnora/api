@@ -131,8 +131,7 @@ def normalize_text(text: str) -> str:
     converted = KAKASI_INST.convert(normalized)
     romaji = ' '.join(''.join([c['hepburn'] for c in converted]).split())
     romaji = romaji.translate(str.maketrans({'-': '', '－': '', 'ー': '', '.': '', '•': '', '・': ''}))
-    romaji = romaji.replace('mitouroku', '未登録')
-    return romaji
+    return romaji.replace('mitouroku', '未登録')
 
 def _kana_variants(text: str) -> tuple[str, ...]:
     """KKS_PATTERNS適用 → pykakasi で (hira, kana, hepburn, kunrei, passport) を返す。

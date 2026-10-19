@@ -27,8 +27,7 @@ from utils import (
     get_file_timestamp, write_csv_sync, write_and_process,
     get_val, _normalize_param, generate_product_block,
     process_data_sync, parse_wgt, zen_to_han_fast_single,
-    templates, CABINET_DIR, RE_CHART_FILE, RE_CHART_DATE,
-    search_variants
+    templates, CABINET_DIR, RE_CHART_FILE, RE_CHART_DATE
 )
 from cabinet import router as cabinet_router, init_cabinet_db
 from middleware import requests_control, lowercase_specific_path
@@ -188,117 +187,68 @@ async def index(request: Request, db: aiosqlite.Connection = Depends(get_db)):
 
 # ------------------------------------
 
-_FW_DIGITS = '０１２３４５６７８９'
-_HW_DIGITS = '0123456789'
-DIGIT_TABLE = str.maketrans(_FW_DIGITS, _HW_DIGITS)
+def build_search_query(keys: list[str], base_query: str, q: str, normalized_q: str = '') -> tuple[str, list]:
+    raw_keys = [k for k in re.split(r'[\s./／]+', q) if k]
+    kw_conditions = " AND ".join(["(keyword LIKE ? OR name LIKE ? OR code LIKE ?)"] * len(raw_keys)) if raw_keys else "0"
+    kw_params = [p for k in raw_keys for p in (f"%{k}%", f"%{k}%", f"%{k}%")]
 
-
-def _sql_han_digits(col: str) -> str:
-    expr = col
-    for fw, hw in zip(_FW_DIGITS, _HW_DIGITS):
-        expr = f"REPLACE({expr},'{fw}','{hw}')"
-    return expr
-
-
-NAME_HAN = _sql_han_digits('name')
-CODE_HAN = _sql_han_digits('code')
-
-
-def _like(v: str) -> str:
-    return f"%{v}%"
-
-
-def _simple_cond(key: str) -> tuple[str, list]:
-    return (f"(keyword LIKE ? OR {NAME_HAN} LIKE ? OR {CODE_HAN} LIKE ?)",
-            [_like(key)] * 3)
-
-
-def _variant_cond(token: str) -> tuple[str, list]:
-    variants = search_variants(token)
-    parts = ["keyword LIKE ?"] * len(variants) + [f"{NAME_HAN} LIKE ?", f"{CODE_HAN} LIKE ?"]
-    params = [_like(v) for v in variants] + [_like(token)] * 2
-    return "(" + " OR ".join(parts) + ")", params
-
-
-def _and_conds(keys: list[str], make) -> tuple[str, list]:
-    conds, params = [], []
-    for k in keys:
-        c, p = make(k)
-        conds.append(c)
-        params.extend(p)
-    return (" AND ".join(conds) if conds else "0"), params
-
-
-def _legacy_cond(q_keys: list[str], norm_keys: list[str]) -> tuple[str, list]:
-    if len(q_keys) == len(norm_keys):
-        conds, params = [], []
-        for q_k, n_k in zip(q_keys, norm_keys):
-            qc, qp = _simple_cond(q_k)
-            nc, np_ = _simple_cond(n_k)
-            conds.append(f"({qc} OR {nc})")
-            params.extend(qp + np_)
-        return (" AND ".join(conds) if conds else "0"), params
-    q_c, q_p = _and_conds(q_keys, _simple_cond)
-    n_c, n_p = _and_conds(norm_keys, _simple_cond)
-    return f"(({q_c}) OR ({n_c}))", q_p + n_p
-
-
-def build_where(q_keys: list[str], norm_keys: list[str], q: str, normalized_q: str = '') -> tuple[str, list]:
-    q = q.translate(DIGIT_TABLE)
-    normalized_q = normalized_q.translate(DIGIT_TABLE)
-    q_keys = [k.translate(DIGIT_TABLE) for k in q_keys]
-    norm_keys = [k.translate(DIGIT_TABLE) for k in norm_keys]
-
-    q_nospace = re.sub(r'\s+', '', q)
-    norm_nospace = re.sub(r'\s+', '', normalized_q)
-    match_targets = list(dict.fromkeys(v for v in (q, normalized_q, q_nospace, norm_nospace) if v))
-    kw_cond = " OR ".join(["keyword LIKE ?"] * len(match_targets))
-    kw_params = [_like(v) for v in match_targets]
-    if not q_keys and not norm_keys:
-        return kw_cond, kw_params
-
-    v_cond, v_params = _and_conds(q_keys, _variant_cond)
-    l_cond, l_params = _legacy_cond(q_keys, norm_keys)
-    return (f"({v_cond}) OR ({l_cond}) OR ({kw_cond})",
-            v_params + l_params + kw_params)
-
-
-def build_search_query(q_keys: list[str], norm_keys: list[str], base_query: str, q: str, normalized_q: str = '') -> tuple[str, list]:
-    where, params = build_where(q_keys, norm_keys, q, normalized_q)
-    return f"{base_query} WHERE {where}", params
-
+    if not keys:
+        return f"{base_query} WHERE {kw_conditions}", kw_params
+    
+    conds_list = ["(keyword LIKE ? OR name LIKE ? OR code LIKE ?)"] * len(keys)
+    params = [p for k in keys for p in (f"%{k}%", f"%{k}%", f"%{k}%")]
+    conds = " AND ".join(conds_list)
+    
+    query = f"{base_query} WHERE ({conds}) OR ({kw_conditions})"
+    params.extend(kw_params)
+    return query, params
 
 @app.get("/search/", name="search")
 async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db)):
-    q = q.strip().translate(DIGIT_TABLE)
+    q = q.strip()
     if not q:
         return {"products": [], "count": 0}
-
+        
     normalized_q = normalize_text(q)
-    norm_keys = normalized_q.split()
-    q_keys = q.replace('\u3000', ' ').split()
-    use_fts = all(len(k) >= 3 for k in norm_keys) if norm_keys else False
+    keys = normalized_q.split()
+    use_fts = all(len(k) >= 3 for k in keys) if keys else False
     base_query = "SELECT slug, sk, code, name FROM product"
-
-    where, params = build_where(q_keys, norm_keys, q, normalized_q)
-    attempts = []
-    if use_fts:
-        fts_query = " AND ".join('"' + k.replace('"', '""') + '"' for k in norm_keys)
-        attempts.append((
-            f"{base_query} WHERE rowid IN (SELECT rowid FROM product_fts WHERE product_fts MATCH ?) OR ({where})",
-            [fts_query, *params],
-        ))
-    attempts.append((f"{base_query} WHERE {where}", params))  # FTS失敗時のフォールバック
-
-    last_err = None
-    for query, p in attempts:
-        try:
-            async with db.execute(query, p) as cursor:
+    like_query, like_params = build_search_query(keys, base_query, q, normalized_q)
+    
+    try:
+        if use_fts:
+            fts_query = " AND ".join([f'"{k}"' for k in keys])
+            where_clause = like_query.split(" WHERE ", 1)[1]
+            query = f"""
+                {base_query} 
+                WHERE (rowid IN (
+                    SELECT rowid FROM product_fts 
+                    WHERE product_fts MATCH ?
+                ))
+                OR ({where_clause})
+            """
+            params = [fts_query] + like_params
+            
+            async with db.execute(query, params) as cursor:
                 rows = await cursor.fetchall()
-            return {"products": [dict(row) for row in rows], "count": len(rows)}
-        except aiosqlite.Error as e:
-            last_err = e
-    raise HTTPException(status_code=500, detail=str(last_err))
+        else:
+            async with db.execute(like_query, like_params) as cursor:
+                rows = await cursor.fetchall()
+                
+        results = [dict(row) for row in rows]
+        return {"products": results, "count": len(rows)}
+        
+    except aiosqlite.Error as e:
+        if use_fts:
+            try:
+                async with db.execute(like_query, like_params) as cursor:
+                    rows = await cursor.fetchall()
+                results = [dict(row) for row in rows]
+                return {"products": results, "count": len(rows)}
+            except aiosqlite.Error as e_like:
+                raise HTTPException(status_code=500, detail=str(e_like))
+        else:
+            raise HTTPException(status_code=500, detail=str(e))
 # ------------------------------------
 
 @app.get("/db/{slug}", name="read_data_slug")
@@ -774,11 +724,9 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
                 result = f"{len(rows)}種類Hit\n\n" + result
 
         elif status == 2:
-            q = q.translate(DIGIT_TABLE)
             normalized_q = normalize_text(q)
-            norm_keys = normalized_q.split()
-            q_keys = q.replace('\u3000', ' ').split()
-            query, params = build_search_query(q_keys, norm_keys, "SELECT sk, name, code, slug FROM product", q, normalized_q)
+            keys = normalized_q.split()
+            query, params = build_search_query(keys, "SELECT sk, name, code, slug FROM product", q, normalized_q)
             query += " ORDER BY rowid DESC LIMIT 50"
 
             async with db.execute(query, params) as cursor:
