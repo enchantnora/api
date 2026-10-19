@@ -133,34 +133,6 @@ def normalize_text(text: str) -> str:
     romaji = romaji.translate(str.maketrans({'-': '', '－': '', 'ー': '', '.': '', '•': '', '・': ''}))
     return romaji.replace('mitouroku', '未登録')
 
-def _kana_variants(text: str) -> tuple[str, ...]:
-    """KKS_PATTERNS適用 → pykakasi で (hira, kana, hepburn, kunrei, passport) を返す。
-    DB側のkeyword生成と検索語側の変換でこの1箇所を共用し、変換のズレを防ぐ。"""
-    for pattern_re, replacement in KKS_PATTERNS:
-        text = pattern_re.sub(replacement, text)
-    converted = KAKASI_INST.convert(text)
-    return tuple(
-        ''.join(item[k] for item in converted)
-        for k in ('hira', 'kana', 'hepburn', 'kunrei', 'passport')
-    )
-
-
-def generate_keyword(goods, resource, sk, i_2, i_4):
-    hira, kana, hepburn, kunrei, passport = _kana_variants(goods)
-    keyword = f'{sk},{i_2},{i_4},{hira},{kana},{hepburn},{kunrei},{passport}'
-    keyword = keyword.translate(CLEAN_TABLE).translate(ZEN2HAN_TABLE)
-    if resource == '未登録':
-        keyword += ',未登録'
-    return keyword
-
-
-@lru_cache(maxsize=2048)
-def search_variants(token: str) -> tuple[str, ...]:
-    han = token.translate(ZEN2HAN_TABLE)
-    cands = (token, han, *_kana_variants(han))
-    cleaned = (c.translate(CLEAN_TABLE).translate(ZEN2HAN_TABLE) for c in cands)
-    return tuple(dict.fromkeys(v for v in cleaned if v))
-
 def process_csv_and_schema(csv_path: str, table_name: str):
     if not Path(csv_path).is_file():
         return None, None, None
