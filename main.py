@@ -225,7 +225,7 @@ def build_search_query(q_keys: list[str], norm_keys: list[str], base_query: str,
 
 @app.get("/search/", name="search")
 async def search_products(q: str = '', db: aiosqlite.Connection = Depends(get_db)):
-    q = q.strip()
+    q = q.strip().translate(str.maketrans('０１２３４５６７８９', '0123456789'))
     if not q:
         return {"products": [], "count": 0}
         

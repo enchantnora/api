@@ -52,6 +52,7 @@ BLOCKED_NETWORKS = [
 ]
 
 BLOCKED_PATHS = (
+    ".git",
     "wp-includes",
     "xmlrpc.php",
     "wp-admin",
