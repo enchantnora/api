@@ -75,7 +75,8 @@ BLOCKED_USER_AGENTS = (
     "https://openai.com",
     "https://flowiq-labs.com",
     "https://leakix.net",
-    "https://opensiteexplorer.org/dotbot"
+    "https://opensiteexplorer.org/dotbot",
+    "claudebot@anthropic.com"
 )
 
 def write_log(message: str):

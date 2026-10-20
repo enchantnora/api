@@ -617,9 +617,9 @@ async def save_table(db: aiosqlite.Connection = Depends(get_db)):
 
 # ------------------------------------
 
-@app.get("/docs", name="docs", response_class=RedirectResponse, status_code=307)
+@app.get("/sdsd", name="sdsd", response_class=RedirectResponse, status_code=307)
 async def redirect_spreadsheets():
-    return "https://docs.google.com/spreadsheets/d/11z0QmFR3t7cPUWK9moXK8GqlqPpffJOu5RH2PeLhUdc/edit"
+    return "https://docs.google.com/spreadsheets/d/1XcKsgegFmfCZ2CKWz7HUWa3S-SQyXd8K9F4HubIKm9s/edit"
 
 @asynccontextmanager
 async def process_safe_lock(lock_path: AsyncPath, timeout: float = 10.0):
