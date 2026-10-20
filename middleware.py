@@ -68,7 +68,7 @@ BLOCKED_USER_AGENTS = (
     "http://www.baidu.com",
     "http://yandex.com",
     "https://www.deepseek.com",
-    "https://cloud.google.com",
+    "http://www.google.com/bot",
     "https://docs-cortex.paloaltonetworks.com",
     "http://mj12bot.com",
     "https://serpstatbot.com",
@@ -76,7 +76,18 @@ BLOCKED_USER_AGENTS = (
     "https://flowiq-labs.com",
     "https://leakix.net",
     "https://opensiteexplorer.org/dotbot",
-    "claudebot@anthropic.com"
+    "claudebot@anthropic.com",
+    "http://www.bing.com",
+    "https://developers.facebook.com",
+    "https://duckduckgo.com",
+    "https://perplexity.ai",
+    "https://hunyuan.tencent.com",
+    "https://kimi.ai",
+    "http://www.apple.com/go/applebot",
+    "https://qwen.alibaba.com",
+    "https://zhipuai.cn",
+    "https://brave.com",
+    "https://you.com"
 )
 
 def write_log(message: str):
