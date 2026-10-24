@@ -3526,3 +3526,34 @@ Could not determine dtype for column 41, falling back to string
 Could not determine dtype for column 46, falling back to string
 Could not determine dtype for column 10, falling back to string
 Could not determine dtype for column 16, falling back to string
+[2026-10-24 19:24:21 +0900] [170355] [INFO] Handling signal: term
+[2026-10-24 19:24:21 +0900] [170403] [INFO] Shutting down
+[2026-10-24 19:24:21 +0900] [170403] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-24 19:24:21 +0900] [170401] [INFO] Shutting down
+[2026-10-24 19:24:21 +0900] [170401] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-24 19:24:21 +0900] [170403] [INFO] Waiting for application shutdown.
+[2026-10-24 19:24:21 +0900] [170403] [INFO] Application shutdown complete.
+[2026-10-24 19:24:21 +0900] [170403] [INFO] Finished server process [170403]
+[2026-10-24 19:24:21 +0900] [170355] [ERROR] Worker (pid:170403) was sent SIGTERM!
+[2026-10-24 19:24:21 +0900] [170401] [INFO] Waiting for application shutdown.
+[2026-10-24 19:24:21 +0900] [170401] [INFO] Application shutdown complete.
+[2026-10-24 19:24:21 +0900] [170401] [INFO] Finished server process [170401]
+[2026-10-24 19:24:21 +0900] [170355] [ERROR] Worker (pid:170401) was sent SIGTERM!
+[2026-10-24 19:24:21 +0900] [170355] [INFO] Shutting down: Master
+[2026-10-24 19:24:22 +0900] [170695] [INFO] Starting gunicorn 23.0.0
+[2026-10-24 19:24:22 +0900] [170695] [INFO] Listening at: http://0.0.0.0:9900 (170695)
+[2026-10-24 19:24:22 +0900] [170695] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-24 19:24:22 +0900] [170741] [INFO] Booting worker with pid: 170741
+[2026-10-24 19:24:22 +0900] [170743] [INFO] Booting worker with pid: 170743
+[2026-10-24 19:24:23 +0900] [170741] [INFO] Started server process [170741]
+[2026-10-24 19:24:23 +0900] [170741] [INFO] Waiting for application startup.
+[2026-10-24 19:24:23 +0900] [170741] [INFO] Application startup complete.
+[2026-10-24 19:24:23 +0900] [170743] [INFO] Started server process [170743]
+[2026-10-24 19:24:23 +0900] [170743] [INFO] Waiting for application startup.
+[2026-10-24 19:24:23 +0900] [170743] [INFO] Application startup complete.
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 7, falling back to string

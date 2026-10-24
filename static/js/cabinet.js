@@ -38,7 +38,8 @@ const Utils = {
             'obj': '💎', 'mtl': '💎', 'stl': '💎', 'glb': '💎', 'gltf': '💎',
             'py': '💻', 'js': '💻', 'html': '💻', 'css': '💻', 'java': '💻', 'cpp': '💻', 'c': '💻', 'ts': '💻',
             'json': '💻', 'xml': '💻', 'yaml': '💻', 'yml': '💻', 'sh': '💻',
-            'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️'
+            'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️',
+            'exe': '🕹️'
         };
         return icons[ext] || '📄';
     },
@@ -49,7 +50,7 @@ const Utils = {
 };
 
 // ---- ボタン処理 ----------------------------------------
-async function executeAdminTask(url, taskName) {
+async function executeAdminTask(url, taskName, callback) {
     if (!url || !APP.isAdmin) return addMessage(MSG.error('管理者のみ実行可能'));
     if (APP.isProcessing) return;
     APP.isProcessing = true;
@@ -57,6 +58,7 @@ async function executeAdminTask(url, taskName) {
         const response = await fetch(url);
         const data = await response.json();
         addMessage(MSG.success(`${taskName}: ${data.status}`));
+        if (callback) callback();
     } catch (error) {
         addMessage(MSG.error(`エラーが発生しました。${error}`));
     } finally {
@@ -65,7 +67,7 @@ async function executeAdminTask(url, taskName) {
 }
 
 const btn1 = () => executeAdminTask(APP.endpoints.dataFormatting, "Data解析");
-const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新", () => location.reload());
 const btn3 = () => APP.endpoints.docs
     ? window.open(APP.endpoints.docs, '_blank')
     : addMessage(MSG.error('管理者のみ実行可能'));

@@ -765,6 +765,29 @@ async def data_formatting(request: Request, db: aiosqlite.Connection = Depends(g
     except Exception as e:
         return {'status': str(e)}
 
+async def generate_wgt_csv_chunks(db: aiosqlite.Connection):
+    yield "ＳＫ番号,商品ＣＤ,商品名,重量(g)\n".encode('utf-8-sig')
+    
+    async with db.execute("SELECT sk, code, name, wgt FROM product") as cursor:
+        async for row in cursor:
+            sk = str(row["sk"] or "").replace(",", " ").replace('"', '')
+            code = str(row["code"] or "").replace(",", " ").replace('"', '')
+            raw_name = str(row["name"] or "").replace("•", "･").replace(",", " ").replace('"', '')
+            name = zen_to_han_fast_single(raw_name)
+            wgt_str = row["wgt"] or ""
+            calculated_wgt = parse_wgt(wgt_str)
+            
+            line = f"{sk},{code},{name},{calculated_wgt}\n"
+            yield line.encode('utf-8')
+
+async def save_wgt_csv(db: aiosqlite.Connection):
+    cabinet_dir = AsyncPath("./cabinet")
+    await cabinet_dir.mkdir(parents=True, exist_ok=True)
+    file_path = cabinet_dir / "wgt.csv"
+    async with await file_path.open("wb") as f:
+        async for chunk in generate_wgt_csv_chunks(db):
+            await f.write(chunk)
+
 @app.get("/apply", name="apply")
 async def apply(request: Request, db: aiosqlite.Connection = Depends(get_db)):
     try:
@@ -773,27 +796,21 @@ async def apply(request: Request, db: aiosqlite.Connection = Depends(get_db)):
     except Exception as e:
         return {'status': '01' + str(e)}
     try:
-        return await update_data(request)
+        result = await update_data(request)
     except Exception as e:
         return {'status': '02' + str(e)}
+    try:
+        await save_wgt_csv(db)
+    except Exception as e:
+        return {'status': '03' + str(e)}
+    return result
 
 @app.get("/wg", name="wgtcsv")
 async def export_wgt_csv(db: aiosqlite.Connection = Depends(get_db)):
     async def iter_csv():
-        yield "ＳＫ番号,商品ＣＤ,商品名,重量(g)\n".encode('utf-8-sig')
-        
         try:
-            async with db.execute("SELECT sk, code, name, wgt FROM product") as cursor:
-                async for row in cursor:
-                    sk = str(row["sk"] or "").replace(",", " ").replace('"', '')
-                    code = str(row["code"] or "").replace(",", " ").replace('"', '')
-                    raw_name = str(row["name"] or "").replace("•", "･").replace(",", " ").replace('"', '')
-                    name = zen_to_han_fast_single(raw_name)
-                    wgt_str = row["wgt"] or ""
-                    calculated_wgt = parse_wgt(wgt_str)
-                    
-                    line = f"{sk},{code},{name},{calculated_wgt}\n"
-                    yield line.encode('utf-8')
+            async for chunk in generate_wgt_csv_chunks(db):
+                yield chunk
         except Exception:
             pass
 
