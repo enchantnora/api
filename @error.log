@@ -3557,3 +3557,115 @@ Could not determine dtype for column 9, falling back to string
 Could not determine dtype for column 10, falling back to string
 Could not determine dtype for column 16, falling back to string
 Could not determine dtype for column 7, falling back to string
+[2026-10-24 20:19:42 +0900] [170741] [WARNING] Invalid HTTP request received.
+[2026-10-24 20:19:42 +0900] [170743] [WARNING] Invalid HTTP request received.
+[2026-10-24 20:32:43 +0900] [170741] [WARNING] Invalid HTTP request received.
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+[2026-10-25 00:27:17 +0900] [170695] [INFO] Handling signal: term
+[2026-10-25 00:27:17 +0900] [170741] [INFO] Shutting down
+[2026-10-25 00:27:17 +0900] [170741] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-25 00:27:17 +0900] [170743] [INFO] Shutting down
+[2026-10-25 00:27:17 +0900] [170743] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-25 00:27:17 +0900] [170741] [INFO] Waiting for application shutdown.
+[2026-10-25 00:27:17 +0900] [170741] [INFO] Application shutdown complete.
+[2026-10-25 00:27:17 +0900] [170741] [INFO] Finished server process [170741]
+[2026-10-25 00:27:17 +0900] [170743] [INFO] Waiting for application shutdown.
+[2026-10-25 00:27:17 +0900] [170743] [INFO] Application shutdown complete.
+[2026-10-25 00:27:17 +0900] [170743] [INFO] Finished server process [170743]
+[2026-10-25 00:27:17 +0900] [170695] [ERROR] Worker (pid:170741) was sent SIGTERM!
+[2026-10-25 00:27:17 +0900] [170695] [ERROR] Worker (pid:170743) was sent SIGTERM!
+[2026-10-25 00:27:17 +0900] [170695] [INFO] Shutting down: Master
+[2026-10-25 00:27:17 +0900] [171473] [INFO] Starting gunicorn 23.0.0
+[2026-10-25 00:27:17 +0900] [171473] [INFO] Listening at: http://0.0.0.0:9900 (171473)
+[2026-10-25 00:27:17 +0900] [171473] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-25 00:27:17 +0900] [171540] [INFO] Booting worker with pid: 171540
+[2026-10-25 00:27:18 +0900] [171542] [INFO] Booting worker with pid: 171542
+[2026-10-25 00:27:19 +0900] [171540] [INFO] Started server process [171540]
+[2026-10-25 00:27:19 +0900] [171540] [INFO] Waiting for application startup.
+[2026-10-25 00:27:19 +0900] [171540] [INFO] Application startup complete.
+[2026-10-25 00:27:19 +0900] [171542] [INFO] Started server process [171542]
+[2026-10-25 00:27:19 +0900] [171542] [INFO] Waiting for application startup.
+[2026-10-25 00:27:19 +0900] [171542] [INFO] Application startup complete.
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 9, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 24, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 55, falling back to string
+Could not determine dtype for column 57, falling back to string
+Could not determine dtype for column 59, falling back to string
+Could not determine dtype for column 1, falling back to string
+Could not determine dtype for column 2, falling back to string
+Could not determine dtype for column 3, falling back to string
+Could not determine dtype for column 4, falling back to string
+Could not determine dtype for column 5, falling back to string
+Could not determine dtype for column 6, falling back to string
+Could not determine dtype for column 7, falling back to string
+Could not determine dtype for column 8, falling back to string
+Could not determine dtype for column 10, falling back to string
+Could not determine dtype for column 11, falling back to string
+Could not determine dtype for column 12, falling back to string
+Could not determine dtype for column 13, falling back to string
+Could not determine dtype for column 14, falling back to string
+Could not determine dtype for column 15, falling back to string
+Could not determine dtype for column 16, falling back to string
+Could not determine dtype for column 18, falling back to string
+Could not determine dtype for column 20, falling back to string
+Could not determine dtype for column 21, falling back to string
+Could not determine dtype for column 22, falling back to string
+Could not determine dtype for column 23, falling back to string
+Could not determine dtype for column 26, falling back to string
+Could not determine dtype for column 35, falling back to string
+Could not determine dtype for column 36, falling back to string
+Could not determine dtype for column 41, falling back to string
+Could not determine dtype for column 46, falling back to string
+[2026-10-25 07:25:41 +0900] [171473] [INFO] Handling signal: term
+[2026-10-25 07:25:41 +0900] [171542] [INFO] Shutting down
+[2026-10-25 07:25:41 +0900] [171542] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-25 07:25:41 +0900] [171540] [INFO] Shutting down
+[2026-10-25 07:25:41 +0900] [171540] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-25 07:25:41 +0900] [171542] [INFO] Waiting for application shutdown.
+[2026-10-25 07:25:41 +0900] [171542] [INFO] Application shutdown complete.
+[2026-10-25 07:25:41 +0900] [171542] [INFO] Finished server process [171542]
+[2026-10-25 07:25:41 +0900] [171473] [ERROR] Worker (pid:171542) was sent SIGTERM!
+[2026-10-25 07:25:41 +0900] [171540] [INFO] Waiting for application shutdown.
+[2026-10-25 07:25:41 +0900] [171540] [INFO] Application shutdown complete.
+[2026-10-25 07:25:41 +0900] [171540] [INFO] Finished server process [171540]
+[2026-10-25 07:25:41 +0900] [171473] [ERROR] Worker (pid:171540) was sent SIGTERM!
+[2026-10-25 07:25:41 +0900] [171473] [INFO] Shutting down: Master
+[2026-10-25 07:25:42 +0900] [172423] [INFO] Starting gunicorn 23.0.0
+[2026-10-25 07:25:42 +0900] [172423] [INFO] Listening at: http://0.0.0.0:9900 (172423)
+[2026-10-25 07:25:42 +0900] [172423] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-25 07:25:42 +0900] [172469] [INFO] Booting worker with pid: 172469
+[2026-10-25 07:25:42 +0900] [172470] [INFO] Booting worker with pid: 172470
+[2026-10-25 07:25:43 +0900] [172469] [INFO] Started server process [172469]
+[2026-10-25 07:25:43 +0900] [172469] [INFO] Waiting for application startup.
+[2026-10-25 07:25:43 +0900] [172469] [INFO] Application startup complete.
+[2026-10-25 07:25:43 +0900] [172470] [INFO] Started server process [172470]
+[2026-10-25 07:25:43 +0900] [172470] [INFO] Waiting for application startup.
+[2026-10-25 07:25:43 +0900] [172470] [INFO] Application startup complete.

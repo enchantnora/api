@@ -14,6 +14,95 @@ const CHUNK_SIZE_BYTES = 80 * 1024 * 1024;
 const MAX_CONCURRENT_UPLOADS = 3;
 const MAX_UPLOAD_WEIGHT = 3;
 
+const loadedScripts = new Map();
+let active3DCleanup = null;
+let currentCopyTextGetter = null;
+let copyBtnResetTimer = null;
+
+function getStaticJsBase() {
+    if (APP.staticJsBase) return APP.staticJsBase;
+    const scriptEl = document.querySelector('script[src*="cabinet.js"]');
+    if (scriptEl && scriptEl.src) {
+        const url = new URL(scriptEl.src, window.location.origin);
+        return url.pathname.replace(/\/cabinet\.js$/, '');
+    }
+    return '/static/js';
+}
+
+function loadScript(filename) {
+    if (loadedScripts.has(filename)) return loadedScripts.get(filename);
+    const promise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `${getStaticJsBase()}/${filename}`;
+        script.async = false;
+        script.onload = () => resolve();
+        script.onerror = () => {
+            loadedScripts.delete(filename);
+            reject(new Error(`ライブラリの読み込みに失敗しました: ${filename}`));
+        };
+        document.head.appendChild(script);
+    });
+    loadedScripts.set(filename, promise);
+    return promise;
+}
+
+async function ensurePreviewLibraries(type, ext) {
+    if (type === 'excel') {
+        if (!window.Arrow) await loadScript('Arrow.es2015.min.js');
+    } else if (type === 'word') {
+        if (!window.mammoth) await loadScript('mammoth.browser.min.js');
+    } else if (type === 'markdown') {
+        const tasks = [];
+        if (!window.DOMPurify) tasks.push(loadScript('purify.min.js'));
+        if (!window.marked) tasks.push(loadScript('marked.min.js'));
+        if (tasks.length > 0) await Promise.all(tasks);
+    } else if (type === '3d') {
+        if (!window.THREE) await loadScript('three.min.js');
+        const subTasks = [];
+        if (!THREE.OrbitControls) subTasks.push(loadScript('OrbitControls.js'));
+        if (ext === 'stl' && !THREE.STLLoader) {
+            subTasks.push(loadScript('STLLoader.js'));
+        } else if (ext === 'obj') {
+            if (!THREE.OBJLoader) subTasks.push(loadScript('OBJLoader.js'));
+            if (!THREE.MTLLoader) subTasks.push(loadScript('MTLLoader.js'));
+        } else if ((ext === 'glb' || ext === 'gltf') && !THREE.GLTFLoader) {
+            subTasks.push(loadScript('GLTFLoader.js'));
+        }
+        if (subTasks.length > 0) await Promise.all(subTasks);
+    }
+}
+
+function disposeObject3D(object) {
+    if (!object) return;
+    object.traverse((child) => {
+        if (child.geometry && typeof child.geometry.dispose === 'function') {
+            child.geometry.dispose();
+        }
+        if (child.material) {
+            const materials = Array.isArray(child.material) ? child.material : [child.material];
+            materials.forEach((mat) => {
+                if (!mat) return;
+                for (const key of Object.keys(mat)) {
+                    const value = mat[key];
+                    if (value && typeof value === 'object' && typeof value.dispose === 'function') {
+                        value.dispose();
+                    }
+                }
+                if (typeof mat.dispose === 'function') {
+                    mat.dispose();
+                }
+            });
+        }
+    });
+}
+
+function cleanup3DPreview() {
+    if (typeof active3DCleanup === 'function') {
+        active3DCleanup();
+        active3DCleanup = null;
+    }
+}
+
 // ---- ユーティリティ ----------------------------------------
 const Utils = {
     formatBytes: (bytes, decimals = 2) => {
@@ -38,8 +127,7 @@ const Utils = {
             'obj': '💎', 'mtl': '💎', 'stl': '💎', 'glb': '💎', 'gltf': '💎',
             'py': '💻', 'js': '💻', 'html': '💻', 'css': '💻', 'java': '💻', 'cpp': '💻', 'c': '💻', 'ts': '💻',
             'json': '💻', 'xml': '💻', 'yaml': '💻', 'yml': '💻', 'sh': '💻',
-            'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️',
-            'exe': '🕹️'
+            'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️'
         };
         return icons[ext] || '📄';
     },
@@ -50,7 +138,7 @@ const Utils = {
 };
 
 // ---- ボタン処理 ----------------------------------------
-async function executeAdminTask(url, taskName, callback) {
+async function executeAdminTask(url, taskName) {
     if (!url || !APP.isAdmin) return addMessage(MSG.error('管理者のみ実行可能'));
     if (APP.isProcessing) return;
     APP.isProcessing = true;
@@ -58,7 +146,6 @@ async function executeAdminTask(url, taskName, callback) {
         const response = await fetch(url);
         const data = await response.json();
         addMessage(MSG.success(`${taskName}: ${data.status}`));
-        if (callback) callback();
     } catch (error) {
         addMessage(MSG.error(`エラーが発生しました。${error}`));
     } finally {
@@ -67,7 +154,7 @@ async function executeAdminTask(url, taskName, callback) {
 }
 
 const btn1 = () => executeAdminTask(APP.endpoints.dataFormatting, "Data解析");
-const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新", () => location.reload());
+const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
 const btn3 = () => APP.endpoints.docs
     ? window.open(APP.endpoints.docs, '_blank')
     : addMessage(MSG.error('管理者のみ実行可能'));
@@ -802,7 +889,7 @@ function executeRenamePrompt(li) {
     let baseName = fullDisplayName;
     currentExt = '';
 
-    if (!isFolder) {
+    if (!isFolder && !APP.isAdmin) {
         const lastDot = fullDisplayName.lastIndexOf('.');
         if (lastDot > 0) {
             baseName   = fullDisplayName.substring(0, lastDot);
@@ -829,7 +916,7 @@ function executeRenamePrompt(li) {
 
     nameInput.value          = baseName;
     extDisplay.textContent   = currentExt;
-    extDisplay.style.display = isFolder ? 'none' : 'inline';
+    extDisplay.style.display = (isFolder || APP.isAdmin) ? 'none' : 'inline';
 
     document.getElementById('edit-tags-input').value         = tags;
     document.getElementById('edit-tags-group').style.display = isFolder ? 'none' : 'block';
@@ -882,6 +969,89 @@ function getPreviewType(ext) {
     return 'unsupported';
 }
 
+function parseCsv(text) {
+    const rows = [];
+    let row = [];
+    let field = '';
+    let inQuotes = false;
+    const len = text.length;
+
+    for (let i = 0; i < len; i++) {
+        const c = text[i];
+        if (inQuotes) {
+            if (c === '"') {
+                if (i + 1 < len && text[i + 1] === '"') {
+                    field += '"';
+                    i++;
+                } else {
+                    inQuotes = false;
+                }
+            } else {
+                field += c;
+            }
+        } else {
+            if (c === '"') {
+                inQuotes = true;
+            } else if (c === ',') {
+                row.push(field);
+                field = '';
+            } else if (c === '\r') {
+                if (i + 1 < len && text[i + 1] === '\n') {
+                    i++;
+                }
+                row.push(field);
+                rows.push(row);
+                row = [];
+                field = '';
+            } else if (c === '\n') {
+                row.push(field);
+                rows.push(row);
+                row = [];
+                field = '';
+            } else {
+                field += c;
+            }
+        }
+    }
+    if (field.length > 0 || row.length > 0) {
+        row.push(field);
+        rows.push(row);
+    }
+    return rows;
+}
+
+function rowsToExcelTsv(rows) {
+    return rows.map(row =>
+        row.map(cell => {
+            const str = String(cell ?? '');
+            if (/[\t\r\n"]/.test(str)) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }).join('\t')
+    ).join('\r\n');
+}
+
+function copyPreviewContent() {
+    if (typeof currentCopyTextGetter !== 'function') return;
+    const text = currentCopyTextGetter();
+    const copyBtn = document.getElementById('copy-content-btn');
+
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            addMessage(MSG.info('内容をクリップボードにコピーしました'));
+            if (copyBtn) {
+                if (copyBtnResetTimer) clearTimeout(copyBtnResetTimer);
+                copyBtn.textContent = 'コピー済';
+                copyBtnResetTimer = setTimeout(() => {
+                    copyBtn.textContent = 'コピー';
+                    copyBtnResetTimer = null;
+                }, 1500);
+            }
+        })
+        .catch(() => addMessage(MSG.error('コピーに失敗しました')));
+}
+
 function openPreview(filename, uuid, size, dateStr) {
     const ext  = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
     const type = getPreviewType(ext);
@@ -889,15 +1059,32 @@ function openPreview(filename, uuid, size, dateStr) {
     if (type === 'unsupported')
         return addMessage(MSG.error(`${Utils.escapeHtml(filename)} はプレビュー非対応です。[DL]から確認してください。`));
 
+    cleanup3DPreview();
+    currentCopyTextGetter = null;
+
     const modal        = document.getElementById('preview-modal');
     const content      = document.getElementById('modal-content');
     const landscapeBtn = document.getElementById('landscape-btn');
+    const saveBtn      = document.getElementById('save-txt-btn');
+    const copyBtn      = document.getElementById('copy-content-btn');
     const url          = `${APP.basePath}/f/${uuid}?inline=true`;
 
     document.getElementById('modal-title').textContent = filename;
     document.getElementById('modal-size').textContent  = `Size: ${Utils.formatBytes(size)}`;
     if (document.getElementById('modal-date')) document.getElementById('modal-date').textContent = dateStr || '';
     if (landscapeBtn) landscapeBtn.style.display = 'none';
+    if (saveBtn) {
+        saveBtn.style.display = 'none';
+        saveBtn.dataset.uuid  = '';
+    }
+    if (copyBtn) {
+        if (copyBtnResetTimer) {
+            clearTimeout(copyBtnResetTimer);
+            copyBtnResetTimer = null;
+        }
+        copyBtn.textContent   = 'コピー';
+        copyBtn.style.display = 'none';
+    }
 
     content.innerHTML = '<div style="padding: 20px; color: #fff;">Loading...</div>';
     modal.classList.add('active');
@@ -975,7 +1162,10 @@ function openPreview(filename, uuid, size, dateStr) {
 
         'word': async () => {
             try {
-                const response    = await fetch(url);
+                const [, response] = await Promise.all([
+                    ensurePreviewLibraries('word', ext),
+                    fetch(url)
+                ]);
                 const arrayBuffer = await response.arrayBuffer();
                 const result      = await mammoth.convertToHtml({ arrayBuffer });
                 content.innerHTML = `<div style="padding:20px;background:#fff;width:100%;height:100%;overflow-y:auto;box-sizing:border-box;text-align:left;color:#333;line-height:1.6;">${result.value}</div>`;
@@ -988,10 +1178,13 @@ function openPreview(filename, uuid, size, dateStr) {
                 const textContent = await response.text();
                 if (APP.extCategories?.edit?.includes(ext) || ext === 'txt') {
                     content.innerHTML = `<textarea id="edit-text-area" class="preview-text" style="resize:none;outline:none;">${Utils.escapeHtml(textContent)}</textarea>`;
-                    const saveBtn = document.getElementById('save-txt-btn');
                     if (saveBtn) {
                         saveBtn.style.display = 'block';
                         saveBtn.dataset.uuid  = uuid;
+                    }
+                    if (ext === 'txt' && copyBtn) {
+                        currentCopyTextGetter = () => document.getElementById('edit-text-area')?.value ?? textContent;
+                        copyBtn.style.display = 'block';
                     }
                 } else {
                     content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(textContent)}</pre>`;
@@ -1001,23 +1194,29 @@ function openPreview(filename, uuid, size, dateStr) {
 
         'markdown': async () => {
             try {
-                const response = await fetch(url);
-                const text     = await response.text();
+                const [, response] = await Promise.all([
+                    ensurePreviewLibraries('markdown', ext),
+                    fetch(url)
+                ]);
+                const text = await response.text();
                 content.innerHTML = `<div class="preview-markdown">${DOMPurify.sanitize(marked.parse(text))}</div>`;
             } catch (err) { content.innerHTML = previewError(err); }
         },
 
         'csv': async () => {
             try {
-                const response  = await fetch(url);
-                const rawRows   = (await response.text()).split(/\r?\n/);
-                const validRows = rawRows.filter((r, idx) => r.trim() !== '' || idx < rawRows.length - 1);
+                const response    = await fetch(url);
+                const fullCsvText = await response.text();
+                const parsedRows  = parseCsv(fullCsvText);
+                const validRows   = parsedRows.filter((r, idx) =>
+                    !(r.length === 1 && r[0].trim() === '' && idx === parsedRows.length - 1)
+                );
                 const totalDataRows = Math.max(0, validRows.length - 1);
                 const displayRows   = validRows.slice(0, MAX_PREVIEW_ROWS + 1);
 
                 const trList = displayRows.map((row, index) => {
                     const tag = index === 0 ? 'th' : 'td';
-                    return '<tr>' + row.split(',').map(col => `<${tag}>${Utils.escapeHtml(col.trim())}</${tag}>`).join('') + '</tr>';
+                    return '<tr>' + row.map(col => `<${tag}>${Utils.escapeHtml(col.trim())}</${tag}>`).join('') + '</tr>';
                 });
 
                 const omittedNotice = totalDataRows > MAX_PREVIEW_ROWS
@@ -1025,23 +1224,74 @@ function openPreview(filename, uuid, size, dateStr) {
                     : '';
 
                 content.innerHTML = `<div class="preview-csv-container" style="overflow:auto;width:100%;height:100%;box-sizing:border-box;"><table class="preview-csv">${trList.join('')}</table>${omittedNotice}</div>`;
+
+                if (copyBtn) {
+                    currentCopyTextGetter = () => rowsToExcelTsv(validRows);
+                    copyBtn.style.display = 'block';
+                }
             } catch (err) { content.innerHTML = previewError(err); }
         },
 
         'excel': () => renderExcelPreview(uuid, content),
 
         '3d': () => {
-            setTimeout(() => {
+            let isDisposed = false;
+            let animationId = null;
+            let renderer = null;
+            let scene = null;
+            let controls = null;
+            let onWindowResize = null;
+
+            active3DCleanup = () => {
+                isDisposed = true;
+                if (animationId !== null) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                if (onWindowResize) {
+                    window.removeEventListener('resize', onWindowResize, false);
+                    onWindowResize = null;
+                }
+                if (controls) {
+                    controls.dispose();
+                    controls = null;
+                }
+                if (scene) {
+                    disposeObject3D(scene);
+                    scene.clear();
+                    scene = null;
+                }
+                if (renderer) {
+                    renderer.dispose();
+                    if (typeof renderer.forceContextLoss === 'function') {
+                        renderer.forceContextLoss();
+                    }
+                    if (renderer.domElement && renderer.domElement.parentNode) {
+                        renderer.domElement.parentNode.removeChild(renderer.domElement);
+                    }
+                    renderer = null;
+                }
+            };
+
+            setTimeout(async () => {
+                try {
+                    await ensurePreviewLibraries('3d', ext);
+                } catch (err) {
+                    if (!isDisposed) content.innerHTML = previewError(err);
+                    return;
+                }
+
+                if (isDisposed) return;
                 const container = document.getElementById('preview-3d-container');
                 if (!container) return;
 
                 container.innerHTML = '';
-                const scene = new THREE.Scene();
+                scene = new THREE.Scene();
                 scene.background = new THREE.Color(0xf0f0f0);
                 scene.add(new THREE.GridHelper(100, 50, 0xaaaaaa, 0xdddddd));
 
-                const camera   = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-                const renderer = new THREE.WebGLRenderer({ antialias: true });
+                const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+                renderer = new THREE.WebGLRenderer({ antialias: true });
                 renderer.setSize(container.clientWidth, container.clientHeight);
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.outputEncoding = THREE.sRGBEncoding;
@@ -1051,7 +1301,7 @@ function openPreview(filename, uuid, size, dateStr) {
                 renderer.toneMappingExposure = isPBR ? 1.0 : 0.8;
                 container.appendChild(renderer.domElement);
 
-                const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
                 controls.enableDamping = true;
 
                 if (isPBR) {
@@ -1075,10 +1325,9 @@ function openPreview(filename, uuid, size, dateStr) {
                     scene.add(sun);
                 }
 
-                let animationId;
                 const animate = () => {
-                    if (!document.getElementById('preview-3d-container')) {
-                        cancelAnimationFrame(animationId);
+                    if (isDisposed || !document.getElementById('preview-3d-container')) {
+                        cleanup3DPreview();
                         return;
                     }
                     animationId = requestAnimationFrame(animate);
@@ -1086,14 +1335,15 @@ function openPreview(filename, uuid, size, dateStr) {
                     renderer.render(scene, camera);
                 };
 
-                const onWindowResize = () => {
-                    if (!document.getElementById('preview-3d-container')) {
-                        window.removeEventListener('resize', onWindowResize);
+                onWindowResize = () => {
+                    const currentContainer = document.getElementById('preview-3d-container');
+                    if (isDisposed || !currentContainer || !renderer) {
+                        cleanup3DPreview();
                         return;
                     }
-                    camera.aspect = container.clientWidth / container.clientHeight;
+                    camera.aspect = currentContainer.clientWidth / currentContainer.clientHeight;
                     camera.updateProjectionMatrix();
-                    renderer.setSize(container.clientWidth, container.clientHeight);
+                    renderer.setSize(currentContainer.clientWidth, currentContainer.clientHeight);
                 };
                 window.addEventListener('resize', onWindowResize, false);
 
@@ -1122,6 +1372,10 @@ function openPreview(filename, uuid, size, dateStr) {
                 if (ext === 'stl') {
                     const loader = new THREE.STLLoader();
                     loader.load(url, (geometry) => {
+                        if (isDisposed || !scene) {
+                            geometry.dispose();
+                            return;
+                        }
                         const mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
                             color: geometry.hasColors ? 0xffffff : 0x999999,
                             specular: 0x111111, shininess: 30, vertexColors: geometry.hasColors
@@ -1131,9 +1385,11 @@ function openPreview(filename, uuid, size, dateStr) {
                     });
                 } else if (ext === 'obj') {
                     fetch(url).then(res => res.text()).then(text => {
+                        if (isDisposed || !scene) return;
                         const mtlMatch = text.match(/^mtllib\s+(.+)$/m);
 
                         const loadObjFallback = () => {
+                            if (isDisposed || !scene) return;
                             const object = new THREE.OBJLoader().parse(text);
                             object.traverse(child => {
                                 if (child instanceof THREE.Mesh && (!child.material || !child.material.name))
@@ -1152,6 +1408,7 @@ function openPreview(filename, uuid, size, dateStr) {
                             });
                             const mtlLoader = new THREE.MTLLoader(manager);
                             mtlLoader.load(mtlUrl, (materials) => {
+                                if (isDisposed || !scene) return;
                                 materials.preload();
                                 const objLoader = new THREE.OBJLoader();
                                 objLoader.setMaterials(materials);
@@ -1163,16 +1420,24 @@ function openPreview(filename, uuid, size, dateStr) {
                             loadObjFallback();
                         }
                     }).catch(() => {
-                        container.innerHTML = `<div style="color:red;padding:20px;">モデルの読み込みに失敗しました</div>`;
+                        if (!isDisposed && container) {
+                            container.innerHTML = `<div style="color:red;padding:20px;">モデルの読み込みに失敗しました</div>`;
+                        }
                     });
                 } else if (ext === 'glb' || ext === 'gltf') {
                     const loader = new THREE.GLTFLoader();
                     loader.load(url, (gltf) => {
+                        if (isDisposed || !scene) {
+                            disposeObject3D(gltf.scene);
+                            return;
+                        }
                         scene.add(gltf.scene);
                         centerAndScaleModel(gltf.scene);
                     }, undefined, (error) => {
                         console.error(error);
-                        container.innerHTML = `<div style="color:red;padding:20px;">モデルの読み込みに失敗しました</div>`;
+                        if (!isDisposed && container) {
+                            container.innerHTML = `<div style="color:red;padding:20px;">モデルの読み込みに失敗しました</div>`;
+                        }
                     });
                 }
 
@@ -1197,6 +1462,9 @@ function openPreview(filename, uuid, size, dateStr) {
 }
 
 function closeModal() {
+    cleanup3DPreview();
+    currentCopyTextGetter = null;
+
     document.getElementById('preview-modal').classList.remove('active');
     document.getElementById('modal-content').innerHTML = '';
     const landscapeBtn = document.getElementById('landscape-btn');
@@ -1206,6 +1474,16 @@ function closeModal() {
     if (saveBtn) {
         saveBtn.style.display = 'none';
         saveBtn.dataset.uuid  = '';
+    }
+
+    const copyBtn = document.getElementById('copy-content-btn');
+    if (copyBtn) {
+        if (copyBtnResetTimer) {
+            clearTimeout(copyBtnResetTimer);
+            copyBtnResetTimer = null;
+        }
+        copyBtn.textContent   = 'コピー';
+        copyBtn.style.display = 'none';
     }
 
     const currentUrl = new URL(window.location.href);
@@ -1248,7 +1526,10 @@ function toggleLandscape() {
 // ---- Excel プレビュー ----------------------------------------
 async function renderExcelPreview(uuid, content) {
     try {
-        const infoRes = await fetch(`${APP.basePath}/excel/info/${uuid}`);
+        const [, infoRes] = await Promise.all([
+            ensurePreviewLibraries('excel', 'xlsx'),
+            fetch(`${APP.basePath}/excel/info/${uuid}`)
+        ]);
         if (!infoRes.ok) throw new Error('シート情報の取得に失敗しました');
         const sheets = (await infoRes.json()).sheets || [];
         if (sheets.length === 0)
@@ -1322,5 +1603,5 @@ async function loadExcelSheet(uuid, sheetName) {
             rowHtmlList.join('') +
             '</tbody></table>' +
             omittedNotice;
-    } catch (e) { container.innerHTML = previewError(e); }
+    } catch (e) { content.innerHTML = previewError(e); }
 }

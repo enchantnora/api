@@ -679,6 +679,14 @@ async def update_metadata(
     if is_protected_item(target.name, is_dir) and admin_level != 1:
         raise HTTPException(status_code=403, detail="このアイテムは保護されています")
 
+    if not is_dir and admin_level != 1:
+        old_dot = target.name.rfind('.')
+        new_dot = new_name.rfind('.')
+        old_ext = target.name[old_dot:] if old_dot > 0 else ""
+        new_ext = new_name[new_dot:] if new_dot > 0 else ""
+        if old_ext != new_ext:
+            raise HTTPException(status_code=403, detail="拡張子の変更は管理者のみ可能です")
+
     new_target = target.parent / new_name
     old_rel_path = target.resolve().relative_to(CABINET_DIR).as_posix()
     new_rel_path = new_target.resolve().relative_to(CABINET_DIR).as_posix()

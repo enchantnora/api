@@ -6,16 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>CYBER CABINET</title>
     <script src="{{ url_for('static', path='js/cabinet.js') }}?ver={{js_timestamp}}" defer></script>
-    <script src="{{ url_for('static', path='js/Arrow.es2015.min.js') }}" defer></script>
-    <script src="{{ url_for('static', path='js/mammoth.browser.min.js') }}" defer></script>
-    <script src="{{ url_for('static', path='js/three.min.js') }}" defer></script>
-    <script src="{{ url_for('static', path='js/OrbitControls.js') }}" defer></script>
-    <script src="{{ url_for('static', path='js/GLTFLoader.js') }}?ver={{js_timestamp}}" defer></script>
-    <script src="{{ url_for('static', path='js/STLLoader.js') }}" defer></script>
-    <script src="{{ url_for('static', path='js/OBJLoader.js') }}" defer></script>
-    <script src="{{ url_for('static', path='js/MTLLoader.js') }}" defer></script>
-    <script src="{{ url_for('static', path='js/purify.min.js') }}" defer></script>
-    <script src="{{ url_for('static', path='js/marked.min.js') }}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', path='css/cabinet.css') }}?ver={{css_timestamp}}">
     <style>
         {% if admin == 1 %}
@@ -202,6 +192,7 @@
                         <button class="cli none_selection" style="height: 30px; font-size: 12px; padding: 0 13px;" onclick="closeModal()">閉じる</button>
                         <button id="landscape-btn" class="cli preview-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="toggleLandscape()">横画面</button>
                         <button id="save-txt-btn" class="cli edit-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="saveTextFile()">保存</button>
+                        <button id="copy-content-btn" class="cli copy-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="copyPreviewContent()">コピー</button>
                     </div>
                     <div style="display: flex; gap: 12px; align-items: center;">
                         <span id="modal-date" style="font-weight: normal; font-size: 10px; color: #a9c0e0;"></span>
@@ -219,7 +210,7 @@
                 <div class="modal-body" style="background-color: #131d39; padding: 25px; flex-direction: column; align-items: stretch; justify-content: flex-start;">
                     <div class="edit-input-group">
                         <label>ファイル名</label>
-                        <div style="display: flex; align-items: center; background: rgba(0, 0, 0, 0.5); border: 1px solid #80e5d8; border-radius: 4px; padding-right: 10px;">
+                        <div style="display: flex; align-items: center; background: rgba(0, 0, 0, 0.5); border: 1px solid #80e5d8; border-radius: 4px; {% if admin != 1 %}padding-right: 10px;{% endif %}">
                             <input type="text" id="edit-name-input" style="border: none; background: transparent; flex: 1; outline: none;">
                             <span id="edit-ext-display" style="color: #666; font-family: monospace; font-size: 16px; user-select: none; pointer-events: none;"></span>
                         </div>
@@ -241,6 +232,7 @@
         const APP = {
             currentPath: "{{ current_path }}",
             basePath: "{{ prefix }}",
+            staticJsBase: "{{ url_for('static', path='js') }}",
             maxCapacity: Number("{{ max_capacity }}") || 0,
             usedCapacity: Number("{{ used_capacity }}") || 0,
             get remainingCapacity() { return this.maxCapacity - this.usedCapacity; },
