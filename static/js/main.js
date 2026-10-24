@@ -75,6 +75,10 @@ const Utils = {
             .on('touchstart', selector, function() { $(this).data('touchMoved', false); })
             .on('touchmove', selector, function() { $(this).data('touchMoved', true); })
             .on('touchend click', selector, function(event) {
+                if ($(event.target).closest('a').length > 0) {
+                    return;
+                }
+
                 if (event.type === 'touchend') {
                     if ($(this).data('touchMoved')) return;
 

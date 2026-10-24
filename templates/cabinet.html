@@ -96,10 +96,10 @@
             <div id="search_area">
                 {% if query %}
                 <div class="sep gred"></div>
-                <div class="sep gred up-btn none_selection" onclick="navigate('')">◀ 戻る</div>
+                <div class="sep gred up-btn none_selection" data-navigate="">◀ 戻る</div>
                 {% elif current_path and current_path != '/' %}
                 <div class="sep gyellow"></div>
-                <div class="sep gyellow up-btn none_selection" data-path="{{ parent_path }}" onclick="navigate('{{ parent_path }}')">▲ 上の階層へ</div>
+                <div class="sep gyellow up-btn none_selection" data-path="{{ parent_path }}" data-navigate="{{ parent_path }}">▲ 上の階層へ</div>
                 {% else %}
                 <div class="sep gblue"></div>
                 <a class="sep gblue up-btn none_selection" href="{{ url_for('index') }}">◀ 製品検索へ</a>
@@ -109,13 +109,13 @@
                         {% if query %}
                             SEARCH：{{ query }}
                         {% else %}
-                            PATH：<span class="breadcrumb-item" onmousedown="event.preventDefault(); event.stopPropagation();" onclick="navigate(''); event.stopPropagation();">ROOT</span>
+                            PATH：<span class="breadcrumb-item" data-path="">ROOT</span>
                             {% set path_parts = current_path.strip('/').split('/') %}
                             {% set accumulated = [] %}
                             {% for part in path_parts if part %}
                                 <span class="breadcrumb-sep">/</span>
                                 {% set _ = accumulated.append(part) %}
-                                <span class="breadcrumb-item" onmousedown="event.preventDefault(); event.stopPropagation();" onclick="navigate('{{ accumulated|join('/') }}'); event.stopPropagation();">{{ part }}</span>
+                                <span class="breadcrumb-item" data-path="{{ accumulated|join('/') }}">{{ part }}</span>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -131,7 +131,7 @@
                 {%- for item in items %}
                     {%- if item.is_dir %}
                     {%- set can_del = not item.is_protected or admin == 1 %}
-                    <li class="bulletin_board2 folder none_selection" data-path="{{ item.path }}"{% if not can_del %} data-protected="true"{% endif %}>
+                    <li class="bulletin_board2 folder none_selection" data-path="{{ item.path }}" data-name="{{ item.name }}" data-is-dir="true" data-item-count="{{ item.item_count }}"{% if not can_del %} data-protected="true"{% endif %}>
                         <div class="item-icon">📁</div>
                         <div class="item-info">
                             <div class="item-title">{{ item.name }}</div>
@@ -141,47 +141,43 @@
                         </div>
                         <div class="item-actions">
                             {%- if can_del %}
-                            <button class="cli danger" onclick="showDeleteConfirm(this, '{{ item.path }}', '{{ item.name|escape }}', true, {{ item.item_count }})">DEL</button>
+                            <button class="cli danger del-btn">DEL</button>
                             {%- endif %}
                         </div>
                     </li>
                     {%- else %}
                     {%- set can_dl = not item.is_protected or admin >= 1 %}
                     {%- set can_del = not item.is_protected or admin == 1 %}
-                    <li class="bulletin_board2 none_selection" data-uuid="{{ item.uuid }}" data-path="{{ item.path }}" data-can-dl="{{ 'true' if can_dl else 'false' }}"{% if not can_del %} data-protected="true"{% else %} draggable="true"{% endif %}>
+                    <li class="bulletin_board2 none_selection" data-uuid="{{ item.uuid }}" data-path="{{ item.path }}" data-name="{{ item.name }}" data-size="{{ item.size }}" data-created="{{ item.created_at }}" data-is-dir="false" data-item-count="0" data-can-dl="{{ 'true' if can_dl else 'false' }}"{% if not can_del %} data-protected="true"{% else %} draggable="true"{% endif %}>
                         <div class="item-icon file-icon" data-filename="{{ item.name }}">📄</div>
                         <div class="item-info">
                             <div class="item-title">{{ item.name }}</div>
                             <div class="item-meta">
-                            <span style="margin-right: 10px;">{{ item.created_at[:10] }}</span>
-                            <span class="file-size" data-size="{{ item.size }}">Size: {{ item.size }} B</span>
-                            {%- if item.tags or item.is_protected %}<span class="item-tags">
-                                {%- if item.is_protected %}<span class="tag-badge admin-protected-tag">#管理者用</span>{%- endif %}
-                                {%- if item.tags %}
-                                    {%- for tag in item.tags %}<span class="tag-badge">#{{ tag }}</span>{%- endfor %}
-                                {%- endif %}
-                            </span>{%- endif %}
-                        </div>
+                                <span style="margin-right: 10px;">{{ item.created_at[:10] }}</span>
+                                <span class="file-size" data-size="{{ item.size }}">Size: {{ item.size }} B</span>
+                                {%- if item.tags or item.is_protected %}<span class="item-tags">
+                                    {%- if item.is_protected %}<span class="tag-badge admin-protected-tag">#管理者用</span>{%- endif %}
+                                    {%- if item.tags %}
+                                        {%- for tag in item.tags %}<span class="tag-badge">#{{ tag }}</span>{%- endfor %}
+                                    {%- endif %}
+                                </span>{%- endif %}
+                            </div>
                         </div>
                         <div class="item-actions">
                             <div class="action-top">
-                                {%- set ext = item.name.split('.')|last|lower if '.' in item.name else '' %}
-                                {%- set preview_exts = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'mp4', 'webm', 'mov', 'mp3', 'wav', 'm4a', 'aac', 'pdf', 'csv', 'xlsx', 'xls', 'xlsm', 'py', 'html', 'css', 'js', 'json', 'log', 'md', 'docx', 'stl', 'obj', 'glb', 'gltf'] %}
-                                {%- set edit_exts = ['txt'] %}
-                                
-                                {%- if ext in edit_exts %}
-                                <button class="cli edit-btn" onclick="openPreview('{{ item.name|escape }}', '{{ item.uuid }}', {{ item.size }}, '{{ item.created_at }}'); event.stopPropagation();">EDIT</button>
-                                {%- elif ext in preview_exts %}
-                                <button class="cli preview-btn" onclick="openPreview('{{ item.name|escape }}', '{{ item.uuid }}', {{ item.size }}, '{{ item.created_at }}'); event.stopPropagation();">VIEW</button>
+                                {%- if item.action_type == 'edit' %}
+                                <button class="cli edit-btn">EDIT</button>
+                                {%- elif item.action_type == 'preview' %}
+                                <button class="cli preview-btn">VIEW</button>
                                 {%- endif %}
                                 
                                 {%- if can_dl %}
-                                <button class="cli dl-btn" onclick="downloadFile('{{ item.uuid }}', '{{ item.name|escape }}'); event.stopPropagation();">DL</button>
+                                <button class="cli dl-btn">DL</button>
                                 {%- endif %}
                             </div>
                             
                             {%- if can_del %}
-                            <button class="cli danger" onclick="showDeleteConfirm(this, '{{ item.path }}', '{{ item.name|escape }}', false, 0)">DEL</button>
+                            <button class="cli danger del-btn">DEL</button>
                             {%- endif %}
                         </div>
                     </li>
@@ -250,10 +246,12 @@
             get remainingCapacity() { return this.maxCapacity - this.usedCapacity; },
             currentRemainingCapacity: 0,
             activeUploads: 0,
+            pendingScans: 0,
             isProcessing: false,
             messageTimer: null,
             originalContent: null,
             isAdmin: {{ 'true' if admin == 1 else 'false' }},
+            extCategories: {{ ext_categories | tojson }},
             endpoints: {
                 {% if admin == 1 %}
                 dataFormatting: "{{ url_for('data_formatting') }}",

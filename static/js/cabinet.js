@@ -9,6 +9,11 @@ const MSG = {
 const previewError = err =>
     `<div style="padding:20px;color:red;">エラーが発生しました: ${err.message}</div>`;
 
+const MAX_PREVIEW_ROWS = 2000;
+const CHUNK_SIZE_BYTES = 80 * 1024 * 1024;
+const MAX_CONCURRENT_UPLOADS = 3;
+const MAX_UPLOAD_WEIGHT = 3;
+
 // ---- ユーティリティ ----------------------------------------
 const Utils = {
     formatBytes: (bytes, decimals = 2) => {
@@ -39,7 +44,7 @@ const Utils = {
     },
     escapeHtml: (() => {
         const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-        return s => s.replace(/[&<>"']/g, c => map[c]);
+        return s => String(s).replace(/[&<>"']/g, c => map[c]);
     })(),
 };
 
@@ -117,7 +122,7 @@ function setupDropZone(element, targetPathResolver) {
         }
     });
 
-    element.addEventListener('drop', (e) => {
+    element.addEventListener('drop', async (e) => {
         element.classList.remove('drag-over');
         clearFolderHighlights();
 
@@ -132,17 +137,30 @@ function setupDropZone(element, targetPathResolver) {
                     return;
                 }
             }
-        } catch(err) {}
+        } catch (err) {}
 
         if (e.dataTransfer.items) {
-            for (let item of e.dataTransfer.items) {
+            const entries = [];
+            for (const item of e.dataTransfer.items) {
                 if (item.kind === 'file') {
                     const entry = item.webkitGetAsEntry();
-                    if (entry) traverseFileTree(entry, targetPath);
+                    if (entry) entries.push(entry);
+                }
+            }
+            if (entries.length > 0) {
+                APP.pendingScans++;
+                try {
+                    const nestedFiles = await Promise.all(entries.map(entry => traverseFileTree(entry, targetPath)));
+                    const flatFiles = nestedFiles.flat();
+                    enqueueUploads(flatFiles);
+                } finally {
+                    APP.pendingScans--;
+                    checkAllUploadsComplete();
                 }
             }
         } else if (e.dataTransfer.files.length > 0) {
-            Array.from(e.dataTransfer.files).forEach(file => executeUpload(file, targetPath));
+            const items = Array.from(e.dataTransfer.files).map(file => ({ file, targetPath }));
+            enqueueUploads(items);
         }
     });
 }
@@ -167,6 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (el.dataset.filename) el.textContent = Utils.getFileIcon(el.dataset.filename);
     });
 
+    document.querySelectorAll('.up-btn[data-navigate]').forEach(btn => {
+        btn.addEventListener('click', () => navigate(btn.dataset.navigate || ''));
+    });
+
     setupDropZone(document.getElementById('detail'), e => {
         const folder = e.target.closest('.folder');
         return folder ? folder.getAttribute('data-path') : APP.currentPath;
@@ -183,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.dataTransfer.setData('application/json', JSON.stringify({
                     type: 'internal_file',
                     uuid: li.dataset.uuid,
-                    name: li.querySelector('.item-title')?.textContent || 'ファイル'
+                    name: li.dataset.name || li.querySelector('.item-title')?.textContent || 'ファイル'
                 }));
             } else {
                 e.preventDefault();
@@ -195,6 +217,30 @@ document.addEventListener('DOMContentLoaded', () => {
         let lastTarget = null;
 
         fileList.addEventListener('click', (e) => {
+            const actionBtn = e.target.closest('button.cli');
+            if (actionBtn) {
+                const li = actionBtn.closest('li.bulletin_board2:not(.upload-item)');
+                if (!li) return;
+                e.stopPropagation();
+
+                const name = li.dataset.name || li.querySelector('.item-title')?.textContent || '';
+                const uuid = li.dataset.uuid || '';
+                const path = li.dataset.path || '';
+                const size = Number(li.dataset.size || 0);
+                const created = li.dataset.created || '';
+                const isDir = li.dataset.isDir === 'true' || li.classList.contains('folder');
+                const itemCount = Number(li.dataset.itemCount || 0);
+
+                if (actionBtn.classList.contains('edit-btn') || actionBtn.classList.contains('preview-btn')) {
+                    openPreview(name, uuid, size, created);
+                } else if (actionBtn.classList.contains('dl-btn')) {
+                    downloadFile(uuid, name);
+                } else if (actionBtn.classList.contains('del-btn')) {
+                    showDeleteConfirm(actionBtn, path, name, isDir, itemCount);
+                }
+                return;
+            }
+
             if (['BUTTON', 'A'].includes(e.target.tagName) || e.target.closest('.item-actions')) return;
             const li = e.target.closest('li.bulletin_board2:not(.upload-item)');
             if (!li || window.getSelection().toString().length > 0) return;
@@ -228,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
                     const uuid = li.dataset.uuid;
-                    if (uuid) copyLinkToClipboard(uuid, li.querySelector('.item-title')?.textContent || 'ファイル');
+                    if (uuid) copyLinkToClipboard(uuid, li.dataset.name || li.querySelector('.item-title')?.textContent || 'ファイル');
                 }
             }, 200);
         });
@@ -259,9 +305,21 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.focus();
         };
 
+        onPathDiv.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('breadcrumb-item')) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
         onPathDiv.addEventListener('focus', activateSearch);
         onPathDiv.addEventListener('click', (e) => {
-            if (e.target.classList.contains('breadcrumb-item')) return;
+            const crumb = e.target.closest('.breadcrumb-item');
+            if (crumb) {
+                e.stopPropagation();
+                navigate(crumb.dataset.path || '');
+                return;
+            }
             activateSearch();
         });
 
@@ -353,10 +411,11 @@ async function createTxt() {
             const url = new URL(window.location.href);
             url.searchParams.set('preview', data.uuid);
 
-            if (APP.activeUploads === 0) {
+            if (APP.activeUploads === 0 && uploadQueue.length === 0 && APP.pendingScans === 0) {
                 window.location.href = url.toString();
             } else {
-                addMessage(MSG.success(`${fileName}を作成しました。[他のアップロード完了後に表示されます]`));
+                pendingRedirectUrl = url.toString();
+                addMessage(MSG.success(`${Utils.escapeHtml(fileName)}を作成しました。[他のアップロード完了後に表示されます]`));
             }
         } else {
             location.reload();
@@ -365,106 +424,212 @@ async function createTxt() {
 }
 
 // ---- アップロード ----------------------------------------
+const uploadQueue = [];
+let activeUploadWeight = 0;
+let hasCompletedStandardUpload = false;
+let pendingRedirectUrl = null;
+
+function getUploadWeight(size) {
+    if (size >= 80 * 1024 * 1024) return 3;
+    if (size >= 10 * 1024 * 1024) return 1.5;
+    return 1;
+}
+
 function uploadFile() {
     const fileInput = document.getElementById('fileInput');
     if (!fileInput.files.length) return;
-    Array.from(fileInput.files).forEach(file => executeUpload(file));
+    const items = Array.from(fileInput.files).map(file => ({ file, targetPath: APP.currentPath }));
+    enqueueUploads(items);
     fileInput.value = "";
 }
 
 function traverseFileTree(item, path = "") {
-    if (item.isFile) {
-        item.file(file => executeUpload(file, path));
-    } else if (item.isDirectory) {
-        const nextPath = path ? path + "/" + item.name : item.name;
-        const dirReader = item.createReader();
-        const readEntries = () => {
-            dirReader.readEntries(entries => {
-                if (entries.length > 0) {
-                    entries.forEach(entry => traverseFileTree(entry, nextPath));
-                    readEntries();
-                }
-            });
-        };
-        readEntries();
-    }
+    return new Promise((resolve) => {
+        if (item.isFile) {
+            item.file(
+                file => resolve([{ file, targetPath: path }]),
+                () => resolve([])
+            );
+        } else if (item.isDirectory) {
+            const nextPath = path ? path + "/" + item.name : item.name;
+            const dirReader = item.createReader();
+            const allEntries = [];
+            const readEntries = () => {
+                dirReader.readEntries(async (entries) => {
+                    if (entries.length > 0) {
+                        allEntries.push(...entries);
+                        readEntries();
+                    } else {
+                        const nested = await Promise.all(allEntries.map(entry => traverseFileTree(entry, nextPath)));
+                        resolve(nested.flat());
+                    }
+                }, () => resolve([]));
+            };
+            readEntries();
+        } else {
+            resolve([]);
+        }
+    });
 }
 
-async function executeUpload(file, targetPath = APP.currentPath, onSuccess = null) {
-    if (file.size > APP.currentRemainingCapacity) {
-        alert(`【容量超過】\nストレージの空き容量が不足しています。\n\nファイル名: ${file.name}\nサイズ: ${Utils.formatBytes(file.size)}`);
-        return;
-    }
+function enqueueUploads(items) {
+    const promises = items.map(item => createUploadTask(item.file, item.targetPath ?? APP.currentPath, item.onSuccess || null));
+    processUploadQueue();
+    return Promise.all(promises);
+}
 
-    APP.currentRemainingCapacity -= file.size;
-    APP.activeUploads++;
+function executeUpload(file, targetPath = APP.currentPath, onSuccess = null) {
+    const promise = createUploadTask(file, targetPath, onSuccess);
+    processUploadQueue();
+    return promise;
+}
 
-    const fileList   = document.getElementById('file-list');
-    const uploadLi   = document.createElement('li');
-    uploadLi.className = 'bulletin_board2 upload-item none_selection';
-
-    const displayPath = targetPath !== APP.currentPath
-        ? targetPath.replace(APP.currentPath, "").replace(/^\//, "") + "/"
-        : "";
-
-    uploadLi.innerHTML = `
-        <div class="upload-progress-bg"></div>
-        <div class="item-icon">${Utils.getFileIcon(file.name)}</div>
-        <div class="item-info">
-            <div class="item-title">${Utils.escapeHtml(displayPath + file.name)}</div>
-            <div class="item-meta"><span>Uploading...</span><span class="upload-percent" style="margin-left: 5px;">0%</span></div>
-        </div>
-        <div class="item-actions">
-            <button class="cli danger cancel-upload-btn" style="position: relative; z-index: 2;">中止</button>
-        </div>`;
-
-    const statusMsg = fileList.querySelector('.status-message');
-    if (statusMsg) statusMsg.style.display = 'none';
-    fileList.insertBefore(uploadLi, fileList.firstChild);
-
-    const progressBg   = uploadLi.querySelector('.upload-progress-bg');
-    const progressText = uploadLi.querySelector('.upload-percent');
-
-    const abortUpload = (msg) => {
-        APP.activeUploads--;
-        APP.currentRemainingCapacity += file.size;
-        uploadLi.remove();
-        addMessage(msg);
-        if (APP.activeUploads === 0 && fileList.children.length === 0 && statusMsg)
-            statusMsg.style.display = 'block';
-    };
-
-    let isCancelled = false;
-    uploadLi.querySelector('.cancel-upload-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        isCancelled = true;
-    });
-
-    const chunkSize   = 50 * 1024 * 1024;
-    const totalChunks = Math.ceil(file.size / chunkSize) || 1;
-    const uploadId    = Date.now().toString(36) + Math.random().toString(36).substr(2);
-
-    for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-        if (isCancelled) {
-            abortUpload(MSG.warn(`アップロードを中止しました: ${Utils.escapeHtml(file.name)}`));
+function createUploadTask(file, targetPath = APP.currentPath, onSuccess = null) {
+    return new Promise((resolve) => {
+        if (file.size > APP.currentRemainingCapacity) {
+            alert(`【容量超過】\nストレージの空き容量が不足しています。\n\nファイル名: ${file.name}\nサイズ: ${Utils.formatBytes(file.size)}`);
+            resolve();
             return;
         }
 
-        const start = chunkIndex * chunkSize;
-        const end   = Math.min(start + chunkSize, file.size);
-        const chunk = file.slice(start, end);
+        APP.currentRemainingCapacity -= file.size;
 
-        const formData = new FormData();
-        formData.append("path",         targetPath);
-        formData.append("filename",     file.name);
-        formData.append("total_size",   file.size);
-        formData.append("chunk_index",  chunkIndex);
-        formData.append("total_chunks", totalChunks);
-        formData.append("upload_id",    uploadId);
-        formData.append("file",         chunk);
+        const fileList = document.getElementById('file-list');
+        const uploadLi = document.createElement('li');
+        uploadLi.className = 'bulletin_board2 upload-item none_selection';
 
-        try {
-            const response = await fetch(`${APP.basePath}/upload/`, { method: 'POST', body: formData });
+        const displayPath = targetPath !== APP.currentPath
+            ? targetPath.replace(APP.currentPath, "").replace(/^\//, "") + "/"
+            : "";
+
+        uploadLi.innerHTML = `
+            <div class="upload-progress-bg"></div>
+            <div class="item-icon">${Utils.getFileIcon(file.name)}</div>
+            <div class="item-info">
+                <div class="item-title">${Utils.escapeHtml(displayPath + file.name)}</div>
+                <div class="item-meta"><span class="upload-status-text">Waiting...</span><span class="upload-percent" style="margin-left: 5px;">0%</span></div>
+            </div>
+            <div class="item-actions">
+                <button class="cli danger cancel-upload-btn" style="position: relative; z-index: 2;">中止</button>
+            </div>`;
+
+        const statusMsg = fileList.querySelector('.status-message');
+        if (statusMsg) statusMsg.style.display = 'none';
+        fileList.insertBefore(uploadLi, fileList.firstChild);
+
+        const task = {
+            file,
+            targetPath,
+            onSuccess,
+            resolve,
+            uploadLi,
+            statusMsg,
+            progressBg: uploadLi.querySelector('.upload-progress-bg'),
+            progressText: uploadLi.querySelector('.upload-percent'),
+            statusText: uploadLi.querySelector('.upload-status-text'),
+            uploadId: Date.now().toString(36) + Math.random().toString(36).substring(2),
+            weight: getUploadWeight(file.size),
+            started: false,
+            isCancelled: false,
+            abortController: null
+        };
+
+        uploadLi.querySelector('.cancel-upload-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            task.isCancelled = true;
+            if (!task.started) {
+                const idx = uploadQueue.indexOf(task);
+                if (idx !== -1) uploadQueue.splice(idx, 1);
+                cleanupTaskUI(task, MSG.warn(`アップロードを中止しました: ${Utils.escapeHtml(file.name)}`));
+                task.resolve();
+                checkAllUploadsComplete();
+            } else if (task.abortController) {
+                task.abortController.abort();
+            }
+        });
+
+        uploadQueue.push(task);
+    });
+}
+
+function cleanupTaskUI(task, msg) {
+    APP.currentRemainingCapacity += task.file.size;
+    task.uploadLi.remove();
+    if (msg) addMessage(msg);
+    const fileList = document.getElementById('file-list');
+    if (APP.activeUploads === 0 && uploadQueue.length === 0 && fileList && fileList.children.length === 0 && task.statusMsg) {
+        task.statusMsg.style.display = 'block';
+    }
+}
+
+async function notifyServerCancel(task) {
+    const formData = new FormData();
+    formData.append("path", task.targetPath);
+    formData.append("filename", task.file.name);
+    formData.append("upload_id", task.uploadId);
+    try {
+        await fetch(`${APP.basePath}/upload/cancel/`, { method: "POST", body: formData });
+    } catch (e) {}
+}
+
+function processUploadQueue() {
+    while (APP.activeUploads < MAX_CONCURRENT_UPLOADS && uploadQueue.length > 0) {
+        const availableWeight = MAX_UPLOAD_WEIGHT - activeUploadWeight;
+        let nextIndex = -1;
+
+        if (APP.activeUploads === 0) {
+            nextIndex = 0;
+        } else {
+            nextIndex = uploadQueue.findIndex(t => t.weight <= availableWeight);
+        }
+
+        if (nextIndex === -1) break;
+
+        const task = uploadQueue.splice(nextIndex, 1)[0];
+        if (task.isCancelled) continue;
+
+        task.started = true;
+        APP.activeUploads++;
+        activeUploadWeight += task.weight;
+
+        runUploadTask(task);
+    }
+}
+
+async function runUploadTask(task) {
+    const { file, targetPath, uploadId, progressBg, progressText, statusText } = task;
+    if (statusText) statusText.textContent = "Uploading...";
+
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE_BYTES) || 1;
+
+    try {
+        for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+            if (task.isCancelled) {
+                await notifyServerCancel(task);
+                cleanupTaskUI(task, MSG.warn(`アップロードを中止しました: ${Utils.escapeHtml(file.name)}`));
+                return;
+            }
+
+            const start = chunkIndex * CHUNK_SIZE_BYTES;
+            const end   = Math.min(start + CHUNK_SIZE_BYTES, file.size);
+            const chunk = file.slice(start, end);
+
+            const formData = new FormData();
+            formData.append("path",         targetPath);
+            formData.append("filename",     file.name);
+            formData.append("total_size",   file.size);
+            formData.append("chunk_index",  chunkIndex);
+            formData.append("total_chunks", totalChunks);
+            formData.append("upload_id",    uploadId);
+            formData.append("file",         chunk);
+
+            task.abortController = new AbortController();
+            const response = await fetch(`${APP.basePath}/upload/`, {
+                method: 'POST',
+                body: formData,
+                signal: task.abortController.signal
+            });
+
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
                 throw new Error(errorData.detail || "Upload failed");
@@ -472,21 +637,44 @@ async function executeUpload(file, targetPath = APP.currentPath, onSuccess = nul
 
             const data    = await response.json();
             const percent = ((chunkIndex + 1) / totalChunks) * 100;
-            progressBg.style.width    = `${percent}%`;
-            progressText.textContent  = `${Math.floor(percent)}%`;
+            progressBg.style.width   = `${percent}%`;
+            progressText.textContent = `${Math.floor(percent)}%`;
 
             if (data.completed) {
-                APP.activeUploads--;
-                if (onSuccess) {
-                    onSuccess(data);
-                } else if (APP.activeUploads === 0) {
-                    location.reload();
+                if (task.onSuccess) {
+                    task.onSuccess(data);
+                } else {
+                    hasCompletedStandardUpload = true;
                 }
                 return;
             }
-        } catch (error) {
-            abortUpload(MSG.error(`アップロードエラー: ${error.message}`));
-            return;
+        }
+    } catch (error) {
+        if (task.isCancelled || error.name === 'AbortError') {
+            await notifyServerCancel(task);
+            cleanupTaskUI(task, MSG.warn(`アップロードを中止しました: ${Utils.escapeHtml(file.name)}`));
+        } else {
+            await notifyServerCancel(task);
+            cleanupTaskUI(task, MSG.error(`アップロードエラー: ${Utils.escapeHtml(error.message)}`));
+        }
+    } finally {
+        APP.activeUploads--;
+        activeUploadWeight = Math.max(0, activeUploadWeight - task.weight);
+        task.resolve();
+        processUploadQueue();
+        checkAllUploadsComplete();
+    }
+}
+
+function checkAllUploadsComplete() {
+    if (APP.activeUploads === 0 && uploadQueue.length === 0 && APP.pendingScans === 0) {
+        if (pendingRedirectUrl) {
+            const url = pendingRedirectUrl;
+            pendingRedirectUrl = null;
+            window.location.href = url;
+        } else if (hasCompletedStandardUpload) {
+            hasCompletedStandardUpload = false;
+            location.reload();
         }
     }
 }
@@ -508,7 +696,7 @@ async function executeMove(uuid, filename, targetPath) {
             try {
                 const errRes = await res.json();
                 if (errRes.detail) errorMsg = errRes.detail;
-            } catch(e) {}
+            } catch (e) {}
             addMessage(MSG.error(`移動に失敗しました。理由: ${errorMsg}`));
         }
     } catch (error) {
@@ -517,10 +705,8 @@ async function executeMove(uuid, filename, targetPath) {
 }
 
 function showDeleteConfirm(buttonElement, path, name, isDir = false, itemCount = 0) {
-    if (event) event.stopPropagation();
-
     const liElement = buttonElement.closest('li');
-    if (liElement.querySelector('.delete-confirm-overlay')) return;
+    if (!liElement || liElement.querySelector('.delete-confirm-overlay')) return;
 
     const overlay = document.createElement('div');
     overlay.className = 'delete-confirm-overlay none_selection';
@@ -588,8 +774,8 @@ async function downloadFile(uuid, filename) {
 function copyLinkToClipboard(uuid, filename) {
     const link = window.location.origin + APP.basePath + '/f/' + uuid;
     navigator.clipboard.writeText(link)
-        .then(()  => addMessage(MSG.info(`${filename}のリンクをコピーしました`)))
-        .catch(() => addMessage(MSG.error(`${filename}のコピーに失敗しました`)));
+        .then(()  => addMessage(MSG.info(`${Utils.escapeHtml(filename)}のリンクをコピーしました`)))
+        .catch(() => addMessage(MSG.error(`${Utils.escapeHtml(filename)}のコピーに失敗しました`)));
 }
 
 // ---- 名前編集モーダル ----------------------------------------
@@ -608,7 +794,7 @@ function executeRenamePrompt(li) {
         return addMessage(MSG.error(`この${typeStr}は保護されています。`));
     }
 
-    const fullDisplayName = li.querySelector('.item-title').textContent;
+    const fullDisplayName = li.dataset.name || li.querySelector('.item-title').textContent;
     const isFolder        = li.classList.contains('folder');
 
     let baseName = fullDisplayName;
@@ -639,13 +825,13 @@ function executeRenamePrompt(li) {
     const nameInput  = document.getElementById('edit-name-input');
     const extDisplay = document.getElementById('edit-ext-display');
 
-    nameInput.value         = baseName;
-    extDisplay.textContent  = currentExt;
+    nameInput.value          = baseName;
+    extDisplay.textContent   = currentExt;
     extDisplay.style.display = isFolder ? 'none' : 'inline';
 
-    document.getElementById('edit-tags-input').value          = tags;
-    document.getElementById('edit-tags-group').style.display  = isFolder ? 'none' : 'block';
-    document.getElementById('edit-modal').style.display       = 'flex';
+    document.getElementById('edit-tags-input').value         = tags;
+    document.getElementById('edit-tags-group').style.display = isFolder ? 'none' : 'block';
+    document.getElementById('edit-modal').style.display      = 'flex';
 
     setTimeout(() => nameInput.focus(), 100);
 }
@@ -683,26 +869,28 @@ window.addEventListener('click', (e) => {
 });
 
 // ---- プレビュー ----------------------------------------
-function openPreview(filename, uuid, size, dateStr) {
-    const ext     = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
-    const typeMap = {
-        'png': 'image', 'jpg': 'image', 'jpeg': 'image', 'gif': 'image', 'bmp': 'image', 'webp': 'image',
-        'svg': 'svg', 'mp4': 'video', 'webm': 'video', 'mov': 'video',
-        'mp3': 'audio', 'wav': 'audio', 'm4a': 'audio', 'aac': 'audio', 'flac': 'audio', 'ogg': 'audio',
-        'pdf': 'pdf', 'csv': 'csv', 'xlsx': 'excel', 'xls': 'excel', 'xlsm': 'excel', 'docx': 'word',
-        'txt': 'text', 'py': 'text', 'html': 'text', 'css': 'text', 'js': 'text',
-        'json': 'text', 'log': 'text', 'md': 'markdown',
-        'stl': '3d', 'obj': '3d', 'glb': '3d', 'gltf': '3d'
-    };
+function getPreviewType(ext) {
+    if (APP.extCategories) {
+        for (const [category, exts] of Object.entries(APP.extCategories)) {
+            if (exts.includes(ext)) {
+                return category === 'edit' ? 'text' : category;
+            }
+        }
+    }
+    return 'unsupported';
+}
 
-    const type = typeMap[ext] || 'unsupported';
+function openPreview(filename, uuid, size, dateStr) {
+    const ext  = (filename.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || '';
+    const type = getPreviewType(ext);
+
     if (type === 'unsupported')
         return addMessage(MSG.error(`${Utils.escapeHtml(filename)} はプレビュー非対応です。[DL]から確認してください。`));
 
-    const modal       = document.getElementById('preview-modal');
-    const content     = document.getElementById('modal-content');
+    const modal        = document.getElementById('preview-modal');
+    const content      = document.getElementById('modal-content');
     const landscapeBtn = document.getElementById('landscape-btn');
-    const url         = `${APP.basePath}/f/${uuid}?inline=true`;
+    const url          = `${APP.basePath}/f/${uuid}?inline=true`;
 
     document.getElementById('modal-title').textContent = filename;
     document.getElementById('modal-size').textContent  = `Size: ${Utils.formatBytes(size)}`;
@@ -721,9 +909,9 @@ function openPreview(filename, uuid, size, dateStr) {
         },
 
         'audio': async () => {
-            let metaHtml    = '';
+            let metaHtml     = '';
             let displayTitle = Utils.escapeHtml(filename);
-            let coverHtml   = `<div class="preview-audio-icon">🎵</div>`;
+            let coverHtml    = `<div class="preview-audio-icon">🎵</div>`;
 
             try {
                 const res = await fetch(`${APP.basePath}/audio/meta/${uuid}`);
@@ -741,7 +929,7 @@ function openPreview(filename, uuid, size, dateStr) {
                             ${meta.bitrate !== 'Unknown' ? `<span class="audio-dot">•</span><span>${Utils.escapeHtml(meta.bitrate)}</span>` : ''}
                         </div>`;
                 }
-            } catch(e) { console.error('Failed to fetch audio metadata', e); }
+            } catch (e) { console.error('Failed to fetch audio metadata', e); }
 
             content.innerHTML = `
                 <div class="preview-audio-wrapper" onclick="const a=this.querySelector('audio');if(a){a.muted=false;}">
@@ -796,7 +984,7 @@ function openPreview(filename, uuid, size, dateStr) {
             try {
                 const response    = await fetch(url, { cache: 'no-store' });
                 const textContent = await response.text();
-                if (ext === 'txt') {
+                if (APP.extCategories?.edit?.includes(ext) || ext === 'txt') {
                     content.innerHTML = `<textarea id="edit-text-area" class="preview-text" style="resize:none;outline:none;">${Utils.escapeHtml(textContent)}</textarea>`;
                     const saveBtn = document.getElementById('save-txt-btn');
                     if (saveBtn) {
@@ -819,15 +1007,22 @@ function openPreview(filename, uuid, size, dateStr) {
 
         'csv': async () => {
             try {
-                const response = await fetch(url);
-                const rows     = (await response.text()).split('\n');
-                let html = '<div class="preview-csv-container" style="overflow:auto;width:100%;height:100%;box-sizing:border-box;"><table class="preview-csv">';
-                rows.forEach((row, index) => {
-                    if (!row.trim() && index === rows.length - 1) return;
+                const response  = await fetch(url);
+                const rawRows   = (await response.text()).split(/\r?\n/);
+                const validRows = rawRows.filter((r, idx) => r.trim() !== '' || idx < rawRows.length - 1);
+                const totalDataRows = Math.max(0, validRows.length - 1);
+                const displayRows   = validRows.slice(0, MAX_PREVIEW_ROWS + 1);
+
+                const trList = displayRows.map((row, index) => {
                     const tag = index === 0 ? 'th' : 'td';
-                    html += '<tr>' + row.split(',').map(col => `<${tag}>${Utils.escapeHtml(col.trim())}</${tag}>`).join('') + '</tr>';
+                    return '<tr>' + row.split(',').map(col => `<${tag}>${Utils.escapeHtml(col.trim())}</${tag}>`).join('') + '</tr>';
                 });
-                content.innerHTML = html + '</table></div>';
+
+                const omittedNotice = totalDataRows > MAX_PREVIEW_ROWS
+                    ? `<div style="padding:10px;text-align:center;color:#555;background:#f5f5f5;border-top:1px solid #ddd;font-size:12px;">表示上限（${MAX_PREVIEW_ROWS.toLocaleString()}件）を超えたため、残り ${(totalDataRows - MAX_PREVIEW_ROWS).toLocaleString()} 件は省略されました。</div>`
+                    : '';
+
+                content.innerHTML = `<div class="preview-csv-container" style="overflow:auto;width:100%;height:100%;box-sizing:border-box;"><table class="preview-csv">${trList.join('')}</table>${omittedNotice}</div>`;
             } catch (err) { content.innerHTML = previewError(err); }
         },
 
@@ -847,8 +1042,8 @@ function openPreview(filename, uuid, size, dateStr) {
                 const renderer = new THREE.WebGLRenderer({ antialias: true });
                 renderer.setSize(container.clientWidth, container.clientHeight);
                 renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.outputEncoding   = THREE.sRGBEncoding;
-                renderer.toneMapping      = THREE.ACESFilmicToneMapping;
+                renderer.outputEncoding = THREE.sRGBEncoding;
+                renderer.toneMapping    = THREE.ACESFilmicToneMapping;
 
                 const isPBR = (ext === 'glb' || ext === 'gltf');
                 renderer.toneMappingExposure = isPBR ? 1.0 : 0.8;
@@ -1064,7 +1259,7 @@ async function renderExcelPreview(uuid, content) {
         <div class="excel-preview-wrapper" style="display:flex;flex-direction:column;width:100%;height:100%;box-sizing:border-box;">
             <div class="excel-tabs">
                 ${displaySheets.map((s, i) =>
-                    `<div class="excel-tab ${i === 0 ? 'active' : ''}" onclick="switchExcelSheet(this,'${uuid}','${Utils.escapeHtml(s)}')">${Utils.escapeHtml(s)}</div>`
+                    `<div class="excel-tab ${i === 0 ? 'active' : ''}" data-uuid="${uuid}" data-sheet="${Utils.escapeHtml(s)}">${Utils.escapeHtml(s)}</div>`
                 ).join('')}
                 ${remainingCount > 0
                     ? `<div class="excel-tab disabled-tab" title="すべてのシートを確認するにはダウンロードしてください">...他${remainingCount}シート</div>`
@@ -1074,6 +1269,15 @@ async function renderExcelPreview(uuid, content) {
                 <div style="padding:20px;">シートを読み込み中...</div>
             </div>
         </div>`;
+
+        const tabsContainer = content.querySelector('.excel-tabs');
+        if (tabsContainer) {
+            tabsContainer.addEventListener('click', (e) => {
+                const tab = e.target.closest('.excel-tab:not(.disabled-tab)');
+                if (tab) switchExcelSheet(tab, tab.dataset.uuid, tab.dataset.sheet);
+            });
+        }
+
         await loadExcelSheet(uuid, displaySheets[0]);
     } catch (e) { content.innerHTML = previewError(e); }
 }
@@ -1092,19 +1296,29 @@ async function loadExcelSheet(uuid, sheetName) {
         const res = await fetch(`${APP.basePath}/excel/arrow/${uuid}?sheet=${encodeURIComponent(sheetName)}`);
         if (!res.ok) throw new Error('シートデータの取得に失敗しました');
 
-        const table  = Arrow.tableFromIPC(await res.arrayBuffer());
-        const fields = table.schema.fields.map(f => f.name);
+        const table     = Arrow.tableFromIPC(await res.arrayBuffer());
+        const fields    = table.schema.fields.map(f => f.name);
+        const totalRows = table.numRows;
+        const limit     = Math.min(totalRows, MAX_PREVIEW_ROWS);
 
-        let html = '<table class="preview-csv"><thead><tr>' +
-            fields.map(name => `<th>${Utils.escapeHtml(name)}</th>`).join('') +
-            '</tr></thead><tbody>';
-        for (let i = 0; i < table.numRows; i++) {
+        const rowHtmlList = [];
+        for (let i = 0; i < limit; i++) {
             const row = table.get(i);
-            html += '<tr>' + fields.map(name => {
+            rowHtmlList.push('<tr>' + fields.map(name => {
                 const val = row[name];
                 return `<td>${val !== null && val !== undefined ? Utils.escapeHtml(String(val)) : ''}</td>`;
-            }).join('') + '</tr>';
+            }).join('') + '</tr>');
         }
-        container.innerHTML = html + '</tbody></table>';
+
+        const omittedNotice = totalRows > MAX_PREVIEW_ROWS
+            ? `<div style="padding:10px;text-align:center;color:#555;background:#f5f5f5;border-top:1px solid #ddd;font-size:12px;">表示上限（${MAX_PREVIEW_ROWS.toLocaleString()}件）を超えたため、残り ${(totalRows - MAX_PREVIEW_ROWS).toLocaleString()} 件は省略されました。</div>`
+            : '';
+
+        container.innerHTML = '<table class="preview-csv"><thead><tr>' +
+            fields.map(name => `<th>${Utils.escapeHtml(name)}</th>`).join('') +
+            '</tr></thead><tbody>' +
+            rowHtmlList.join('') +
+            '</tbody></table>' +
+            omittedNotice;
     } catch (e) { container.innerHTML = previewError(e); }
 }

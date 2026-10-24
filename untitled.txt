@@ -1,0 +1,111 @@
+## 1. パフォーマンス効率化に関する問題点と改善策
+
+### ① バックエンド（`cabinet.py`）のI/O・DB負荷
+
+* **毎回実行される全ファイル走査（容量計算）**
+* **問題点**: 一覧表示（`list_files`）およびアップロード開始時（`upload_file` の `chunk_index == 0`）のたびに、`get_cabinet_size()` が呼び出され、`CABINET_DIR.rglob('*')` による全ファイルの再帰的な走査と `stat().st_size` の取得が実行されています。ファイル数が増加すると、ページ遷移や複数ファイルの同時アップロード時にディスクI/Oのボトルネックになります。
+* **改善策**: SQLiteの `file_links` テーブルに `size` カラムを追加し、`SELECT SUM(size) FROM file_links` で集計するか、メモリ上に合計サイズをキャッシュしてアップロード・削除・更新時に差分計算する方式に変更します。
+    承認。方式はお任せします。
+
+
+
+* **一覧表示（`list_files`）でのメインイベントループのブロッキングと全件DB取得**
+* **問題点**: `list_files` は `async def` で定義されていますが、関数内の `target_dir.iterdir()`、`CABINET_DIR.rglob('*')`、`item.stat()`、およびサブフォルダ内のアイテム数を数える `len(list(item.iterdir()))` がすべて同期処理としてメインスレッド上で直接実行されています。また、開いている階層に関係なく `SELECT uuid, relative_path, created_at, tags FROM file_links` で毎回DBの全レコードをメモリ上の辞書（`file_info`）に読み込んでいます。
+* **改善策**: ファイルシステム走査処理を `asyncio.to_thread` に逃がすとともに、`Path.iterdir()` の代わりにシステムコール回数を大幅に削減できる `os.scandir()` を使用します。DBクエリも通常表示時は対象ディレクトリ直下のパス（`WHERE relative_path LIKE ?`）に絞り込みます。
+    承認。
+
+
+
+* **重いファイル解析処理によるサーバー全体のフリーズ**
+* **問題点**: `get_excel_info`（`fastexcel.read_excel`）、`get_excel_arrow`（`pl.read_excel` や Arrow変換）、`get_audio_meta` / `get_audio_cover`（`mutagen.File`）がすべて `async def` 内で同期的に実行されています。巨大なExcelファイル等のプレビュー処理中、FastAPIのイベントループがブロックされ、他リクエストの処理が停止します。
+* **改善策**: CPU負荷・ディスクI/O負荷の高い処理は `asyncio.to_thread` で実行するか、エンドポイント自体を通常の `def`（同期関数）で定義してFastAPIのスレッドプールに処理を委譲します。
+    承認。
+
+
+
+* **SQLiteのロック競合とループ内UPDATE**
+* **問題点**: `update_metadata` でフォルダ名を変更した際、配下のファイル数分だけループで個別に `await db.execute("UPDATE ...")` を発行しています。また、WALモードが有効化されていないため、複数ファイルの同時アップロード時にDBロック競合（`database is locked`）が起きやすい構造です。
+* **改善策**: `init_cabinet_db` にて `PRAGMA journal_mode=WAL;` を設定し、フォルダリネーム時のパス更新は `executemany` またはSQLの文字列置換を用いて1クエリで一括更新します。
+    承認。
+
+---
+
+### ② フロントエンド（`cabinet.html` / `cabinet.js`）の描画・通信負荷
+
+* **重量級ライブラリの常時ロード**
+* **問題点**: `cabinet.html` の `<head>` 内で、`three.min.js`（および5つのローダー）、`Arrow.es2015.min.js`、`mammoth.browser.min.js`、`marked.min.js`、`purify.min.js` の計10個の外部ライブラリが常時読み込まれています。フォルダ移動やファイル操作のたびにページ全体がリロード（`location.reload()` や `window.location.href` の書き換え）されるため、毎回全スクリプトの評価が発生しています。
+* **改善策**: 3Dモデル、Excel、Word、Markdownなどのプレビュー用ライブラリは初期ロードから外し、`openPreview()` が呼ばれたタイミングで対象形式のスクリプトのみを動的ロード（遅延読み込み）する仕組みにします。
+    保留。
+
+
+
+* **複数ファイルアップロード時の無制限な並列リクエスト**
+* **問題点**: `uploadFile()` やドラッグ＆ドロップ時に `forEach` で `executeUpload()` を一斉に呼び出しているため、100個のファイルをドロップすると100本のアップロード通信が同時に走ります。さらに `traverseFileTree()` のディレクトリ走査は非同期で再帰実行されるため、サブフォルダの読み取り中に一時的に `APP.activeUploads === 0` となり、全ファイルのアップロード完了前に `location.reload()` が発火してしまう競合リスクがあります。
+* **改善策**: ドロップされたファイルリストの収集完了を待ってからキュー（Queue）に入れ、同時アップロード数を2〜3件に制限するワーカー制御を導入します。
+    承認。同時の最大数は3件で、ファイルの容量に応じて可変して。
+    Cloudflareによって1回のリクエスト100MB制限あるので、とりあえず80MBまで許可。
+
+
+
+* **3Dプレビュー（Three.js）のWebGLコンテキスト・メモリリーク**
+* **問題点**: `closeModal()` 実行時に `modal-content` の `innerHTML` を空にしていますが、`THREE.WebGLRenderer` やジオメトリ・マテリアルの `.dispose()` が呼ばれていません。また、`window` に登録した `onWindowResize` イベントリスナーも、モーダルを閉じた後に画面リサイズが発生しない限り解除されずに残り続けます。リロードせずに3Dプレビューを繰り返すとWebGLコンテキストの上限に達して描画不能になります。
+* **改善策**: モーダルを閉じる際に `renderer.dispose()`、ジオメトリ・マテリアルの破棄、`window.removeEventListener('resize', onWindowResize)` を確実に実行するクリーンアップ関数を設けます。
+    一旦保留、今後対策します。
+
+
+
+* **大規模CSV・Excelプレビュー時のDOM肥大化**
+* **問題点**: `loadExcelSheet` や `csv` プレビューで全行をループして `<table>` のHTML文字列を生成・一括挿入しているため、数万行のデータを開くとブラウザがフリーズします。
+* **改善策**: プレビュー時は表示上限（例：先頭500〜1,000行まで）を設けて超過分は省略表示にするか、仮想スクロールを導入します。
+    承認。表示上限2000件まで、超過分は省略表示。
+
+
+
+
+---
+
+## 2. メンテナンス面・堅牢性に関する問題点と改善策
+
+* **拡張子定義やMIMEタイプ定義の分散（二重・三重管理）**
+* **問題点**: 対応拡張子の定義が `cabinet.html`（`preview_exts`, `edit_exts`）、`cabinet.js`（`Utils.getFileIcon`, `openPreview` の `typeMap`）、`cabinet.py`（`extract_tags_from_file`, `download_file_by_uuid`）に分散しています。実際に、`flac` と `ogg` は `cabinet.py` と `cabinet.js` には記載がありますが、`cabinet.html` の `preview_exts` から漏れているため「VIEW」ボタンが表示されない不整合が起きています。
+* **改善策**: ファイル種別・プレビュー可否の判定マスタを一元化し、MIMEタイプ判定にはPython標準の `mimetypes` モジュールを活用します。
+    承認。
+
+
+
+* **アップロード中断時に残存する `.tmp` ファイルのゾンビ化**
+* **問題点**: フロントエンドで「中止」ボタンを押すと `isCancelled = true` となりループを抜けますが、サーバー側には中断通知が送られません。その結果、サーバー上に `{filename}.{upload_id}.tmp` が削除されずに残り、次回の一覧表示（`list_files`）で通常のファイルとしてDB登録・画面表示されてしまいます。
+* **改善策**: 一時ファイルは `CABINET_DIR` 内の通常フォルダではなく専用の一時ディレクトリ（または隠しフォルダ）に保存するか、`list_files` で `.tmp` ファイルを除外し、キャンセル時用の削除API（または古い一時ファイルの定期クリーンアップ処理）を追加します。
+    承認。通常フォルダで良いです。クリーンアップ処理を実行して。
+
+
+
+* **フォルダ作成時の強制小文字変換バグ**
+* **問題点**: `create_directory`（`/mkdir/`）の先頭で `folder_name = folder_name.lower()` を実行しているため、`SPECIAL_NAMES` 以外の通常のフォルダを作成する場合でも、すべての大文字が強制的に小文字に変換されてしまいます。
+* **改善策**: 特殊コマンド判定のみ `folder_name.lower() in SPECIAL_NAMES` で行い、実際のフォルダ作成時は入力された大文字・小文字を維持するように修正します。
+    承認。
+
+
+
+* **インライン `onclick` 属性へのファイル名埋め込みによる構文エラーリスク**
+* **問題点**: `cabinet.html` にて `onclick="openPreview('{{ item.name|escape }}', ...)"` のようにJinja2の `|escape` でファイル名を埋め込んでいますが、ファイル名にシングルクォート（`'`）が含まれる場合、HTML属性の解釈時に `&#39;` が `'` にデコードされてJavaScriptの文字列リテラルが途中で閉じ、クリック時に構文エラーで動作しなくなります。
+* **改善策**: HTML要素には `data-name="{{ item.name }}"` 等のデータ属性のみを持たせ、`cabinet.js` 側のイベント委譲（Event Delegation）でクリックイベントを一括処理することで、インラインの `onclick` を廃止します。
+    承認。
+
+
+
+* **パス検証とファイル名サニタイズの統一**
+* **問題点**: `get_secure_path` で `str(target_path).startswith(str(CABINET_DIR))` を使用していますが、前方一致では `/cabinet_other` のような別フォルダが一致してしまうエッジケースがあります。また、`upload_file` の `filename` や `update_metadata` の `new_name` に対して `Path(name).name` によるパス区切り文字の除去が行われていません。
+* **改善策**: パス検証には `Path.is_relative_to(CABINET_DIR)` を使用し、ファイル名・フォルダ名を受け取るすべてのエンドポイントで `Path(name).name` によるサニタイズまたは `get_secure_path` を徹底します。
+    承認。
+
+
+
+
+---
+
+## 3. コード改修に向けた確認事項
+
+順番に行きます。まずはcabinet.pyを変更。
+DBスキーマ変更可［DB再作成でOK］
+保護ファイルの非管理者プレビュー現状通り許可
