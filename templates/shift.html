@@ -269,7 +269,7 @@
                 const cached = getCache(address);
                 if (cached !== undefined) return cached;
                 if (pendingShiftRequests.has(address)) return pendingShiftRequests.get(address);
-    
+            
                 const reqPromise = (async () => {
                     try {
                         const response = await fetch(`../shift/${address}`);
@@ -281,6 +281,8 @@
                         }
                         if (typeof data.shift.member === 'string') {
                             data.shift.parsedMember = JSON.parse(data.shift.member);
+                        } else if (data.shift.member && typeof data.shift.member === 'object') {
+                            data.shift.parsedMember = data.shift.member;
                         }
                         setCache(address, data.shift);
                         return data.shift;
@@ -290,7 +292,7 @@
                         pendingShiftRequests.delete(address);
                     }
                 })();
-    
+            
                 pendingShiftRequests.set(address, reqPromise);
                 return reqPromise;
             }

@@ -353,7 +353,15 @@ async def read_shift(index_day: str, name: str = '', db: aiosqlite.Connection = 
                 row = await cursor.fetchone()
         except aiosqlite.Error as e:
             raise HTTPException(status_code=500, detail=str(e))
-        return {"shift": dict(row) if row else None}
+        if not row:
+            return {"shift": None}
+        shift_data = dict(row)
+        if shift_data.get("member"):
+            try:
+                shift_data["member"] = json.loads(shift_data["member"])
+            except json.JSONDecodeError:
+                pass
+        return {"shift": shift_data}
 
     try:
         dt = datetime.datetime.strptime(index_day, "%Y%m%d").date()
