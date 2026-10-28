@@ -9,6 +9,7 @@ import urllib.parse
 import json
 import time
 import anyio
+import html
 from anyio import Path as AsyncPath
 from functools import lru_cache
 from fastapi import FastAPI, Request, Depends, UploadFile, File, HTTPException, Header, Response
@@ -699,6 +700,8 @@ async def reception(request: Request, response: Response, db: aiosqlite.Connecti
 async def read_item_combined(slug: str | None = None, q: str | None = None, db: aiosqlite.Connection = Depends(get_db)):
     slug = _normalize_param(slug)
     q = _normalize_param(q)
+    safe_slug = html.escape(slug) if slug else "0"
+    safe_q = html.escape(q) if q else None
     status = 2 if q else (1 if slug else 0)
     result = {}
 
@@ -716,7 +719,7 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
                 rows = await cursor.fetchall()
 
             if not rows:
-                return {"slug": slug or "0", "q": q, "status": status, "result": "見つかりませんでした。"}
+                return {"slug": safe_slug, "q": safe_q, "status": status, "result": "見つかりませんでした。"}
 
             target_slug = rows[0]["slug"] if "slug" in rows[0].keys() else slug
             async with db.execute("SELECT memo FROM memo WHERE slug = ?", (target_slug,)) as cursor:
@@ -748,7 +751,7 @@ async def read_item_combined(slug: str | None = None, q: str | None = None, db: 
     except aiosqlite.Error as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    return {"slug": slug or "0", "q": q, "status": status, "result": result}
+    return {"slug": safe_slug, "q": safe_q, "status": status, "result": result}
 
 # ------------------------------------
 

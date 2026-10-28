@@ -57,7 +57,13 @@ BLOCKED_PATHS = (
     "xmlrpc.php",
     "wp-admin",
     "wp-login",
-    "wlwmanifest.xml"
+    "wlwmanifest.xml",
+    "<script",
+    "</script",
+    "<svg",
+    "onload=",
+    "onerror=",
+    "javascript:"
 )
 
 BLOCKED_USER_AGENTS = (
@@ -113,13 +119,14 @@ async def requests_control(request: Request, call_next):
     path = request.url.path
     query = unquote(request.url.query)
     full_path = f"{path}?{query}" if query else path
+    full_path_lower = full_path.lower()
     
     method = request.method
     user_agent = request.headers.get("user-agent", "-")
 
     if is_ip_in_networks(client_ip, BLOCKED_NETWORKS):
         return Response(status_code=403)
-    elif any(keyword in path for keyword in BLOCKED_PATHS):
+    elif any(keyword in full_path_lower for keyword in BLOCKED_PATHS):
         return Response(status_code=404)
     elif any(keyword in user_agent for keyword in BLOCKED_USER_AGENTS):
         return Response(status_code=404)
@@ -136,7 +143,7 @@ async def requests_control(request: Request, call_next):
 
 # ------------------------------------
 
-target_prefixes = ("/data", "/item", "/ms", "/cc", "/docs", "/wg")
+target_prefixes = ("/data", "/item", "/ms", "/cc", "/sdsd", "/wg")
 
 async def lowercase_specific_path(request: Request, call_next):
     original_path = request.scope["path"]
