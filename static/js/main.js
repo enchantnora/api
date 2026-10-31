@@ -319,6 +319,7 @@ const MenuController = {
 
 const SearchController = {
     debounceTimer: null,
+    lastQuery: '',
     
     init: function() {
         this.$input = $('#on_search');
@@ -338,6 +339,8 @@ const SearchController = {
     bindEvents: function() {
         Utils.addTouchClickListener($('#clean'), '', () => {
             MenuController.scrollToIndex(0);
+            clearTimeout(this.debounceTimer);
+            this.lastQuery = '';
             this.$input.val('');
             this.$suggest.html('');
             this.updateActivePhrases();
@@ -347,8 +350,12 @@ const SearchController = {
             e.preventDefault();
             MenuController.scrollToIndex(0);
             let text = this.$input.val();
-            if (text) this.fetchList(text);
-            else this.$input.focus();
+            if (text) {
+                this.lastQuery = '';
+                this.fetchList(text);
+            } else {
+                this.$input.focus();
+            }
         });
 
         this.$input.on('input', () => {
@@ -385,13 +392,14 @@ const SearchController = {
             let $li = $(e.currentTarget);
             let slug = $li.data('slug');
             if (slug) {
+                this.$input.blur();
+                clearTimeout(this.debounceTimer);
                 ProductController.fetchData(slug);
                 UrlManager.updateParam('sk', slug);
                 $li.siblings().removeClass("active");
                 $li.addClass("active");
                 MenuController.scrollToIndex(1);
                 $("#info_content").animate({ scrollTop: 0 }, 150, "swing");
-                this.$input.blur();
             }
         });
 
@@ -426,9 +434,12 @@ const SearchController = {
     fetchList: function(input) {
         input = input.trim();
         if (!input) {
+            this.lastQuery = '';
             this.$suggest.html('');
             return;
         }
+        if (input === this.lastQuery) return;
+        this.lastQuery = input;
 
         $.get(AppConfig.api.search, { q: input })
             .done((data) => {
