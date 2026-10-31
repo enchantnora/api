@@ -3811,3 +3811,28 @@ Could not determine dtype for column 7, falling back to string
 [2026-10-31 10:11:43 +0900] [184720] [INFO] Started server process [184720]
 [2026-10-31 10:11:43 +0900] [184720] [INFO] Waiting for application startup.
 [2026-10-31 10:11:43 +0900] [184720] [INFO] Application startup complete.
+[2026-10-31 10:20:11 +0900] [184673] [INFO] Handling signal: term
+[2026-10-31 10:20:11 +0900] [184719] [INFO] Shutting down
+[2026-10-31 10:20:11 +0900] [184719] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-31 10:20:11 +0900] [184720] [INFO] Shutting down
+[2026-10-31 10:20:11 +0900] [184720] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-10-31 10:20:11 +0900] [184719] [INFO] Waiting for application shutdown.
+[2026-10-31 10:20:11 +0900] [184719] [INFO] Application shutdown complete.
+[2026-10-31 10:20:11 +0900] [184719] [INFO] Finished server process [184719]
+[2026-10-31 10:20:11 +0900] [184673] [ERROR] Worker (pid:184719) was sent SIGTERM!
+[2026-10-31 10:20:11 +0900] [184720] [INFO] Waiting for application shutdown.
+[2026-10-31 10:20:11 +0900] [184720] [INFO] Application shutdown complete.
+[2026-10-31 10:20:11 +0900] [184720] [INFO] Finished server process [184720]
+[2026-10-31 10:20:11 +0900] [184673] [ERROR] Worker (pid:184720) was sent SIGTERM!
+[2026-10-31 10:20:11 +0900] [184673] [INFO] Shutting down: Master
+[2026-10-31 10:20:12 +0900] [184908] [INFO] Starting gunicorn 23.0.0
+[2026-10-31 10:20:12 +0900] [184908] [INFO] Listening at: http://0.0.0.0:9900 (184908)
+[2026-10-31 10:20:12 +0900] [184908] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-10-31 10:20:12 +0900] [184954] [INFO] Booting worker with pid: 184954
+[2026-10-31 10:20:12 +0900] [184956] [INFO] Booting worker with pid: 184956
+[2026-10-31 10:20:13 +0900] [184954] [INFO] Started server process [184954]
+[2026-10-31 10:20:13 +0900] [184954] [INFO] Waiting for application startup.
+[2026-10-31 10:20:13 +0900] [184954] [INFO] Application startup complete.
+[2026-10-31 10:20:13 +0900] [184956] [INFO] Started server process [184956]
+[2026-10-31 10:20:13 +0900] [184956] [INFO] Waiting for application startup.
+[2026-10-31 10:20:13 +0900] [184956] [INFO] Application startup complete.

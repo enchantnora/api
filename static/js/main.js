@@ -700,11 +700,11 @@ const ToolsController = {
 
         $.get(AppConfig.api.table('stopcode', page)).done(data => {
             let html = data.stopcode.map(v => {
-                let liabilityHtml = v.liability ? `<span class="annotation inline">責任 [${v.liability}]</span>` : '';
+                let responsibilityHtml = v.responsibility ? `<span class="annotation inline">責任 [${v.responsibility}]</span>` : '';
                 let reasonHtml = v.reason ? `<p class="annotation">${v.reason}</p>` : '';
                 let detailsHtml = v.details ? `<p class="annotation2">${v.details}</p>` : '';
                 
-                return `<div class="wh_balloon kr l_b"><span class="pick_up">【${v.code}】${v.pattern}</span>${liabilityHtml}${reasonHtml}${detailsHtml}</div>`;
+                return `<div class="wh_balloon kr l_b"><span class="pick_up">【${v.code}】${v.pattern}</span>${responsibilityHtml}${reasonHtml}${detailsHtml}</div>`;
             }).join('');
             
             $('#stop_code').append(html);
