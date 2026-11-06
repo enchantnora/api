@@ -542,7 +542,7 @@ async def backup_table(table_name: str, db: aiosqlite.Connection = Depends(get_d
                     if not await cursor.fetchone():
                         raise HTTPException(
                             status_code=400,
-                            detail=f"Invalid table name. '{table_name}' not found in TABLE_CONFIGS nor filer.db."
+                            detail=f"What is '{table_name}'?"
                         )
 
                 rows = await _fetch_rows(filer_db, table_name)
