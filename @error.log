@@ -3920,3 +3920,52 @@ Could not determine dtype for column 10, falling back to string
 [2026-11-07 02:57:08 +0900] [184956] [INFO] Finished server process [184956]
 [2026-11-07 02:57:08 +0900] [184908] [ERROR] Worker (pid:184956) was sent SIGTERM!
 [2026-11-07 02:57:08 +0900] [184908] [INFO] Shutting down: Master
+[2026-11-07 02:57:08 +0900] [197752] [INFO] Starting gunicorn 23.0.0
+[2026-11-07 02:57:08 +0900] [197752] [INFO] Listening at: http://0.0.0.0:9900 (197752)
+[2026-11-07 02:57:08 +0900] [197752] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-11-07 02:57:08 +0900] [197798] [INFO] Booting worker with pid: 197798
+[2026-11-07 02:57:08 +0900] [197800] [INFO] Booting worker with pid: 197800
+[2026-11-07 02:57:10 +0900] [197798] [INFO] Started server process [197798]
+[2026-11-07 02:57:10 +0900] [197798] [INFO] Waiting for application startup.
+[2026-11-07 02:57:10 +0900] [197800] [INFO] Started server process [197800]
+[2026-11-07 02:57:10 +0900] [197800] [INFO] Waiting for application startup.
+[2026-11-07 02:57:10 +0900] [197798] [INFO] Application startup complete.
+[2026-11-07 02:57:10 +0900] [197800] [INFO] Application startup complete.
+[2026-11-07 10:55:13 +0900] [197800] [WARNING] Invalid HTTP request received.
+[2026-11-07 20:14:42 +0900] [197798] [WARNING] Invalid HTTP request received.
+[2026-11-07 20:15:08 +0900] [197798] [WARNING] Invalid HTTP request received.
+[2026-11-07 20:15:14 +0900] [197798] [WARNING] Invalid HTTP request received.
+[2026-11-07 23:57:53 +0900] [197800] [WARNING] Invalid HTTP request received.
+[2026-11-07 23:58:55 +0900] [197798] [WARNING] Invalid HTTP request received.
+[2026-11-07 23:59:12 +0900] [197800] [WARNING] Invalid HTTP request received.
+[2026-11-07 23:59:49 +0900] [197798] [WARNING] Invalid HTTP request received.
+[2026-11-08 11:57:04 +0900] [197800] [WARNING] Invalid HTTP request received.
+[2026-11-08 18:07:30 +0900] [197800] [WARNING] Invalid HTTP request received.
+[2026-11-08 18:07:38 +0900] [197800] [WARNING] Invalid HTTP request received.
+[2026-11-08 18:07:39 +0900] [197800] [WARNING] Invalid HTTP request received.
+[2026-11-08 18:07:45 +0900] [197798] [WARNING] Invalid HTTP request received.
+[2026-11-09 08:02:53 +0900] [197752] [INFO] Handling signal: term
+[2026-11-09 08:02:53 +0900] [197798] [INFO] Shutting down
+[2026-11-09 08:02:53 +0900] [197798] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-11-09 08:02:53 +0900] [197800] [INFO] Shutting down
+[2026-11-09 08:02:53 +0900] [197800] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-11-09 08:02:54 +0900] [197798] [INFO] Waiting for application shutdown.
+[2026-11-09 08:02:54 +0900] [197798] [INFO] Application shutdown complete.
+[2026-11-09 08:02:54 +0900] [197798] [INFO] Finished server process [197798]
+[2026-11-09 08:02:54 +0900] [197752] [ERROR] Worker (pid:197798) was sent SIGTERM!
+[2026-11-09 08:02:54 +0900] [197800] [INFO] Waiting for application shutdown.
+[2026-11-09 08:02:54 +0900] [197800] [INFO] Application shutdown complete.
+[2026-11-09 08:02:54 +0900] [197800] [INFO] Finished server process [197800]
+[2026-11-09 08:02:54 +0900] [197752] [ERROR] Worker (pid:197800) was sent SIGTERM!
+[2026-11-09 08:02:54 +0900] [197752] [INFO] Shutting down: Master
+[2026-11-09 08:02:54 +0900] [202290] [INFO] Starting gunicorn 23.0.0
+[2026-11-09 08:02:54 +0900] [202290] [INFO] Listening at: http://0.0.0.0:9900 (202290)
+[2026-11-09 08:02:54 +0900] [202290] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-11-09 08:02:54 +0900] [202337] [INFO] Booting worker with pid: 202337
+[2026-11-09 08:02:54 +0900] [202341] [INFO] Booting worker with pid: 202341
+[2026-11-09 08:02:56 +0900] [202337] [INFO] Started server process [202337]
+[2026-11-09 08:02:56 +0900] [202337] [INFO] Waiting for application startup.
+[2026-11-09 08:02:56 +0900] [202337] [INFO] Application startup complete.
+[2026-11-09 08:02:56 +0900] [202341] [INFO] Started server process [202341]
+[2026-11-09 08:02:56 +0900] [202341] [INFO] Waiting for application startup.
+[2026-11-09 08:02:56 +0900] [202341] [INFO] Application startup complete.
