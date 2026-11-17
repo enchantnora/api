@@ -125,7 +125,7 @@ const Utils = {
             'doc': '📝', 'docx': '📝', 'rtf': '📝',
             'ppt': '📑', 'pptx': '📑',
             'obj': '💎', 'mtl': '💎', 'stl': '💎', 'glb': '💎', 'gltf': '💎',
-            'py': '💻', 'js': '💻', 'html': '💻', 'css': '💻', 'java': '💻', 'cpp': '💻', 'c': '💻', 'ts': '💻',
+            'py': '💻', 'js': '💻', 'htm': '💻', 'html': '💻', 'css': '💻', 'java': '💻', 'cpp': '💻', 'c': '💻', 'ts': '💻',
             'json': '💻', 'xml': '💻', 'yaml': '💻', 'yml': '💻', 'sh': '💻',
             'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️'
         };
@@ -1188,6 +1188,10 @@ function openPreview(filename, uuid, size, dateStr) {
                     }
                 } else {
                     content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(textContent)}</pre>`;
+                    if (['htm', 'html', 'js', 'css', 'log'].includes(ext) && copyBtn) {
+                        currentCopyTextGetter = () => textContent;
+                        copyBtn.style.display = 'block';
+                    }
                 }
             } catch (err) { content.innerHTML = previewError(err); }
         },

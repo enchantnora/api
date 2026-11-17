@@ -56,7 +56,7 @@ EXT_CATEGORIES = {
     "word": ("docx",),
     "markdown": ("md",),
     "3d": ("stl", "obj", "glb", "gltf"),
-    "text": ("py", "html", "css", "js", "json", "log"),
+    "text": ("py", "htm", "html", "css", "js", "json", "log"),
     "edit": ("txt",),
 }
 PREVIEW_EXTS = {ext for k, exts in EXT_CATEGORIES.items() if k != "edit" for ext in exts}

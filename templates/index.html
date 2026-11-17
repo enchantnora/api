@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>(●ω●){ {{title}} )</title>
     <meta name="robots" content="none">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="robots" content="noindex">
+    <meta name="description" content="B棟製品特化アプリ">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#162141" />
-    <script src="{{ url_for('static', path='js/jquery-3.6.4.min.js') }}"></script>
+    <script src="{{ url_for('static', path='js/jquery-3.6.4.min.js') }}" defer></script>
     <script src="{{ url_for('static', path='js/main.js') }}?ver={{js_timestamp}}" defer></script>
     <script src="{{ url_for('static', path='js/calc.js') }}?ver={{js_timestamp}}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}?ver={{css_timestamp}}">
