@@ -127,7 +127,8 @@ const Utils = {
             'obj': '💎', 'mtl': '💎', 'stl': '💎', 'glb': '💎', 'gltf': '💎',
             'py': '💻', 'js': '💻', 'htm': '💻', 'html': '💻', 'css': '💻', 'java': '💻', 'cpp': '💻', 'c': '💻', 'ts': '💻',
             'json': '💻', 'xml': '💻', 'yaml': '💻', 'yml': '💻', 'sh': '💻',
-            'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️'
+            'db': '🗄️', 'sqlite': '🗄️', 'sqlite3': '🗄️', 'sql': '🗄️',
+            'exe':'🧮'
         };
         return icons[ext] || '📄';
     },
@@ -1188,7 +1189,7 @@ function openPreview(filename, uuid, size, dateStr) {
                     }
                 } else {
                     content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(textContent)}</pre>`;
-                    if (['htm', 'html', 'js', 'css', 'log'].includes(ext) && copyBtn) {
+                    if (['htm', 'html', 'js', 'css', 'log', 'py'].includes(ext) && copyBtn) {
                         currentCopyTextGetter = () => textContent;
                         copyBtn.style.display = 'block';
                     }
