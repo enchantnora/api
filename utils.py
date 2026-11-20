@@ -27,23 +27,42 @@ TABLE_CONFIGS = [
     {'name': 'user_uuid', 'file': str(Path('csv') / 'user_uuid.csv')},
 ]
 
+ZEN = "".join(chr(0xff01 + idx) for idx in range(94)) + "\u3000"
+HAN = "".join(chr(0x21 + idx) for idx in range(94)) + " "
+ZEN2HAN_TABLE = str.maketrans(ZEN, HAN)
+
 replace_dict = {
-    ' ': ' ', ' ': ' ', '.': ' ', '/': ' ', '／': ' ',
-    '#': ' syaapu', '＃': ' syaapu', 'シャープ': ' syaapu', 'しゃーぷ': ' syaapu',
-    'φ': ' phi', 'Φ': ' phi',
-    'No.': ' no', 'NO.': ' no', 'no.': ' no', 'Ｎｏ．': ' no',
+    '.': ' ', '/': ' ',
+    '#': ' syaapu', 'シャープ': ' syaapu',
+    'φ': ' phi',
+    'No.': ' no',
     '角樽': 'kakutaru', '取っ手': 'totte', '取手': 'totte',
-    'ハンディー': 'handi', 'はんでぃー': 'handi', 'BOX': 'bokkusu', 'box': 'bokkusu',
-    'PET': 'petto', 'pet': 'petto', 'トレイ': 'toree',
-    'MF': 'emuefu', 'mf': 'emuefu',
+    'ハンディー': 'handi', 'BOX': 'bokkusu',
+    'PET': 'petto', 'トレイ': 'toree',
+    'MF': 'emuefu',
     '中蓋': 'nakafuta', '蓋': 'futa', '型': 'gata',
     '長側': 'chousoku', '短側': 'tansoku',
     'ぁ': 'a', 'ぃ': 'i', 'ぅ': 'u', 'ぇ': 'e', 'ぉ': 'o',
 }
 
 KAKASI_INST = kakasi()
-sorted_keys = sorted(replace_dict.keys(), key=len, reverse=True)
-pattern = re.compile('|'.join(re.escape(k) for k in sorted_keys))
+_HIRA_CHARS = "".join(chr(c) for c in range(0x3041, 0x3097))
+_KATA_CHARS = "".join(chr(c) for c in range(0x30A1, 0x30F7))
+KATA2HIRA_TABLE = str.maketrans(_KATA_CHARS, _HIRA_CHARS)
+_KANA_PAIR = {h: f"[{h}{k}]" for h, k in zip(_HIRA_CHARS, _KATA_CHARS)}
+
+normalized_replace_dict = {
+    k.translate(ZEN2HAN_TABLE).translate(KATA2HIRA_TABLE).casefold(): v
+    for k, v in replace_dict.items()
+}
+sorted_keys = sorted(normalized_replace_dict.keys(), key=len, reverse=True)
+pattern = re.compile(
+    '|'.join(
+        ''.join(_KANA_PAIR.get(ch, re.escape(ch)) for ch in k)
+        for k in sorted_keys
+    ),
+    re.IGNORECASE,
+)
 
 CABINET_DIR = Path('./cabinet')
 
@@ -64,10 +83,7 @@ KKS_PATTERNS = [
     (re.compile(r'(?<=\w)板', re.I), 'ばん'),
 ]
 
-ZEN = "".join(chr(0xff01 + idx) for idx in range(94))
-HAN = "".join(chr(0x21 + idx) for idx in range(94))
-ZEN2HAN_TABLE = str.maketrans(ZEN, HAN)
-CLEAN_TABLE = str.maketrans({'\n': '', ' ': '', ' ': '', '-': '', '.': '', '•': '', '・': '', '/': '', '／': ''})
+CLEAN_TABLE = str.maketrans({'\n': '', ' ': '', '\u3000': '', '-': '', '.': '', '•': '', '・': '', '/': '', '／': ''})
 
 RE_CYCLE = re.compile(r'\d+(?:\.\d+)?')
 RE_MFR_KEY = re.compile(r'^[A-Za-z]+-\d+$')
@@ -96,10 +112,10 @@ def custom_url_for(context: dict, name: str, **path_params: any) -> str:
     request = context.get("request")
     if not request:
         return "/"
-        
+
     if name == "static":
         return f"/static/{path_params.get('path')}"
-        
+
     path_only = {k: v for k, v in path_params.items() if k != "q"}
     query = {k: v for k, v in path_params.items() if k == "q"}
     try:
@@ -128,7 +144,10 @@ def normalize_text(text: str) -> str:
         return ""
     text = text.translate(ZEN2HAN_TABLE)
     text = re.sub(r'(?<=\w)板', 'ban', text)
-    normalized = pattern.sub(lambda m: replace_dict[m.group()], text)
+    normalized = pattern.sub(
+        lambda m: normalized_replace_dict[m.group().translate(KATA2HIRA_TABLE).casefold()],
+        text,
+    )
     converted = KAKASI_INST.convert(normalized)
     romaji = ' '.join(''.join([c['hepburn'] for c in converted]).split())
     romaji = romaji.translate(str.maketrans({'-': '', '－': '', 'ー': '', '.': '', '•': '', '・': ''}))
@@ -196,9 +215,9 @@ def _safe_float(val, default: float = 0.0) -> float:
 
 def generate_product_block(item: dict, is_html: bool = False) -> str:
     parts = []
-    
+
     br = "<br>" if is_html else "\n"
-    
+
     if sk := item.get("sk"):
         parts.append(f"■■{sk}■■")
     if code := item.get("code"):
@@ -229,10 +248,10 @@ def generate_product_block(item: dict, is_html: bool = False) -> str:
 
     for label, key, hide_if_empty in info_keys:
         val = get_val(item, key).strip()
-        
+
         if hide_if_empty and val in ("", "0", "無し", "未登録"):
             continue
-            
+
         if key == "grossWeight":
             gw_display = f"{label}{val}"
             if is_html:
@@ -240,18 +259,18 @@ def generate_product_block(item: dict, is_html: bool = False) -> str:
                 spawn = get_val(item, 'spawn')
                 gw_display += f'<span class="span_data" data-weight="{gw_num}" data-quantity="{spawn}">原料調整</span>'
             parts.append(gw_display)
-            
+
         elif key == "etc":
             if is_html and val:
                 val = val.replace('\n', '<br>')
             parts.append(f"{label}{val}")
-            
+
         else:
             parts.append(f"{label}{val}")
 
     delimiter = "______________________" if is_html else "__________________"
     parts.append(delimiter)
-    
+
     return br.join(parts) + br
 
 
@@ -330,14 +349,14 @@ def _read_excel_as_dict_list(filepath, sheet_name=None) -> list[dict]:
 
     df = (
         pl.read_excel(filepath, **kwargs)
-          [:, 1:]
-          .cast(pl.String)
-          .fill_null("")
-          .with_columns(
-              pl.all()
-                .str.replace(r'^(-?\d+)\.0$', '$1')
-                .str.strip_chars()
-          )
+        [:, 1:]
+        .cast(pl.String)
+        .fill_null("")
+        .with_columns(
+            pl.all()
+            .str.replace(r'^(-?\d+)\.0$', '$1')
+            .str.strip_chars()
+        )
     )
 
     return [{j: v for j, v in enumerate(row, 1)} for row in df.rows()]
@@ -559,7 +578,7 @@ def work_process(data_list: list, decision_csv_path: str):
                 if len(row) > col_idx:
                     raw_name = row[1].strip()
                     cell_val = row[col_idx].strip()
-                    
+
                     if raw_name == annotation_marker:
                         if cell_val:
                             annotation = cell_val

@@ -48,23 +48,20 @@
                     <div class="icons none_selection" onclick="createFolder()">
                         <span class="e">📁</span><span class="t">フォルダ作成</span>
                     </div>
+                    <input type="file" id="fileInput" multiple style="display:none" onchange="uploadFile()">
+                    <div class="icons none_selection" onclick="document.getElementById('fileInput').click()">
+                        <span class="e">📤</span><span class="t">アップロード</span>
+                    </div>
                     {% if admin == 1 %}<div class="icons none_selection" onclick="btn1()">
                         <span class="e">🔬</span><span class="t">Data解析</span>
                     </div>
                     <div class="icons none_selection" onclick="btn2()">
                         <span class="e">🔗</span><span class="t">DB更新</span>
                     </div>
-                    <div class="icons none_selection" onclick="btn3()" style="opacity: 0.33;">
-                        <span class="e">🛎️</span><span class="t">Data展開</span>
-                    </div>
                     <div class="icons none_selection" onclick="btn4()">
                         <span class="e">📅</span><span class="t">SHIFT更新</span>
                     </div>
-                    {% elif admin >= 2 %}<input type="file" id="fileInput" multiple style="display:none" onchange="uploadFile()">
-                    <div class="icons none_selection" onclick="document.getElementById('fileInput').click()">
-                        <span class="e">📤</span><span class="t">アップロード</span>
-                    </div>
-                    <div class="icons none_selection" onclick="btn5()" style="opacity: 0.33;">
+                    {% elif admin >= 2 %}<div class="icons none_selection" onclick="btn5()" style="opacity: 0.33;">
                         <span class="e">🛎️</span><span class="t">Data展開</span>
                     </div>
                     <div class="icons none_selection" onclick="btn6()" style="opacity: 0.33;">
@@ -73,11 +70,7 @@
                     <div class="icons none_selection" onclick="btn7()" style="opacity: 0.33;">
                         <span class="e">👑</span><span class="t">情報集計</span>
                     </div>
-                    {% else %}<input type="file" id="fileInput" multiple style="display:none" onchange="uploadFile()">
-                    <div class="icons none_selection" onclick="document.getElementById('fileInput').click()">
-                        <span class="e">📤</span><span class="t">アップロード</span>
-                    </div>
-                    <div class="icons none_selection" onclick="createTxt()">
+                    {% else %}<div class="icons none_selection" onclick="createTxt()">
                         <span class="e">📝</span><span class="t">テキスト作成</span>
                     </div>
                     <div class="icons none_selection" onclick="btn2()" style="opacity: 0.33;">
