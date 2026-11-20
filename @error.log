@@ -4141,3 +4141,28 @@ Could not determine dtype for column 7, falling back to string
 [2026-11-20 12:39:39 +0900] [223756] [INFO] Started server process [223756]
 [2026-11-20 12:39:39 +0900] [223756] [INFO] Waiting for application startup.
 [2026-11-20 12:39:39 +0900] [223756] [INFO] Application startup complete.
+[2026-11-20 13:07:28 +0900] [223689] [INFO] Handling signal: term
+[2026-11-20 13:07:28 +0900] [223756] [INFO] Shutting down
+[2026-11-20 13:07:28 +0900] [223756] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-11-20 13:07:28 +0900] [223754] [INFO] Shutting down
+[2026-11-20 13:07:28 +0900] [223754] [INFO] Error while closing socket [Errno 9] Bad file descriptor
+[2026-11-20 13:07:28 +0900] [223756] [INFO] Waiting for application shutdown.
+[2026-11-20 13:07:28 +0900] [223756] [INFO] Application shutdown complete.
+[2026-11-20 13:07:28 +0900] [223756] [INFO] Finished server process [223756]
+[2026-11-20 13:07:28 +0900] [223689] [ERROR] Worker (pid:223756) was sent SIGTERM!
+[2026-11-20 13:07:28 +0900] [223754] [INFO] Waiting for application shutdown.
+[2026-11-20 13:07:28 +0900] [223754] [INFO] Application shutdown complete.
+[2026-11-20 13:07:28 +0900] [223754] [INFO] Finished server process [223754]
+[2026-11-20 13:07:28 +0900] [223689] [ERROR] Worker (pid:223754) was sent SIGTERM!
+[2026-11-20 13:07:28 +0900] [223689] [INFO] Shutting down: Master
+[2026-11-20 13:07:29 +0900] [223963] [INFO] Starting gunicorn 23.0.0
+[2026-11-20 13:07:29 +0900] [223963] [INFO] Listening at: http://0.0.0.0:9900 (223963)
+[2026-11-20 13:07:29 +0900] [223963] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-11-20 13:07:29 +0900] [224009] [INFO] Booting worker with pid: 224009
+[2026-11-20 13:07:29 +0900] [224011] [INFO] Booting worker with pid: 224011
+[2026-11-20 13:07:30 +0900] [224009] [INFO] Started server process [224009]
+[2026-11-20 13:07:30 +0900] [224009] [INFO] Waiting for application startup.
+[2026-11-20 13:07:30 +0900] [224009] [INFO] Application startup complete.
+[2026-11-20 13:07:30 +0900] [224011] [INFO] Started server process [224011]
+[2026-11-20 13:07:30 +0900] [224011] [INFO] Waiting for application startup.
+[2026-11-20 13:07:30 +0900] [224011] [INFO] Application startup complete.

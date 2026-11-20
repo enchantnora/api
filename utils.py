@@ -34,7 +34,7 @@ replace_dict = {
     'No.': ' no', 'NO.': ' no', 'no.': ' no', 'Ｎｏ．': ' no',
     '角樽': 'kakutaru', '取っ手': 'totte', '取手': 'totte',
     'ハンディー': 'handi', 'BOX': 'bokkusu', 'box': 'bokkusu',
-    'PET': 'petto', 'pet': 'petto',
+    'PET': 'petto', 'pet': 'petto', 'Tray': 'toree', 'トレイ': 'toree',
     'MF': 'emuefu', 'mf': 'emuefu',
     '中蓋': 'nakafuta', '蓋': 'futa', '型': 'gata',
     '長側': 'chousoku', '短側': 'tansoku',
