@@ -33,8 +33,8 @@ replace_dict = {
     'φ': ' phi', 'Φ': ' phi',
     'No.': ' no', 'NO.': ' no', 'no.': ' no', 'Ｎｏ．': ' no',
     '角樽': 'kakutaru', '取っ手': 'totte', '取手': 'totte',
-    'ハンディー': 'handi', 'BOX': 'bokkusu', 'box': 'bokkusu',
-    'PET': 'petto', 'pet': 'petto', 'Tray': 'toree', 'トレイ': 'toree',
+    'ハンディー': 'handi', 'はんでぃー': 'handi', 'BOX': 'bokkusu', 'box': 'bokkusu',
+    'PET': 'petto', 'pet': 'petto', 'トレイ': 'toree',
     'MF': 'emuefu', 'mf': 'emuefu',
     '中蓋': 'nakafuta', '蓋': 'futa', '型': 'gata',
     '長側': 'chousoku', '短側': 'tansoku',
@@ -60,6 +60,7 @@ KKS_PATTERNS = [
     (re.compile(r'#', re.I), 'しゃーぷ'),
     (re.compile(r'長側', re.I), 'ちょうそく'),
     (re.compile(r'短側', re.I), 'たんそく'),
+    (re.compile(r'Tray', re.I), 'とれー'),
     (re.compile(r'(?<=\w)板', re.I), 'ばん'),
 ]
 
