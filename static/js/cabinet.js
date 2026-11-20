@@ -139,8 +139,16 @@ const Utils = {
 };
 
 // ---- ボタン処理 ----------------------------------------
+function canExecuteAdmin(url) {
+    if (!url || !APP.isAdmin) {
+        addMessage(MSG.error('管理者のみ実行可能'));
+        return false;
+    }
+    return true;
+}
+
 async function executeAdminTask(url, taskName) {
-    if (!url || !APP.isAdmin) return addMessage(MSG.error('管理者のみ実行可能'));
+    if (!canExecuteAdmin(url)) return;
     if (APP.isProcessing) return;
     APP.isProcessing = true;
     try {
@@ -154,14 +162,18 @@ async function executeAdminTask(url, taskName) {
     }
 }
 
-const btn1 = () => executeAdminTask(APP.endpoints.dataFormatting, "Data解析");
-const btn2 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
-const btn3 = () => APP.endpoints.docs
-    ? window.open(APP.endpoints.docs, '_blank')
-    : addMessage(MSG.error('管理者のみ実行可能'));
-const btn4 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
-const btn5 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
-const btn6 = () => executeAdminTask(APP.endpoints.apply, "データベース更新");
+function openAdminPage(url) {
+    if (!canExecuteAdmin(url)) return;
+    window.open(url, '_blank');
+}
+
+const btn1 = () => executeAdminTask(APP.endpoints.datakaiseki, "Data解析");
+const btn2 = () => executeAdminTask(APP.endpoints.datakousin, "データベース更新");
+const btn3 = () => executeAdminTask(APP.endpoints.datahenkou, "データベース変更");
+const btn4 = () => openAdminPage(APP.endpoints.docs);
+const btn5 = () => executeAdminTask(APP.endpoints.datahenkou, "データベース更新");
+const btn6 = () => executeAdminTask(APP.endpoints.datahenkou, "データベース更新");
+const btn7 = () => executeAdminTask(APP.endpoints.datahenkou, "データベース更新");
 
 // ---- メッセージ表示 ----------------------------------------
 function addMessage(htmlContent) {
@@ -1189,7 +1201,7 @@ function openPreview(filename, uuid, size, dateStr) {
                     }
                 } else {
                     content.innerHTML = `<pre class="preview-text">${Utils.escapeHtml(textContent)}</pre>`;
-                    if (['htm', 'html', 'js', 'css', 'log', 'py'].includes(ext) && copyBtn) {
+                    if (copyBtn) {
                         currentCopyTextGetter = () => textContent;
                         copyBtn.style.display = 'block';
                     }

@@ -48,29 +48,36 @@
                     <div class="icons none_selection" onclick="createFolder()">
                         <span class="e">📁</span><span class="t">フォルダ作成</span>
                     </div>
-                    <input type="file" id="fileInput" multiple style="display:none" onchange="uploadFile()">
-                    <div class="icons none_selection" onclick="document.getElementById('fileInput').click()">
-                        <span class="e">📤</span><span class="t">アップロード</span>
-                    </div>
                     {% if admin == 1 %}<div class="icons none_selection" onclick="btn1()">
                         <span class="e">🔬</span><span class="t">Data解析</span>
                     </div>
                     <div class="icons none_selection" onclick="btn2()">
                         <span class="e">🔗</span><span class="t">DB更新</span>
                     </div>
-                    <div class="icons none_selection" onclick="btn3()">
-                        <span class="e">📅</span><span class="t">SHIFT更新</span>
-                    </div>
-                    {% elif admin >= 2 %}<div class="icons none_selection" onclick="btn4()" style="opacity: 0.33;">
+                    <div class="icons none_selection" onclick="btn3()" style="opacity: 0.33;">
                         <span class="e">🛎️</span><span class="t">Data展開</span>
                     </div>
+                    <div class="icons none_selection" onclick="btn4()">
+                        <span class="e">📅</span><span class="t">SHIFT更新</span>
+                    </div>
+                    {% elif admin >= 2 %}<input type="file" id="fileInput" multiple style="display:none" onchange="uploadFile()">
+                    <div class="icons none_selection" onclick="document.getElementById('fileInput').click()">
+                        <span class="e">📤</span><span class="t">アップロード</span>
+                    </div>
                     <div class="icons none_selection" onclick="btn5()" style="opacity: 0.33;">
-                        <span class="e">⚡</span><span class="t">構造解析</span>
+                        <span class="e">🛎️</span><span class="t">Data展開</span>
                     </div>
                     <div class="icons none_selection" onclick="btn6()" style="opacity: 0.33;">
+                        <span class="e">⚡</span><span class="t">構造解析</span>
+                    </div>
+                    <div class="icons none_selection" onclick="btn7()" style="opacity: 0.33;">
                         <span class="e">👑</span><span class="t">情報集計</span>
                     </div>
-                    {% else %}<div class="icons none_selection" onclick="createTxt()">
+                    {% else %}<input type="file" id="fileInput" multiple style="display:none" onchange="uploadFile()">
+                    <div class="icons none_selection" onclick="document.getElementById('fileInput').click()">
+                        <span class="e">📤</span><span class="t">アップロード</span>
+                    </div>
+                    <div class="icons none_selection" onclick="createTxt()">
                         <span class="e">📝</span><span class="t">テキスト作成</span>
                     </div>
                     <div class="icons none_selection" onclick="btn2()" style="opacity: 0.33;">
@@ -191,8 +198,8 @@
                     <div style="display: flex; gap: 10px;">
                         <button class="cli none_selection" style="height: 30px; font-size: 12px; padding: 0 13px;" onclick="closeModal()">閉じる</button>
                         <button id="landscape-btn" class="cli preview-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="toggleLandscape()">横画面</button>
+                        <button id="copy-content-btn" class="cli copy-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="copyPreviewContent()">コピー　</button>
                         <button id="save-txt-btn" class="cli edit-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="saveTextFile()">保存</button>
-                        <button id="copy-content-btn" class="cli copy-btn none_selection" style="height: 30px; font-size: 12px; padding: 0 13px; display: none;" onclick="copyPreviewContent()">コピー</button>
                     </div>
                     <div style="display: flex; gap: 12px; align-items: center;">
                         <span id="modal-date" style="font-weight: normal; font-size: 10px; color: #a9c0e0;"></span>
@@ -246,16 +253,16 @@
             extCategories: {{ ext_categories | tojson }},
             endpoints: {
                 {% if admin == 1 %}
-                dataFormatting: "{{ url_for('data_formatting') }}",
-                apply: "{{ url_for('apply') }}",
+                datakaiseki: "{{ url_for('data_formatting') }}",
+                datakousin: "{{ url_for('apply') }}",
                 docs: "{{ url_for('sdsd') }}"
                 {% elif admin == 2 %}
-                dataFormatting: null,
-                apply: null,
+                datakaiseki: null,
+                datahenkou: null,
                 docs: null,
                 {% else %}
-                dataFormatting: null,
-                apply: null,
+                datakaiseki: null,
+                datahenkou: null,
                 docs: null
                 {% endif %}
             }
